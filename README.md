@@ -1,4 +1,5 @@
 # node-typescript-support
+[![npm version](https://badge.fury.io/js/node-typescript-support.svg)](https://www.npmjs.com/package/node-typescript-support)
 [![Build Status](https://travis-ci.com/AviVahl/node-typescript-support.svg?branch=master)](https://travis-ci.com/AviVahl/node-typescript-support)
 
 Multi tsconfig aware TypeScript support for Node.js.
