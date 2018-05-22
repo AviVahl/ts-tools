@@ -7,17 +7,17 @@ Multi tsconfig aware TypeScript support for Node.js.
 ## Getting started
 
 Install the library as a dev dependency: 
-```
+```sh
 yarn add node-typescript-support --dev
 ```
 
 Then, use it as follows:
-```
+```sh
 node -r node-typescript-support/register ./my-script.ts
 ```
 
 Or, in your code:
-```
+```ts
 import 'node-typescript-support/register';
 ```
 
