@@ -1,3 +1,6 @@
+cjs
+.vscode
+
 # Logs
 logs
 *.log

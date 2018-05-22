@@ -1,0 +1,34 @@
+{
+  "name": "node-typescript-support",
+  "version": "0.0.1",
+  "description": "Multi tsconfig aware TypeScript support for Node.js",
+  "main": "./cjs/index.js",
+  "types": "./cjs/index.d.ts",
+  "scripts": {
+    "clean": "rimraf ./cjs",
+    "prebuild": "yarn clean",
+    "build": "tsc -p src",
+    "lint": "tslint -p src",
+    "pretest": "yarn build",
+    "test": "node -r ./register.js ./test/print-to-console.spec.ts"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1"
+  },
+  "peerDependencies": {
+    "typescript": ">=2.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "8",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.10.0",
+    "typescript": "~2.8.3"
+  },
+  "files": [
+    "cjs",
+    "register.js"
+  ],
+  "repository": "git@github.com:AviVahl/node-typescript-support.git",
+  "author": "Avi Vahl <avi.vahl@wix.com>",
+  "license": "MIT"
+}
