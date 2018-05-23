@@ -78,7 +78,7 @@ function transpileUsingDefaultOptions(
 
     if (diagnostics && diagnostics.length) {
         const formattedDiagnostics = ts.formatDiagnostics(diagnostics, defaultCompilerHost)
-        throw new Error(`Errors while transpiling ${filePath}\n${formattedDiagnostics}`)
+        throw new Error(`${red('Errors')} while transpiling ${red(filePath)}\n${formattedDiagnostics}`)
     }
     nodeModule._compile(outputText, filePath)
 }
