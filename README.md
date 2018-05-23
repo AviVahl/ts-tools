@@ -27,7 +27,7 @@ I recently experimented with a neat project setup where I have one
 `tsconfig.json` in my `src` folder, and a second `tsconfig.json`
 in my `test` folder.
 
-Each config created a different type environment by explictly
+Each config created a different type environment by explicitly
 specifying which `@types` packages are included (via compilerOptions->types).
 
 So while my tests had access to `@types/mocha` and its globals, my
@@ -47,11 +47,11 @@ The `node-typescript-support/register` end-point registers this library's
 It uses `require.extensions` to do so.
 
 For each `.ts` or `.tsx` file, the extension finds the closest `tsconfig.json`.
-For each config, it instanciates a separate TypeScript Language Service and
+For each config, it instantiates a separate TypeScript Language Service and
 uses that service to transpile and type-check the file.
 
 `tsconfig.json` lookup is done once per directory (cached for the second
-lookup in that directory). There is one Lanaguage Service per `tsconfig.json`,
+lookup in that directory). There is one Language Service per `tsconfig.json`,
 and all running services share a document registry.  
 
 If no `tsconfig.json` is found for a typescript file,
