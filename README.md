@@ -63,6 +63,6 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
     module: ts.ModuleKind.CommonJS,
     jsx: ts.JsxEmit.React
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
-    inlineSourceMap: true
+    sourceMap: true
 }
 ```
