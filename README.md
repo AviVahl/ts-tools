@@ -84,3 +84,7 @@ import { TypeScriptNodeExtension } from 'node-typescript-support'
 
 require.extensions['.ts'] = TypeScriptNodeExtension
 ```
+
+## License
+
+MIT
