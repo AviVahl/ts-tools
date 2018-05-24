@@ -77,8 +77,10 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
 ## Custom registration
 
 If you don't want source maps turned on, or prefer registering
-the extension in your code, it can be imported from the package:
+the extension in your code, it can be imported via the package root:
 
 ```ts
-import {TypeScriptNodeExtension} from 'node-typescript-support'
+import { TypeScriptNodeExtension } from 'node-typescript-support'
+
+require.extensions['.ts'] = TypeScriptNodeExtension
 ```
