@@ -10,7 +10,8 @@
     "build": "tsc -p src",
     "lint": "tslint -p src",
     "pretest": "yarn build && yarn lint",
-    "test": "node -r ./register.js ./test/print-to-console.spec.ts"
+    "test": "node -r ./register.js ./test/print-to-console.spec.ts",
+    "prepack": "yarn build"
   },
   "dependencies": {
     "chalk": "^2.4.1",
