@@ -1,17 +1,9 @@
 import * as ts from 'typescript'
 import chalk from 'chalk'
 import { dirname } from 'path'
+import { sharedDocumentRegistry, runningServices, directoryToTsConfig, sourceMaps } from './global-state'
 
-const {red} = chalk
-
-// we might create more than a single language service during a run, so we share documents between them
-const sharedDocumentRegistry = ts.createDocumentRegistry(ts.sys.useCaseSensitiveFileNames, ts.sys.getCurrentDirectory())
-
-// a map holding `tsconfig path` to a `language service`
-export const runningServices = new Map<string, ts.LanguageService>()
-
-// cache of `directory path` to `tsconfig lookup result`, to save disk operations
-export const directoryToTsConfig = new Map<string, string | undefined>()
+const { red } = chalk
 
 // Node-compatible default compiler options
 // used when no tsconfig is found, or if found config does not include the file being compiled
@@ -20,7 +12,7 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
     module: ts.ModuleKind.CommonJS,
     jsx: ts.JsxEmit.React, // opinionated
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
-    inlineSourceMap: true, // so that maybe source-map-support picks it up (need to verify)
+    sourceMap: true
 }
 
 // used for formatting diagnostics
@@ -56,11 +48,20 @@ function transpileUsingLanguageService(
 
     if (emitSkipped) {
         throw new Error(`Emit of ${filePath} was skipped.`)
-    } else if (!outputFiles[0]) {
-        throw new Error(`No output for ${filePath}`)
     }
 
-    nodeModule._compile(outputFiles[0].text, filePath)
+    const jsOutputFile = outputFiles.filter(outputFile => outputFile.name.endsWith('.js')).shift()
+    const sourceMapOutputFile = outputFiles.filter(outputFile => outputFile.name.endsWith('.js.map')).shift()
+
+    if (!jsOutputFile) {
+        throw new Error(`No js output for ${filePath}`)
+    }
+
+    if (sourceMapOutputFile) {
+        sourceMaps.set(filePath, sourceMapOutputFile.text)
+    }
+
+    nodeModule._compile(jsOutputFile.text, filePath)
 }
 
 function transpileUsingDefaultOptions(
@@ -71,14 +72,18 @@ function transpileUsingDefaultOptions(
     if (!tsCode) {
         throw new Error(`Unable to read ${filePath}`)
     }
-    const { outputText, diagnostics/*, sourceMapText*/ } = ts.transpileModule(tsCode, {
+    const { outputText, diagnostics, sourceMapText } = ts.transpileModule(tsCode, {
         fileName: filePath,
-        compilerOptions: defaultCompilerOptions,
+        compilerOptions: defaultCompilerOptions
     })
 
     if (diagnostics && diagnostics.length) {
         const formattedDiagnostics = ts.formatDiagnostics(diagnostics, defaultCompilerHost)
         throw new Error(`${red('Errors')} while transpiling ${red(filePath)}\n${formattedDiagnostics}`)
+    }
+
+    if (sourceMapText) {
+        sourceMaps.set(filePath, sourceMapText)
     }
     nodeModule._compile(outputText, filePath)
 }
@@ -116,8 +121,8 @@ function getLanguageService(
     options.declaration = false
 
     // Turn on inline source maps and turn off regular sourceMap
-    options.inlineSourceMap = true
-    options.sourceMap = options.inlineSources = false
+    options.sourceMap = true
+    options.inlineSourceMap = options.inlineSources = false
 
     const languageServiceHost = createLanguageServiceHost(fileNames, options)
     const languageService = ts.createLanguageService(languageServiceHost, sharedDocumentRegistry)
