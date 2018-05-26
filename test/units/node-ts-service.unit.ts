@@ -2,10 +2,8 @@ import { NodeTypeScriptService } from '../../src'
 import { expect } from 'chai'
 import { join } from 'path'
 
-const noTsConfigProject = join(__dirname, '..', 'test-cases', 'no-tsconfig')
-const withTsConfigProject = join(__dirname, '..', 'test-cases', 'with-tsconfig')
-
 describe('Node TypeScript Service', () => {
+    const withTsConfigProject = join(__dirname, '..', 'test-cases', 'with-tsconfig')
     describe('with tsconfig.json', () => {
         it('throws on syntactic errors', () => {
             const fileWithSyntaxError = join(withTsConfigProject, 'src', 'file-with-syntax-error.ts')
@@ -49,6 +47,7 @@ describe('Node TypeScript Service', () => {
 
     })
 
+    const noTsConfigProject = join(__dirname, '..', 'test-cases', 'no-tsconfig')
     describe('no tsconfig.json', () => {
         it('throws on syntactic errors', () => {
             const fileWithSyntaxError = join(noTsConfigProject, 'file-with-syntax-error.ts')
