@@ -83,7 +83,7 @@ the extension in your code, it can be imported via the package root:
 ```ts
 import { NodeTypeScriptService } from 'node-typescript-support'
 
-const nodeTsService = new NodeTypeScriptService(/* options options */)
+const nodeTsService = new NodeTypeScriptService(/* options */)
 nodeTsService.installSourceMapSupport() // optional installation of source-map-support
 
 // register our handler for the two default supported extensions
