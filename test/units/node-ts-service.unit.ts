@@ -36,15 +36,14 @@ describe('Node TypeScript Service', () => {
         })
 
         it('isolates two folders with different configs', () => {
-            const fileWithDescribe = join(withTsConfigProject, 'test', 'type-isolation.ts')
-            const fileWithoutDescribe = join(withTsConfigProject, 'src', 'type-isolation.ts')
+            const typeIsolationFile = join(withTsConfigProject, 'test', 'type-isolation.ts')
+            const errorFile = join(withTsConfigProject, 'src', 'type-isolation.ts')
 
-            const withDescribeOutput = runWithRequireHook(fileWithDescribe)
-            const withoutDescribeOutput = runWithRequireHook(fileWithoutDescribe)
+            const output = runWithRequireHook(typeIsolationFile)
 
-            expect(withDescribeOutput).to.not.include(`Semantic errors in ${fileWithDescribe}`)
-            expect(withoutDescribeOutput).to.include(`Semantic errors in ${fileWithoutDescribe}`)
-            expect(withoutDescribeOutput).to.include(`Cannot find name 'describe'`)
+            expect(output).to.not.include(`Semantic errors in ${typeIsolationFile}`)
+            expect(output).to.include(`Semantic errors in ${errorFile}`)
+            expect(output).to.include(`Cannot find name 'describe'`)
         })
 
     })
