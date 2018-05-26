@@ -5,9 +5,9 @@ import { platform } from 'os'
 
 const registerPath = join(__dirname, '..', '..', 'register.js')
 
-describe('Node TypeScript Service', () => {
+describe('using node -r node-typescript-support/register [file]', () => {
     const runWithRequireHook = (tsFilePath: string) =>
-        spawnSync('node', ['--require', registerPath, tsFilePath], { shell: true }).output.toString()
+        spawnSync('node', ['-r', registerPath, tsFilePath], { shell: true }).output.toString()
 
     describe('with tsconfig.json', () => {
         const withTsConfigProject = join(__dirname, '..', 'test-cases', 'with-tsconfig')
