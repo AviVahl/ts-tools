@@ -1,14 +1,8 @@
-import { install } from 'source-map-support'
-import { TypeScriptNodeExtension } from './ts-node-extension'
-import { sourceMaps } from './global-state'
+import { NodeTypeScriptService } from './node-ts-service'
 
-// register our handler for the two supported extensions
-require.extensions['.ts'] = require.extensions['.tsx'] = TypeScriptNodeExtension
+// default handling uses default options and installs source-map-support
+const nodeTsService = new NodeTypeScriptService()
+nodeTsService.installSourceMapSupport()
 
-install({
-    environment: 'node',
-    retrieveSourceMap(filePath): any /* Until PR to DefinitelyTyped is merged */ {
-        const fileSourceMap = sourceMaps.get(filePath)
-        return fileSourceMap ? { map: fileSourceMap, url: filePath } : null
-    }
-})
+// register our handler for the two default supported extensions
+require.extensions['.ts'] = require.extensions['.tsx'] = nodeTsService.requireExtension

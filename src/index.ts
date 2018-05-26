@@ -1,2 +1,1 @@
-export * from './ts-node-extension'
-export * from './global-state'
+export * from './node-ts-service'

@@ -80,9 +80,13 @@ If you don't want source maps turned on, or prefer registering
 the extension in your code, it can be imported via the package root:
 
 ```ts
-import { TypeScriptNodeExtension } from 'node-typescript-support'
+import { NodeTypeScriptService } from 'node-typescript-support'
 
-require.extensions['.ts'] = TypeScriptNodeExtension
+const nodeTsService = new NodeTypeScriptService(/* options options */)
+nodeTsService.installSourceMapSupport() // optional installation of source-map-support
+
+// register our handler for the two default supported extensions
+require.extensions['.ts'] = nodeTsService.requireExtension
 ```
 
 ## License
