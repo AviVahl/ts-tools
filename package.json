@@ -8,7 +8,7 @@
     "clean": "rimraf ./cjs",
     "prebuild": "yarn clean",
     "build": "tsc -p src",
-    "lint": "tslint -p src",
+    "lint": "tslint -p src && tslint -p test/units",
     "pretest": "yarn build && yarn lint",
     "test": "mocha \"./test/**/*.unit.ts?(x)\" --watch-extensions ts,tsx -r ./register.js --timeout 10000",
     "prepack": "yarn build"
