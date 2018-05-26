@@ -1,6 +1,6 @@
 import * as ts from 'typescript'
 import chalk from 'chalk'
-import { dirname } from 'path'
+import { dirname, normalize } from 'path'
 import { install } from 'source-map-support'
 
 /**
@@ -241,7 +241,7 @@ export class NodeTypeScriptService {
         options.sourceMap = this.options.sourceMap
         options.inlineSourceMap = options.inlineSources = false
 
-        const languageServiceHost = this.createLanguageServiceHost(fileNames, options)
+        const languageServiceHost = this.createLanguageServiceHost(fileNames.map(normalize), options)
         const languageService = ts.createLanguageService(languageServiceHost, this.sharedDocumentRegistry)
 
         this.runningServices.set(tsConfigPath, languageService)
