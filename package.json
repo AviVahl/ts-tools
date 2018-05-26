@@ -10,7 +10,7 @@
     "build": "tsc -p src",
     "lint": "tslint -p src",
     "pretest": "yarn build && yarn lint",
-    "test": "mocha \"./test/**/*.unit.ts?(x)\" --watch-extensions ts,tsx -r ./register.js",
+    "test": "mocha \"./test/**/*.unit.ts?(x)\" --watch-extensions ts,tsx -r ./register.js --timeout 10000",
     "prepack": "yarn build"
   },
   "dependencies": {
