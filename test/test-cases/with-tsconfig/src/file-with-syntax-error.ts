@@ -1,3 +1,2 @@
 // Test syntax error
-
-const a = function test){}
+const a = function test({}
