@@ -116,7 +116,7 @@ export class NodeTypeScriptService {
         if (this.options.sourceMap) {
             install({
                 environment: 'node',
-                retrieveSourceMap: (filePath): any => {
+                retrieveSourceMap: (filePath) => {
                     const fileSourceMap = this.sourceMaps.get(filePath)
                     return fileSourceMap ? { map: fileSourceMap, url: filePath } : null
                 }
