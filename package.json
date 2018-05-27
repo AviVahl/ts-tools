@@ -1,7 +1,7 @@
 {
   "name": "node-typescript-support",
   "version": "0.3.0",
-  "description": "Multi tsconfig aware TypeScript support for Node.js",
+  "description": "TypeScript support for Node.js.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
   "scripts": {
