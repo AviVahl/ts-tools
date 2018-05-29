@@ -90,6 +90,10 @@ nodeTsService.installSourceMapSupport() // optional installation of source-map-s
 require.extensions['.ts'] = nodeTsService.requireExtension
 ```
 
+## Similar projects
+
+[ts-node](https://github.com/TypeStrong/ts-node) - a much more complete solution. It includes a `ts-node` cli/repl, and require hook registeration. It does not support multiple tsconfigs out of the box, afaik. 
+
 ## License
 
 MIT
