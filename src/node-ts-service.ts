@@ -1,7 +1,6 @@
 import * as ts from 'typescript'
-import chalk from 'chalk'
 import { dirname, normalize } from 'path'
-import { install } from 'source-map-support'
+import { TranspilationError, TranspilationErrorType } from './errors'
 
 /**
  * Options for Node TypeScript Extension.
@@ -19,6 +18,7 @@ export interface INodeTypeScriptServiceOptions {
 
     /**
      * Enable source maps during compilation and save them to memory cache.
+     * this option overrides existing source maps configuration in tsconfigs
      *
      * @default true
      */
@@ -30,7 +30,7 @@ export interface INodeTypeScriptServiceOptions {
      * When initializing, the extension will start a language service
      * per each configuration file.
      * This can save time of looking up tsconfig per file,
-     * as it will reuse any existing language service already including the file.
+     * as it will reuse any existing language service already including the file
      *
      * @default []
      */
@@ -57,8 +57,16 @@ export const defaultOptions: Required<INodeTypeScriptServiceOptions> = {
     }
 }
 
-// Used for printing error messages
-const { red } = chalk
+export interface ITranspilationOutput {
+    /** Absolute file path to the input .ts(x) file */
+    inputFilePath: string
+
+    /** JavaScript transpilation out */
+    outputCode: string
+
+    /** Defined if an Error occured during transpilation */
+    error?: TranspilationError
+}
 
 export class NodeTypeScriptService {
     // resolved options used by the service
@@ -93,75 +101,94 @@ export class NodeTypeScriptService {
     }
 
     /**
-     * Actual require extension handler.
-     * This is a method that can be set to handle require.extensions
-     *
-     * @example const nodeExtension = new NodeTypeScriptExtension({sourceMap: true})
-     *          require.extensions['.ts'] = nodeExtension.requireExtension
+     * Transpile a file
+     * @param filePath file path to transpile
      */
-    public requireExtension = (nodeModule: NodeModule, filePath: string): void => {
+    public transpile(filePath: string): ITranspilationOutput {
         const languageService = this.getLanguageService(filePath)
-        const transpiledCode = languageService ?
+        return languageService ?
             this.transpileUsingLanguageService(filePath, languageService) :
             this.transpileUsingDefaultOptions(filePath)
-
-        nodeModule._compile(transpiledCode, filePath)
-    }
-
-    /**
-     * Connects internal source map cache (this.sourceMaps) to
-     * source-map-support
-     */
-    public installSourceMapSupport() {
-        if (this.options.sourceMap) {
-            install({
-                environment: 'node',
-                retrieveSourceMap: (filePath) => {
-                    const fileSourceMap = this.sourceMaps.get(filePath)
-                    return fileSourceMap ? { map: fileSourceMap, url: filePath } : null
-                }
-            })
-        }
     }
 
     private transpileUsingLanguageService(
         filePath: string,
         languageService: ts.LanguageService
-    ): string {
+    ): ITranspilationOutput {
         const { outputFiles, emitSkipped } = languageService.getEmitOutput(filePath)
 
-        const syntacticDiagnostics = languageService.getSyntacticDiagnostics(filePath)
-        if (syntacticDiagnostics.length) {
-            const formattedDiagnostics = ts.formatDiagnostics(syntacticDiagnostics, this.defaultCompilerHost)
-            throw new Error(`${red('Syntactic errors')} in ${red(filePath)}\n${formattedDiagnostics}`)
-        }
-        const semanticDiagnostics = languageService.getSemanticDiagnostics(filePath)
-        if (semanticDiagnostics.length) {
-            const formattedDiagnostics = ts.formatDiagnostics(semanticDiagnostics, this.defaultCompilerHost)
-            throw new Error(`${red('Semantic errors')} in ${red(filePath)}\n${formattedDiagnostics}`)
-            // throw new Error(`Semantic errors in ${filePath}\n${formattedDiagnostics}`)
-        }
-
         if (emitSkipped) {
-            throw new Error(`Emit of ${filePath} was skipped.`)
+            return {
+                inputFilePath: filePath,
+                error: new TranspilationError(
+                    TranspilationErrorType.TRANSPILATION,
+                    filePath,
+                    `Emit was skipped`
+                ),
+                outputCode: ''
+            }
         }
 
         const jsOutputFile = outputFiles.filter(outputFile => outputFile.name.endsWith('.js')).shift()
         const sourceMapOutputFile = outputFiles.filter(outputFile => outputFile.name.endsWith('.js.map')).shift()
 
         if (!jsOutputFile) {
-            throw new Error(`No js output for ${filePath}`)
+            return {
+                inputFilePath: filePath,
+                error: new TranspilationError(
+                    TranspilationErrorType.TRANSPILATION,
+                    filePath,
+                    `No js output file was found`
+                ),
+                outputCode: ''
+            }
+        }
+
+        const syntacticDiagnostics = languageService.getSyntacticDiagnostics(filePath)
+        if (syntacticDiagnostics.length) {
+            const formattedDiagnostics = ts.formatDiagnostics(syntacticDiagnostics, this.defaultCompilerHost)
+            return {
+                error: new TranspilationError(
+                    TranspilationErrorType.SYNTACTIC,
+                    filePath,
+                    formattedDiagnostics,
+                    syntacticDiagnostics
+                ),
+                inputFilePath: filePath,
+                outputCode: jsOutputFile.text
+            }
+        }
+
+        const semanticDiagnostics = languageService.getSemanticDiagnostics(filePath)
+        if (semanticDiagnostics.length) {
+            const formattedDiagnostics = ts.formatDiagnostics(semanticDiagnostics, this.defaultCompilerHost)
+            return {
+                error: new TranspilationError(
+                    TranspilationErrorType.SEMANTIC,
+                    filePath,
+                    formattedDiagnostics,
+                    semanticDiagnostics
+                ),
+                inputFilePath: filePath,
+                outputCode: jsOutputFile.text
+            }
         }
 
         if (this.options.sourceMap && sourceMapOutputFile) {
             this.sourceMaps.set(filePath, sourceMapOutputFile.text)
+        } else {
+            this.sourceMaps.delete(filePath)
         }
-        return jsOutputFile.text
+
+        return {
+            inputFilePath: filePath,
+            outputCode: jsOutputFile.text
+        }
     }
 
     private transpileUsingDefaultOptions(
         filePath: string
-    ): string {
+    ): ITranspilationOutput {
         const tsCode = ts.sys.readFile(filePath)
         if (!tsCode) {
             throw new Error(`Unable to read ${filePath}`)
@@ -173,13 +200,27 @@ export class NodeTypeScriptService {
 
         if (diagnostics && diagnostics.length) {
             const formattedDiagnostics = ts.formatDiagnostics(diagnostics, this.defaultCompilerHost)
-            throw new Error(`${red('Errors')} while transpiling ${red(filePath)}\n${formattedDiagnostics}`)
+            return {
+                inputFilePath: filePath,
+                outputCode: outputText,
+                error: new TranspilationError(
+                    TranspilationErrorType.TRANSPILATION,
+                    filePath,
+                    formattedDiagnostics
+                )
+            }
         }
 
         if (this.options.sourceMap && sourceMapText) {
             this.sourceMaps.set(filePath, sourceMapText)
+        } else {
+            this.sourceMaps.delete(filePath)
         }
-        return outputText
+
+        return {
+            inputFilePath: filePath,
+            outputCode: outputText
+        }
     }
 
     private getLanguageService(
@@ -236,6 +277,7 @@ export class NodeTypeScriptService {
 
         // Force no declarations as they are not used. We lose declaration-specific validations, but gain better speed.
         options.declaration = false
+        options.declarationMap = false
 
         // override source maps configuration
         options.sourceMap = this.options.sourceMap
