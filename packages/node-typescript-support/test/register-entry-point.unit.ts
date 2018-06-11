@@ -1,19 +1,18 @@
 import { spawnSync } from 'child_process'
 import { expect } from 'chai'
-import { join } from 'path'
+import { join, dirname } from 'path'
 import { platform } from 'os'
 
-const registerPath = join(__dirname, '..', '..', 'register.js')
+const fixturesDirectory = dirname(require.resolve('test-fixtures/package.json'))
+const registerPath = join(__dirname, '..', 'register.js')
 
 describe('using node -r node-typescript-support/register [file]', () => {
     const runWithRequireHook = (tsFilePath: string) =>
         spawnSync('node', ['-r', registerPath, tsFilePath]).output.join('\n')
 
     describe('with tsconfig.json', () => {
-        const withTsConfigProject = join(__dirname, '..', 'test-cases', 'with-tsconfig')
-
         it('throws on syntactic errors', () => {
-            const fileWithSyntaxError = join(withTsConfigProject, 'src', 'file-with-syntax-error.ts')
+            const fileWithSyntaxError = join(fixturesDirectory, 'errors', 'file-with-syntax-error.ts')
             const output = runWithRequireHook(fileWithSyntaxError)
 
             expect(output).to.include(`Syntactic Errors in ${fileWithSyntaxError}`)
@@ -21,7 +20,7 @@ describe('using node -r node-typescript-support/register [file]', () => {
         })
 
         it('throws semantic errors', () => {
-            const fileWithTypeError = join(withTsConfigProject, 'src', 'file-with-type-error.ts')
+            const fileWithTypeError = join(fixturesDirectory, 'errors', 'file-with-type-error.ts')
             const output = runWithRequireHook(fileWithTypeError)
 
             expect(output).to.include(`Semantic Errors in ${fileWithTypeError}`)
@@ -29,19 +28,19 @@ describe('using node -r node-typescript-support/register [file]', () => {
         })
 
         it('maps stack traces using source maps', () => {
-            const fileThatThrows = join(withTsConfigProject, 'src', 'throwing.ts')
+            const fileThatThrows = join(fixturesDirectory, 'source-maps', 'with-tsconfig', 'throwing.ts')
             const output = runWithRequireHook(fileThatThrows)
 
             expect(output).to.include(`at runMe (${fileThatThrows}:11:15)`)
         })
 
         it('isolates two folders with different configs', () => {
-            const typeIsolationFile = join(withTsConfigProject, 'test', 'type-isolation.ts')
-            const errorFile = join(withTsConfigProject, 'src', 'type-isolation.ts')
+            const errorFile = join(fixturesDirectory, 'type-isolation', 'with-tsconfig-a', 'should-error.ts')
+            const workingFile = join(fixturesDirectory, 'type-isolation', 'with-tsconfig-b', 'passes-type-check.ts')
 
-            const output = runWithRequireHook(typeIsolationFile)
+            const output = runWithRequireHook(workingFile)
 
-            expect(output).to.not.include(`Semantic Errors in ${typeIsolationFile}`)
+            expect(output).to.not.include(`Semantic Errors in ${workingFile}`)
             expect(output).to.include(`Semantic Errors in ${errorFile}`)
             expect(output).to.include(`Cannot find name 'describe'`)
         })
@@ -49,20 +48,19 @@ describe('using node -r node-typescript-support/register [file]', () => {
     })
 
     describe('no tsconfig.json', () => {
-        const noTsConfigProject = join(__dirname, '..', 'test-cases', 'no-tsconfig')
-
         it('maps stack traces using source maps', () => {
-            const fileThatThrows = join(noTsConfigProject, 'throwing.ts')
+            const fileThatThrows = join(fixturesDirectory, 'source-maps', 'throwing-without-tsconfig.ts')
             const output = runWithRequireHook(fileThatThrows)
 
             expect(output).to.include(`at runMe (${fileThatThrows}:9:11)`)
         })
 
         it('allows using imports', () => {
-            const fileThatThrows = join(noTsConfigProject, 'imports.ts')
-            const output = runWithRequireHook(fileThatThrows)
+            const fileWithImports = join(fixturesDirectory, 'no-tsconfig', 'imports.ts')
+            const output = runWithRequireHook(fileWithImports)
 
             expect(output).to.include(`Current platform is: ${platform()}`)
         })
     })
+
 })

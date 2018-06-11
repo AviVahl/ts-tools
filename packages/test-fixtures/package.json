@@ -1,0 +1,7 @@
+{
+  "name": "test-fixtures",
+  "version": "1.0.0",
+  "description": "Test fixtures for the various supported use cases.",
+  "license": "MIT",
+  "private": true
+}
