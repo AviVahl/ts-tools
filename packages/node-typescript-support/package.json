@@ -1,0 +1,31 @@
+{
+  "name": "node-typescript-support",
+  "version": "0.3.0",
+  "description": "TypeScript support for Node.js.",
+  "main": "./cjs/index.js",
+  "types": "./cjs/index.d.ts",
+  "scripts": {
+    "clean": "rimraf ./cjs",
+    "prebuild": "yarn clean",
+    "build": "tsc -p src",
+    "lint": "tslint -p src && tslint -p test/units",
+    "pretest": "yarn build && yarn lint",
+    "test": "mocha \"./test/**/*.unit.ts?(x)\" --watch-extensions ts,tsx -r ./register.js --timeout 10000",
+    "prepack": "yarn build"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "source-map-support": "^0.5.6"
+  },
+  "peerDependencies": {
+    "typescript": ">=2.8.0"
+  },
+  "files": [
+    "cjs",
+    "src",
+    "register.js"
+  ],
+  "repository": "git@github.com:AviVahl/node-typescript-support.git",
+  "author": "Avi Vahl <avi.vahl@wix.com>",
+  "license": "MIT"
+}

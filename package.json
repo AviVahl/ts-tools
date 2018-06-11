@@ -1,24 +1,14 @@
 {
   "name": "node-typescript-support",
-  "version": "0.3.0",
   "description": "TypeScript support for Node.js.",
-  "main": "./cjs/index.js",
-  "types": "./cjs/index.d.ts",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "clean": "rimraf ./cjs",
-    "prebuild": "yarn clean",
-    "build": "tsc -p src",
-    "lint": "tslint -p src && tslint -p test/units",
-    "pretest": "yarn build && yarn lint",
-    "test": "mocha \"./test/**/*.unit.ts?(x)\" --watch-extensions ts,tsx -r ./register.js --timeout 10000",
-    "prepack": "yarn build"
-  },
-  "dependencies": {
-    "chalk": "^2.4.1",
-    "source-map-support": "^0.5.6"
-  },
-  "peerDependencies": {
-    "typescript": ">=2.8.0"
+    "clean": "lerna run clean --stream",
+    "build": "lerna run build --stream",
+    "lint": "lerna run lint --stream",
+    "test": "lerna run test --stream -- --colors"
   },
   "devDependencies": {
     "@types/chai": "^4.1.3",
@@ -26,17 +16,13 @@
     "@types/node": "8",
     "@types/source-map-support": "^0.4.1",
     "chai": "^4.1.2",
+    "lerna": "^3.0.0-beta.21",
     "mocha": "^5.2.0",
     "rimraf": "^2.6.2",
     "tslint": "^5.10.0",
     "typescript": "~2.9.1"
   },
-  "files": [
-    "cjs",
-    "src",
-    "register.js"
-  ],
-  "repository": "git@github.com:AviVahl/node-typescript-support.git",
   "author": "Avi Vahl <avi.vahl@wix.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }
