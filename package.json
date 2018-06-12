@@ -1,6 +1,6 @@
 {
   "name": "node-typescript-support",
-  "description": "TypeScript support for Node.js.",
+  "description": "TypeScript Tools for Node.js",
   "workspaces": [
     "packages/*"
   ],

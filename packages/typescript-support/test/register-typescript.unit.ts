@@ -4,11 +4,10 @@ import { join, dirname } from 'path'
 import { platform } from 'os'
 
 const fixturesDirectory = dirname(require.resolve('test-fixtures/package.json'))
-const registerPath = join(__dirname, '..', 'register.js')
 
-describe('using node -r node-typescript-support/register [file]', () => {
+describe('using node -r typescript-support [file]', () => {
     const runWithRequireHook = (tsFilePath: string) =>
-        spawnSync('node', ['-r', registerPath, tsFilePath]).output.join('\n')
+        spawnSync('node', ['-r', 'typescript-support', tsFilePath]).output.join('\n')
 
     describe('with tsconfig.json', () => {
         it('throws on syntactic errors', () => {

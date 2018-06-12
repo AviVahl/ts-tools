@@ -1,7 +1,7 @@
 import * as ts from 'typescript'
 import * as sourceMapSupport from 'source-map-support'
 import chalk from 'chalk'
-import { NodeTypeScriptService } from './node-ts-service'
+import { NodeTypeScriptService } from 'node-typescript-service'
 
 // // Used for printing transpilation errors
 const { red } = chalk
