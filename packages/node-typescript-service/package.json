@@ -10,7 +10,7 @@
     "build": "tsc -p src",
     "lint": "tslint -p src && tslint -p test",
     "pretest": "yarn build && yarn lint",
-    "test": "mocha \"./test/**/*.unit.ts\" --watch-extensions ts -r typescript-support --timeout 10000",
+    "test": "#",
     "prepack": "yarn build"
   },
   "peerDependencies": {
