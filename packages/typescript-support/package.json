@@ -1,7 +1,7 @@
 {
   "name": "typescript-support",
   "description": "TypeScript support for Node.js.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "chalk": "^2.4.1",
-    "node-typescript-service": "^0.3.0",
+    "node-typescript-service": "^0.4.0",
     "source-map-support": "^0.5.6"
   },
   "peerDependencies": {
