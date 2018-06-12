@@ -1,6 +1,5 @@
 import * as ts from 'typescript'
 import { dirname, normalize } from 'path'
-import { TranspilationError, TranspilationErrorType } from './errors'
 
 /**
  * Options for Node TypeScript Extension.
@@ -17,68 +16,55 @@ export interface INodeTypeScriptServiceOptions {
     tsconfigFileName?: string,
 
     /**
-     * Enable source maps during compilation and save them to memory cache.
-     * this option overrides existing source maps configuration in tsconfigs
+     * Compiler options to use when transpiling files using tsconfig.
+     * Overrides options defined in `tsconfig.json` files.
      *
-     * @default true
+     * @default {}
      */
-    sourceMap?: boolean
-
-    /**
-     * Preloaded configuration absolute file paths.
-     *
-     * When initializing, the extension will start a language service
-     * per each configuration file.
-     * This can save time of looking up tsconfig per file,
-     * as it will reuse any existing language service already including the file
-     *
-     * @default []
-     */
-    preloaded?: string[]
+    overrideOptions?: ts.CompilerOptions
 
     /**
      * Default compiler options to use when no tsconfig is found.
+     *
+     * @default {}
      */
-    defaultCompilerOptions?: ts.CompilerOptions
+    noConfigOptions?: ts.CompilerOptions
+
+    /**
+     * Transformers to apply during transpilation
+     */
+    customTransformers?: ts.CustomTransformers
 }
 
-export const defaultOptions: Required<INodeTypeScriptServiceOptions> = {
+const defaultOptions: Required<INodeTypeScriptServiceOptions> = {
     tsconfigFileName: 'tsconfig.json',
-    sourceMap: true,
-    preloaded: [],
-
-    // Node 8+ compatible default compiler options
-    // used when no tsconfig is found, or if found config does not include the file being compiled
-    defaultCompilerOptions: {
-        target: ts.ScriptTarget.ES2017,
-        module: ts.ModuleKind.CommonJS,
-        jsx: ts.JsxEmit.React, // opinionated
-        moduleResolution: ts.ModuleResolutionKind.NodeJs
-    }
+    overrideOptions: {},
+    noConfigOptions: {},
+    customTransformers: {}
 }
 
 export interface ITranspilationOutput {
-    /** Absolute file path to the input .ts(x) file */
-    inputFilePath: string
+    /** Absolute file path to the input typescript file */
+    filePath: string
 
-    /** JavaScript transpilation out */
-    outputCode: string
+    /** transpiled JavaScript code */
+    outputText: string
 
-    /** Defined if an Error occured during transpilation */
-    error?: TranspilationError
+    /** optional, separate source-maps (stringified JSON) */
+    sourceMapText?: string
+
+    /** Transpilation process diagnostics  */
+    diagnostics?: ts.Diagnostic[]
 }
 
 export class NodeTypeScriptService {
     // resolved options used by the service
     public options: Required<INodeTypeScriptServiceOptions>
 
-    // a map holding `file path` to its `matching source maps` (stringified JSON)
-    public sourceMaps = new Map<string, string>()
-
     // a map holding `tsconfig path` to a `language service` instance
     public runningServices = new Map<string, ts.LanguageService>()
 
-    // we might create more than a single language service per extension, so we share documents between them
+    // we might create more than a single language service per service, so we share documents between them
     private sharedDocumentRegistry = ts.createDocumentRegistry(
         ts.sys.useCaseSensitiveFileNames,
         ts.sys.getCurrentDirectory()
@@ -87,28 +73,85 @@ export class NodeTypeScriptService {
     // cache of `directory path` to `tsconfig lookup result`, to save disk operations
     private directoryToTsConfig = new Map<string, string | undefined>()
 
-    // used for formatting diagnostics
-    private defaultCompilerHost: ts.CompilerHost
-
     constructor(options?: INodeTypeScriptServiceOptions) {
         this.options = { ...defaultOptions, ...options }
-
-        for (const preloadedTsConfigPath of this.options.preloaded) {
-            this.createLanguageService(preloadedTsConfigPath)
-        }
-        // used for formatting diagnostics
-        this.defaultCompilerHost = ts.createCompilerHost(this.options.defaultCompilerOptions)
     }
 
     /**
-     * Transpile a file
-     * @param filePath file path to transpile
+     * Load a `tsconfig.json` file by providing a path to it.
+     * A language service will be registered for th
+     * @param configFilePath absolute path to the configuration file (usually `tsconfig.json`)
      */
-    public transpile(filePath: string): ITranspilationOutput {
-        const languageService = this.getLanguageService(filePath)
-        return languageService ?
-            this.transpileUsingLanguageService(filePath, languageService) :
-            this.transpileUsingDefaultOptions(filePath)
+    public loadConfigFile(
+        configFilePath: string
+    ): {
+            diagnostics: ts.Diagnostic[],
+            fileNames: string[],
+            options: ts.CompilerOptions,
+            languageService: ts.LanguageService
+        } {
+        const jsonSourceFile = ts.readJsonConfigFile(configFilePath, ts.sys.readFile)
+        const configDirectoryPath = dirname(configFilePath)
+        const { fileNames: originalFileNames, options, errors: diagnostics } =
+            ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, ts.sys, configDirectoryPath)
+
+        const fileNames = originalFileNames.map(normalize)
+
+        // create the host
+        const languageServiceHost = this.createLanguageServiceHost(fileNames, {
+            ...options,
+            ...this.options.overrideOptions
+        })
+
+        // create the language service using the host
+        const languageService = ts.createLanguageService(languageServiceHost, this.sharedDocumentRegistry)
+
+        // register it in our running services
+        this.runningServices.set(configFilePath, languageService)
+
+        return {
+            diagnostics,
+            fileNames,
+            options,
+            languageService
+        }
+    }
+
+    /**
+     * Transpile a TypeScript file on the native file system
+     *
+     * @param filePath absolute path of the source file to transpile
+     */
+    public transpileFile(filePath: string): ITranspilationOutput {
+        for (const existingLanguageService of this.runningServices.values()) {
+            if (existingLanguageService.getProgram().getRootFileNames().includes(filePath)) {
+                return this.transpileUsingLanguageService(filePath, existingLanguageService)
+            }
+        }
+
+        const fileDirectoryPath = dirname(filePath)
+        const tsConfigPath = this.getTsConfigPath(fileDirectoryPath)
+
+        if (!tsConfigPath) {
+            return this.transpileUsingDefaultOptions(filePath)
+        }
+
+        const { fileNames, diagnostics, languageService } = this.loadConfigFile(tsConfigPath)
+
+        if (diagnostics.length) {
+            return {
+                diagnostics,
+                filePath,
+                outputText: ''
+            }
+        }
+
+        // verify the new service includes our file
+        if (fileNames.includes(filePath)) {
+            return this.transpileUsingLanguageService(filePath, languageService)
+        }
+
+        return this.transpileUsingDefaultOptions(filePath)
     }
 
     private transpileUsingLanguageService(
@@ -119,70 +162,52 @@ export class NodeTypeScriptService {
 
         if (emitSkipped) {
             return {
-                inputFilePath: filePath,
-                error: new TranspilationError(
-                    TranspilationErrorType.TRANSPILATION,
-                    filePath,
-                    `Emit was skipped`
-                ),
-                outputCode: ''
+                filePath,
+                diagnostics: [
+                    this.createErrorDiagnostic('Emit was skipped')
+                ],
+                outputText: ''
             }
         }
 
         const jsOutputFile = outputFiles.filter(outputFile => outputFile.name.endsWith('.js')).shift()
-        const sourceMapOutputFile = outputFiles.filter(outputFile => outputFile.name.endsWith('.js.map')).shift()
 
         if (!jsOutputFile) {
             return {
-                inputFilePath: filePath,
-                error: new TranspilationError(
-                    TranspilationErrorType.TRANSPILATION,
-                    filePath,
-                    `No js output file was found`
-                ),
-                outputCode: ''
+                filePath,
+                diagnostics: [
+                    this.createErrorDiagnostic('No js output file was found')
+                ],
+                outputText: ''
             }
         }
-
+        const sourceMapOutputFile = outputFiles.filter(outputFile => outputFile.name.endsWith('.js.map')).shift()
+        const sourceMapText = sourceMapOutputFile && sourceMapOutputFile.text
         const syntacticDiagnostics = languageService.getSyntacticDiagnostics(filePath)
+
         if (syntacticDiagnostics.length) {
-            const formattedDiagnostics = ts.formatDiagnostics(syntacticDiagnostics, this.defaultCompilerHost)
             return {
-                error: new TranspilationError(
-                    TranspilationErrorType.SYNTACTIC,
-                    filePath,
-                    formattedDiagnostics,
-                    syntacticDiagnostics
-                ),
-                inputFilePath: filePath,
-                outputCode: jsOutputFile.text
+                diagnostics: syntacticDiagnostics,
+                filePath,
+                outputText: jsOutputFile.text,
+                sourceMapText
             }
         }
 
         const semanticDiagnostics = languageService.getSemanticDiagnostics(filePath)
         if (semanticDiagnostics.length) {
-            const formattedDiagnostics = ts.formatDiagnostics(semanticDiagnostics, this.defaultCompilerHost)
             return {
-                error: new TranspilationError(
-                    TranspilationErrorType.SEMANTIC,
-                    filePath,
-                    formattedDiagnostics,
-                    semanticDiagnostics
-                ),
-                inputFilePath: filePath,
-                outputCode: jsOutputFile.text
+                diagnostics: semanticDiagnostics,
+                filePath,
+                outputText: jsOutputFile.text,
+                sourceMapText
             }
         }
 
-        if (this.options.sourceMap && sourceMapOutputFile) {
-            this.sourceMaps.set(filePath, sourceMapOutputFile.text)
-        } else {
-            this.sourceMaps.delete(filePath)
-        }
-
         return {
-            inputFilePath: filePath,
-            outputCode: jsOutputFile.text
+            filePath,
+            outputText: jsOutputFile.text,
+            sourceMapText
         }
     }
 
@@ -191,65 +216,34 @@ export class NodeTypeScriptService {
     ): ITranspilationOutput {
         const tsCode = ts.sys.readFile(filePath)
         if (!tsCode) {
-            throw new Error(`Unable to read ${filePath}`)
+            return {
+                filePath,
+                diagnostics: [
+                    this.createErrorDiagnostic(`Unable to read ${filePath}`)
+                ],
+                outputText: ''
+            }
         }
+
         const { outputText, diagnostics, sourceMapText } = ts.transpileModule(tsCode, {
             fileName: filePath,
-            compilerOptions: { ...this.options.defaultCompilerOptions, sourceMap: this.options.sourceMap }
+            compilerOptions: this.options.noConfigOptions,
+            transformers: this.options.customTransformers
         })
 
-        if (diagnostics && diagnostics.length) {
-            const formattedDiagnostics = ts.formatDiagnostics(diagnostics, this.defaultCompilerHost)
-            return {
-                inputFilePath: filePath,
-                outputCode: outputText,
-                error: new TranspilationError(
-                    TranspilationErrorType.TRANSPILATION,
-                    filePath,
-                    formattedDiagnostics
-                )
-            }
-        }
-
-        if (this.options.sourceMap && sourceMapText) {
-            this.sourceMaps.set(filePath, sourceMapText)
-        } else {
-            this.sourceMaps.delete(filePath)
-        }
-
         return {
-            inputFilePath: filePath,
-            outputCode: outputText
+            filePath,
+            outputText,
+            sourceMapText,
+            diagnostics
         }
     }
 
-    private getLanguageService(
-        filePath: string
-    ): ts.LanguageService | null {
-        for (const existingLanguageService of this.runningServices.values()) {
-            if (existingLanguageService.getProgram().getRootFileNames().includes(filePath)) {
-                return existingLanguageService
-            }
-        }
-
-        const fileDirectoryPath = dirname(filePath)
-        const tsConfigPath = this.getTsConfigPath(fileDirectoryPath)
-
-        // couldn't find a tsconfig, or there is one that didn't include our file
-        if (!tsConfigPath || this.runningServices.has(tsConfigPath)) {
-            return null
-        }
-
-        const languageService = this.createLanguageService(tsConfigPath)
-
-        // verify the new service includes our file
-        if (languageService.getProgram().getRootFileNames().includes(filePath)) {
-            return languageService
-        } else {
-            return null
-        }
-    }
-
+    /**
+     * Find the closest `tsconfig.json` file to the provided baseDirectory
+     *
+     * @param baseDirectory the directory to start looking from
+     */
     private getTsConfigPath(
         baseDirectory: string
     ): string | undefined {
@@ -261,45 +255,10 @@ export class NodeTypeScriptService {
         return tsConfigPath
     }
 
-    private createLanguageService(tsConfigPath: string): ts.LanguageService {
-        const jsonSourceFile = ts.readJsonConfigFile(tsConfigPath, ts.sys.readFile)
-        const configDirectoryPath = dirname(tsConfigPath)
-        const { fileNames, options, errors } =
-            ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, ts.sys, configDirectoryPath)
-
-        if (errors.length) {
-            const compilerHost = ts.createCompilerHost(options)
-            throw new Error(`Errors while parsing ${tsConfigPath}\n${ts.formatDiagnostics(errors, compilerHost)}`)
-        }
-
-        // Force CommonJS, as we are in Node
-        options.module = ts.ModuleKind.CommonJS
-
-        // Force no declarations as they are not used. We lose declaration-specific validations, but gain better speed.
-        options.declaration = false
-        options.declarationMap = false
-
-        // override source maps configuration
-        options.sourceMap = this.options.sourceMap
-        options.inlineSourceMap = options.inlineSources = false
-
-        const languageServiceHost = this.createLanguageServiceHost(fileNames.map(normalize), options)
-        const languageService = ts.createLanguageService(languageServiceHost, this.sharedDocumentRegistry)
-
-        this.runningServices.set(tsConfigPath, languageService)
-        return languageService
-    }
-
     private createLanguageServiceHost(
         fileNames: string[],
         compilerOptions: ts.CompilerOptions
     ): ts.LanguageServiceHost {
-
-        const getScriptVersion = (filePath: string): string => {
-            const modifiedTime = ts.sys.getModifiedTime ? ts.sys.getModifiedTime(filePath) : null
-            return modifiedTime ? modifiedTime.getTime().toString() : `${Date.now()}`
-        }
-
         return {
             getCompilationSettings: () => compilerOptions,
             getNewLine: () => {
@@ -313,7 +272,9 @@ export class NodeTypeScriptService {
                 }
             },
             getScriptFileNames: () => fileNames,
-            getScriptVersion,
+            getScriptVersion: ts.sys.getModifiedTime ?
+                filePath => ts.sys.getModifiedTime!(filePath).getTime().toString() :
+                () => `${Date.now()}`,
             getScriptSnapshot: filePath => ts.ScriptSnapshot.fromString(ts.sys.readFile(filePath) || ''),
             getCurrentDirectory: ts.sys.getCurrentDirectory,
             getDefaultLibFileName: ts.getDefaultLibFilePath,
@@ -323,7 +284,19 @@ export class NodeTypeScriptService {
             fileExists: ts.sys.fileExists,
             directoryExists: ts.sys.directoryExists,
             getDirectories: ts.sys.getDirectories,
-            realpath: ts.sys.realpath
+            realpath: ts.sys.realpath,
+            getCustomTransformers: () => this.options.customTransformers
+        }
+    }
+
+    private createErrorDiagnostic(messageText: string) {
+        return {
+            messageText,
+            category: ts.DiagnosticCategory.Error,
+            code: ts.DiagnosticCategory.Error,
+            file: undefined,
+            start: 0,
+            length: undefined
         }
     }
 }

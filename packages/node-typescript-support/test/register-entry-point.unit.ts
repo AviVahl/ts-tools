@@ -15,7 +15,7 @@ describe('using node -r node-typescript-support/register [file]', () => {
             const fileWithSyntaxError = join(fixturesDirectory, 'errors', 'file-with-syntax-error.ts')
             const output = runWithRequireHook(fileWithSyntaxError)
 
-            expect(output).to.include(`Syntactic Errors in ${fileWithSyntaxError}`)
+            expect(output).to.include(`Transpilation Errors in ${fileWithSyntaxError}`)
             expect(output).to.include(`')' expected`)
         })
 
@@ -23,7 +23,7 @@ describe('using node -r node-typescript-support/register [file]', () => {
             const fileWithTypeError = join(fixturesDirectory, 'errors', 'file-with-type-error.ts')
             const output = runWithRequireHook(fileWithTypeError)
 
-            expect(output).to.include(`Semantic Errors in ${fileWithTypeError}`)
+            expect(output).to.include(`Transpilation Errors in ${fileWithTypeError}`)
             expect(output).to.include(`Type '123' is not assignable to type 'string'`)
         })
 
@@ -40,8 +40,8 @@ describe('using node -r node-typescript-support/register [file]', () => {
 
             const output = runWithRequireHook(workingFile)
 
-            expect(output).to.not.include(`Semantic Errors in ${workingFile}`)
-            expect(output).to.include(`Semantic Errors in ${errorFile}`)
+            expect(output).to.not.include(`Transpilation Errors in ${workingFile}`)
+            expect(output).to.include(`Transpilation Errors in ${errorFile}`)
             expect(output).to.include(`Cannot find name 'describe'`)
         })
 
