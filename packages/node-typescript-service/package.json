@@ -10,7 +10,7 @@
     "build": "tsc -p src",
     "lint": "tslint -p src && tslint -p test",
     "pretest": "yarn build && yarn lint",
-    "test": "#",
+    "test": "echo todo: service unit tests",
     "prepack": "yarn build"
   },
   "peerDependencies": {
