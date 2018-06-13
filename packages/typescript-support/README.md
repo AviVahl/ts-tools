@@ -18,14 +18,31 @@ Install the library as a dev dependency in an existing TypeScript project:
 yarn add typescript-support --dev
 ```
 
-Then, use it in Node.js as follows:
+Usage with [Node.js](https://nodejs.org/en/):
 ```
 node -r typescript-support ./my-script.ts
 ```
 
-Or, in [Mocha](https://github.com/mochajs/mocha):
+Usage with [Mocha](https://github.com/mochajs/mocha):
 ```
 mocha -r typescript-support "./test/**/*.unit.ts?(x)" --watch-extensions ts,tsx
+```
+
+Usage with [Visual Studio Code](https://github.com/Microsoft/vscode):
+```jsonc
+// in .vscode/launch.json, under "configurations"
+{
+    "type": "node",
+    "request": "launch",
+    "name": "Launch Program",
+    "runtimeArgs": [
+        "-r",
+        "typescript-support"
+    ],
+    "args": [
+        "${workspaceFolder}/src/my-script.ts"
+    ]
+}
 ```
 
 ## Why?
