@@ -1,7 +1,7 @@
 {
   "name": "typescript-support",
   "description": "TypeScript support for Node.js.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
   "scripts": {
