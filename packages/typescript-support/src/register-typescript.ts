@@ -3,10 +3,12 @@ import * as sourceMapSupport from 'source-map-support'
 import chalk from 'chalk'
 import { NodeTypeScriptService } from 'node-typescript-service'
 
+const inlineMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
+
 // // Used for printing transpilation errors
 const { red } = chalk
 
-// a map holding `file path` to its `matching source maps` (stringified JSON)
+// a map holding `file path` to its `matching source maps` (base64-encoded, stringified JSON)
 const sourceMaps = new Map<string, string>()
 
 // Node 8+ compatible compiler options
@@ -14,7 +16,7 @@ const nodeCompilerOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES2017,
     module: ts.ModuleKind.CommonJS,
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
-    sourceMap: true,
+    inlineSourceMap: true,
     jsx: ts.JsxEmit.React, // opinionated, but we want built-in support for .tsx without tsconfig.json
 }
 
@@ -27,8 +29,8 @@ const nodeTsService = new NodeTypeScriptService({
         module: ts.ModuleKind.CommonJS,
         moduleResolution: ts.ModuleResolutionKind.NodeJs,
 
-        sourceMap: true,
-        inlineSourceMap: false,
+        sourceMap: false,
+        inlineSourceMap: true,
         inlineSources: false,
         sourceRoot: undefined,
         mapRoot: undefined,
@@ -46,14 +48,14 @@ sourceMapSupport.install({
     environment: 'node',
     retrieveSourceMap: (filePath) => {
         const fileSourceMap = sourceMaps.get(filePath)
-        return fileSourceMap ? { map: fileSourceMap, url: filePath } : null
+        return fileSourceMap ? { map: Buffer.from(fileSourceMap, 'base64').toString(), url: filePath } : null
     }
 })
 
 // our require extension transpiles the file to js using the service
 // and then runs the resulting js like any regular js
 function requireExtension(nodeModule: NodeModule, filePath: string): void {
-    const { diagnostics, outputText, sourceMapText } = nodeTsService.transpileFile(filePath)
+    const { diagnostics, outputText } = nodeTsService.transpileFile(filePath)
 
     if (diagnostics && diagnostics.length) {
         throw new Error(
@@ -62,8 +64,12 @@ function requireExtension(nodeModule: NodeModule, filePath: string): void {
         )
     }
 
-    if (sourceMapText) {
-        sourceMaps.set(filePath, sourceMapText)
+    const inlineSourceMapIdx = outputText.lastIndexOf(inlineMapPrefix)
+    if (inlineSourceMapIdx !== -1) {
+        sourceMaps.set(
+            filePath,
+            outputText.slice(inlineSourceMapIdx + inlineMapPrefix.length).trimRight()
+        )
     } else {
         sourceMaps.delete(filePath)
     }
