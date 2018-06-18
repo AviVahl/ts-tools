@@ -1,6 +1,6 @@
 # TypeScript Tools for Node.js
 [![Build Status](https://travis-ci.com/AviVahl/typescript-tools.svg?branch=master)](https://travis-ci.com/AviVahl/typescript-tools)
-[![Build status](https://ci.appveyor.com/api/projects/status/eahbionw30e62vgu/branch/master?svg=true)](https://ci.appveyor.com/project/AviVahl/typescript-tools/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/b51n45ej72quqhk5/branch/master?svg=true)](https://ci.appveyor.com/project/AviVahl/typescript-tools/branch/master)
 
 Several packages to assist [TypeScript](https://www.typescriptlang.org/) developers working with [Node.js](https://nodejs.org/en/).
 
