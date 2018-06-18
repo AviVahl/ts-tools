@@ -21,5 +21,6 @@
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
-  "repository": "git@github.com:AviVahl/node-typescript-support.git"
+  "repository": "git@github.com:AviVahl/node-typescript-support.git",
+  "homepage": "https://github.com/AviVahl/node-typescript-support/tree/master/packages/node-typescript-service"
 }
