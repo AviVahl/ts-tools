@@ -1,12 +1,6 @@
 import * as ts from 'typescript'
 import { dirname, normalize } from 'path'
 
-/**
- * Options for Node TypeScript Extension.
- * Can be provided via constructor.
- *
- * @example new NodeTypeScriptExtension({sourceMaps: false})
- */
 export interface INodeTypeScriptServiceOptions {
     /**
      * TypeScript configuration file name.
@@ -57,6 +51,14 @@ export interface ITranspilationOutput {
     diagnostics?: ts.Diagnostic[]
 }
 
+/**
+ * On-demand TypeScript tranpilation service
+ * Options can be provided during construction
+ *
+ * @example
+ * new NodeTypeScriptService()
+ * new NodeTypeScriptService({tsconfigFileName: 'tsconfig.test.json'})
+ */
 export class NodeTypeScriptService {
     // resolved options used by the service
     public options: Required<INodeTypeScriptServiceOptions>
