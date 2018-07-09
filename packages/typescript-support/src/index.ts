@@ -1,1 +1,1 @@
-import './register-typescript'
+import './register-throw'
