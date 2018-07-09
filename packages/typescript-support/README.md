@@ -45,6 +45,12 @@ Usage with [Visual Studio Code](https://github.com/Microsoft/vscode):
 }
 ```
 
+If throwing on type errors is too invasive to your development process,
+you can use an alternative entry point that calls `console.warn()` instead:
+```
+node -r typescript-support/warn ./my-script.ts
+```
+
 ## Why?
 
 I recently experimented with a neat project setup where I have one
