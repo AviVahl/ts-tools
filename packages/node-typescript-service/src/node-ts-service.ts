@@ -1,5 +1,6 @@
-import * as ts from 'typescript'
+import { statSync } from 'fs'
 import { dirname, normalize } from 'path'
+import * as ts from 'typescript'
 
 export interface INodeTypeScriptServiceOptions {
     /**
@@ -274,9 +275,13 @@ export class NodeTypeScriptService {
                 }
             },
             getScriptFileNames: () => fileNames,
-            getScriptVersion: ts.sys.getModifiedTime ?
-                filePath => ts.sys.getModifiedTime!(filePath).getTime().toString() :
-                () => `${Date.now()}`,
+            getScriptVersion: filePath => {
+                try {
+                    return statSync(filePath).mtime.toString()
+                } catch {
+                    return `${Date.now()}`
+                }
+            },
             getScriptSnapshot: filePath => ts.ScriptSnapshot.fromString(ts.sys.readFile(filePath) || ''),
             getCurrentDirectory: ts.sys.getCurrentDirectory,
             getDefaultLibFileName: ts.getDefaultLibFilePath,
