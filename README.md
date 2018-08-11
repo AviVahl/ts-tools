@@ -10,6 +10,8 @@ Several packages to assist [TypeScript](https://www.typescriptlang.org/) develop
 
 - **[node-typescript-service](https://github.com/AviVahl/typescript-tools/tree/master/packages/node-typescript-service)** - A service for on-demand transpilation of TypeScript source files.
 
+- **[robotrix](https://github.com/AviVahl/typescript-tools/tree/master/packages/robotrix)** - Several useful TypeScript transpilation transformers.
+
 ## License
 
 MIT
