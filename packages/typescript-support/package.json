@@ -9,8 +9,7 @@
     "prebuild": "yarn clean",
     "build": "tsc -p src",
     "lint": "tslint -p src && tslint -p test",
-    "test": "mocha \"./test/**/*.unit.ts\" --watch-extensions ts -r typescript-support --timeout 10000",
-    "prepack": "yarn build"
+    "test": "mocha \"./test/**/*.unit.ts\" --watch-extensions ts -r typescript-support --timeout 10000"
   },
   "dependencies": {
     "node-typescript-service": "^0.4.3",

@@ -9,8 +9,7 @@
     "prebuild": "yarn clean",
     "build": "tsc -p src",
     "lint": "tslint -p src && tslint -p test",
-    "test": "echo todo: service unit tests",
-    "prepack": "yarn build"
+    "test": "echo todo: service unit tests"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"
