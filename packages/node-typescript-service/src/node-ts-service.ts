@@ -127,7 +127,8 @@ export class NodeTypeScriptService {
      */
     public transpileFile(filePath: string): ITranspilationOutput {
         for (const existingLanguageService of this.runningServices.values()) {
-            if (existingLanguageService.getProgram().getRootFileNames().includes(filePath)) {
+            const program = existingLanguageService.getProgram()
+            if (program && program.getRootFileNames().includes(filePath)) {
                 return this.transpileUsingLanguageService(filePath, existingLanguageService)
             }
         }
