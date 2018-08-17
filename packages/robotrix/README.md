@@ -27,7 +27,7 @@ const transpileOutput = transpileModule(code, { transformers: { before: [nodeEnv
 
 ### React Dev Transformer
 
-Adds adds meta-data which is used by React for development error messages.
+Adds meta-data which is used by `React` for development error messages.
 
 It adds the following attributes to all JSX elements:
 - `__self={this}`
