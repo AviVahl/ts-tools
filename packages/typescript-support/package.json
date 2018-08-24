@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "node-typescript-service": "^0.4.4",
-    "source-map-support": "^0.5.8"
+    "source-map-support": "^0.5.9"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"
