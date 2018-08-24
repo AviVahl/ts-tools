@@ -42,6 +42,19 @@ import { transpileModule } from 'typescript'
 const transpileOutput = transpileModule(code, { transformers: { before: [reactDevTransformer] } })
 ```
 
+### Dead Ifs Transformer
+
+Detects and removes dead `if` branches. Checks the expression of every `if` statement, and cancels out always falsy branches.
+
+It detects `true`, `false`, and basic string equality comparison (`==`, `===`, `!=`, `!==`).
+
+```ts
+import { deadIfsTransformer } from 'robotrix'
+import { transpileModule } from 'typescript'
+
+const transpileOutput = transpileModule(code, { transformers: { before: [deadIfsTransformer] } })
+```
+
 ## License
 
 MIT
