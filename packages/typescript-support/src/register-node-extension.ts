@@ -23,7 +23,7 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
     // a map holding `file path` to its `matching source maps` (base64-encoded, stringified JSON)
     const sourceMaps = new Map<string, string>()
 
-    // our service instance, to be used foby the require hook
+    // our service instance, to be used by the require hook
     const nodeTsService = new NodeTypeScriptService({
         noConfigOptions: nodeCompilerOptions,
         overrideOptions: {
