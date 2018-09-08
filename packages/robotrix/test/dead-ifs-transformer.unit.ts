@@ -5,7 +5,6 @@ import { deadIfsTransformer } from '../src'
 describe('DeadIfsTransformer', () => {
     const transformers: ts.CustomTransformers = { before: [deadIfsTransformer] }
     const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 }
-    const fileName = '/path/to/test-file.tsx'
 
     it('detects if (true) and cancels else branch', () => {
         const code = `
@@ -15,7 +14,7 @@ describe('DeadIfsTransformer', () => {
                 shouldBeRemoved
             }`
 
-        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
+        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
         expect(outputText).to.contain(`shouldBeKept`)
         expect(outputText).to.not.contain(`shouldBeRemoved`)
@@ -29,7 +28,7 @@ describe('DeadIfsTransformer', () => {
                 shouldBeKept
             }`
 
-        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
+        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
         expect(outputText).to.contain(`shouldBeKept`)
         expect(outputText).to.not.contain(`shouldBeRemoved`)
@@ -45,7 +44,7 @@ describe('DeadIfsTransformer', () => {
                 shouldAlsoBeRemoved
             }`
 
-        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
+        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
         expect(outputText).to.contain(`shouldBeKept`)
         expect(outputText).to.not.contain(`shouldBeRemoved`)
@@ -61,7 +60,7 @@ describe('DeadIfsTransformer', () => {
                     shouldBeRemoved
                 }`
 
-            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
+            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
             expect(outputText).to.contain(`shouldBeKept`)
             expect(outputText).to.not.contain(`shouldBeRemoved`)
@@ -75,7 +74,7 @@ describe('DeadIfsTransformer', () => {
                     shouldBeKept
                 }`
 
-            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
+            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
             expect(outputText).to.contain(`shouldBeKept`)
             expect(outputText).to.not.contain(`shouldBeRemoved`)
@@ -89,7 +88,7 @@ describe('DeadIfsTransformer', () => {
                     shouldBeKept
                 }`
 
-            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
+            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
             expect(outputText).to.contain(`shouldBeKept`)
             expect(outputText).to.not.contain(`shouldBeRemoved`)
@@ -103,7 +102,7 @@ describe('DeadIfsTransformer', () => {
                     shouldBeRemoved
                 }`
 
-            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
+            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
             expect(outputText).to.contain(`shouldBeKept`)
             expect(outputText).to.not.contain(`shouldBeRemoved`)
