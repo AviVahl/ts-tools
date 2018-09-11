@@ -1,6 +1,6 @@
 import * as ts from 'typescript'
-import { expect } from 'chai'
 import { deadIfsTransformer } from '../src'
+import { validateCode } from './code-validation'
 
 describe('DeadIfsTransformer', () => {
     const transformers: ts.CustomTransformers = { before: [deadIfsTransformer] }
@@ -9,29 +9,36 @@ describe('DeadIfsTransformer', () => {
     it('detects if (true) and cancels else branch', () => {
         const code = `
             if (true) {
-                shouldBeKept
+                shouldBeKept;
             } else {
-                shouldBeRemoved
+                shouldBeRemoved;
             }`
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-        expect(outputText).to.contain(`shouldBeKept`)
-        expect(outputText).to.not.contain(`shouldBeRemoved`)
+        validateCode(outputText, `
+            if (true) {
+                shouldBeKept;
+            }
+        `)
     })
 
     it('detects if (false) and cancels then branch', () => {
         const code = `
             if (false) {
-                shouldBeRemoved
+                shouldBeRemoved;
             } else {
-                shouldBeKept
+                shouldBeKept;
             }`
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-        expect(outputText).to.contain(`shouldBeKept`)
-        expect(outputText).to.not.contain(`shouldBeRemoved`)
+        validateCode(outputText, `
+            if (false) { }
+            else {
+                shouldBeKept;
+            }
+        `)
     })
 
     it('checks `else if` as well', () => {
@@ -39,45 +46,55 @@ describe('DeadIfsTransformer', () => {
             if (false) {
                 shouldBeRemoved
             } else if (true) {
-                shouldBeKept
+                shouldBeKept;
             } else {
-                shouldAlsoBeRemoved
+                shouldAlsoBeRemoved;
             }`
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-        expect(outputText).to.contain(`shouldBeKept`)
-        expect(outputText).to.not.contain(`shouldBeRemoved`)
-        expect(outputText).to.not.contain(`shouldAlsoBeRemoved`)
+        validateCode(outputText, `
+            if (false) { }
+            else if (true) {
+                shouldBeKept;
+            }
+        `)
     })
 
     describe('string equality checks', () => {
         it('handles === when strings are equal', () => {
             const code = `
                 if ("same" === "same") {
-                    shouldBeKept
+                    shouldBeKept;
                 } else {
-                    shouldBeRemoved
+                    shouldBeRemoved;
                 }`
 
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-            expect(outputText).to.contain(`shouldBeKept`)
-            expect(outputText).to.not.contain(`shouldBeRemoved`)
+            validateCode(outputText, `
+                if (true) {
+                    shouldBeKept;
+                }
+            `)
         })
 
         it('handles === when actual strings are not equal', () => {
             const code = `
                 if ("text" === "another") {
-                    shouldBeRemoved
+                    shouldBeRemoved;
                 } else {
-                    shouldBeKept
+                    shouldBeKept;
                 }`
 
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-            expect(outputText).to.contain(`shouldBeKept`)
-            expect(outputText).to.not.contain(`shouldBeRemoved`)
+            validateCode(outputText, `
+                if (false) { }
+                else {
+                    shouldBeKept;
+                }
+            `)
         })
 
         it('handles !== when actual strings are equal', () => {
@@ -90,8 +107,12 @@ describe('DeadIfsTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-            expect(outputText).to.contain(`shouldBeKept`)
-            expect(outputText).to.not.contain(`shouldBeRemoved`)
+            validateCode(outputText, `
+                if (false) { }
+                else {
+                    shouldBeKept;
+                }
+            `)
         })
 
         it('handles !== when actual strings are not equal', () => {
@@ -104,8 +125,11 @@ describe('DeadIfsTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-            expect(outputText).to.contain(`shouldBeKept`)
-            expect(outputText).to.not.contain(`shouldBeRemoved`)
+            validateCode(outputText, `
+                if (true) {
+                    shouldBeKept;
+                }
+            `)
         })
     })
 })

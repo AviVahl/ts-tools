@@ -1,6 +1,6 @@
 import { transpileModule } from 'typescript'
-import { expect } from 'chai'
 import { createNodeEnvTransformer } from '../src'
+import { validateCode } from './code-validation'
 
 describe('NodeEnvTransformer', () => {
     it('replaces process.env.[PARAM] using provided dictionary', () => {
@@ -9,7 +9,9 @@ describe('NodeEnvTransformer', () => {
 
         const { outputText } = transpileModule(code, { transformers: { before: [transformer] } })
 
-        expect(outputText.trim()).to.equal(`"TEST" || "SOMEVALUE";`)
+        validateCode(outputText, `
+            "TEST" || "SOMEVALUE";
+        `)
     })
 
     it('replaces keys pointing to empty strings', () => {
@@ -17,7 +19,9 @@ describe('NodeEnvTransformer', () => {
         const code = `process.env.EMPTY;`
         const { outputText } = transpileModule(code, { transformers: { before: [transformer] } })
 
-        expect(outputText.trim()).to.equal(`"";`)
+        validateCode(outputText, `
+            "";
+        `)
     })
 
     it('does not replace unmapped keys', () => {
@@ -25,7 +29,9 @@ describe('NodeEnvTransformer', () => {
         const code = `process.env.NOT_MAPPED;`
         const { outputText } = transpileModule(code, { transformers: { before: [transformer] } })
 
-        expect(outputText.trim()).to.equal(`process.env.NOT_MAPPED;`)
+        validateCode(outputText, `
+            ${code}
+        `)
     })
 
     it('does not replace keys pointing to undefined', () => {
@@ -33,7 +39,9 @@ describe('NodeEnvTransformer', () => {
         const code = `process.env.NOOP;`
         const { outputText } = transpileModule(code, { transformers: { before: [transformer] } })
 
-        expect(outputText.trim()).to.equal(`process.env.NOOP;`)
+        validateCode(outputText, `
+            ${code}
+        `)
     })
 
     it('does not replace inherited Object attributes', () => {
@@ -41,6 +49,8 @@ describe('NodeEnvTransformer', () => {
         const code = `process.env.toString;`
         const { outputText } = transpileModule(code, { transformers: { before: [transformer] } })
 
-        expect(outputText.trim()).to.equal(`process.env.toString;`)
+        validateCode(outputText, `
+            ${code}
+        `)
     })
 })

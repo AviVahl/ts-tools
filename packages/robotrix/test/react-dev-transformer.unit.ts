@@ -1,54 +1,64 @@
 import * as ts from 'typescript'
-import { expect } from 'chai'
 import { reactDevTransformer } from '../src'
+import { validateCode } from './code-validation'
 
 describe('ReactDevTransformer', () => {
     const transformers: ts.CustomTransformers = { before: [reactDevTransformer] }
     const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 }
     const fileName = '/path/to/test-file.tsx'
+    const jsxFileNameDef = `const __jsxFileName = "${fileName}";`
 
     it('adds __self and __source attributes to jsx elements', () => {
         const code = [
-            `<div>`,
+            `(<div>`,
             `  <span />`,
-            `</div>`
+            `</div>);`
         ].join(ts.sys.newLine)
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
 
-        expect(outputText).to.contain(`const __jsxFileName = "${fileName}";`)
-        expect(outputText).to.contain('<div __self={this} __source={{ fileName: __jsxFileName, lineNumber: 1 }}>')
-        expect(outputText).to.contain('<span __self={this} __source={{ fileName: __jsxFileName, lineNumber: 2 }}/>')
+        validateCode(outputText, `
+            ${jsxFileNameDef}
+            (<div __self={this} __source={{ fileName: __jsxFileName, lineNumber: 1 }}>
+              <span __self={this} __source={{ fileName: __jsxFileName, lineNumber: 2 }}/>
+            </div>);
+        `)
     })
 
     it('adds attributes to jsx elements inside jsx attributes', () => {
-        const code = `<div icon={<p />} />`
+        const code = [
+            `(<div`,
+            `   icon={<p />}`,
+            `/>);`
+        ].join(ts.sys.newLine)
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
 
-        expect(outputText).to.contain(`const __jsxFileName = "${fileName}";`)
-        expect(outputText).to.contain('<p __self={this} __source={{ fileName: __jsxFileName, lineNumber: 1 }}/>')
+        validateCode(outputText, `
+            ${jsxFileNameDef}
+            (<div ` + `icon={<p __self={this} __source={{ fileName: __jsxFileName, lineNumber: 2 }}/>} ` +
+            `__self={this} __source={{ fileName: __jsxFileName, lineNumber: 1 }}/>);
+        `)
     })
 
     it('does not override existing __source attribute set by user', () => {
-        const code = `<div __source="custom value" />`
+        const code = `(<div __source="custom value" />);`
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
 
-        expect(outputText).to.not.contain(`const __jsxFileName = "${fileName}";`)
-        expect(outputText).to.contain('__self={this}')
-        expect(outputText).to.contain('__source="custom value"')
-        expect(outputText).to.not.contain('__source={{ fileName: __jsxFileName, lineNumber: 1 }}')
+        validateCode(outputText, `
+            (<div __source="custom value" __self={this}/>);
+        `)
     })
 
     it('does not override existing __self attribute set by user', () => {
-        const code = `<div __self="custom value" />`
+        const code = `(<div __self="custom value" />);`
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName })
 
-        expect(outputText).to.contain(`const __jsxFileName = "${fileName}";`)
-        expect(outputText).to.not.contain('__self={this}')
-        expect(outputText).to.contain('__self="custom value"')
-        expect(outputText).to.contain('__source={{ fileName: __jsxFileName, lineNumber: 1 }}')
+        validateCode(outputText, `
+            ${jsxFileNameDef}
+            (<div __self="custom value" __source={{ fileName: __jsxFileName, lineNumber: 1 }}/>);
+        `)
     })
 })
