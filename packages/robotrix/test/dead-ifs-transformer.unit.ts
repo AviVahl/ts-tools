@@ -1,6 +1,6 @@
+import { expect } from 'chai'
 import * as ts from 'typescript'
 import { deadIfsTransformer } from '../src'
-import { validateCode } from './code-validation'
 
 describe('DeadIfsTransformer', () => {
     const transformers: ts.CustomTransformers = { before: [deadIfsTransformer] }
@@ -9,16 +9,17 @@ describe('DeadIfsTransformer', () => {
     it('detects if (true) and cancels else branch', () => {
         const code = `
             if (true) {
-                shouldBeKept;
+                shouldBeKept
             } else {
-                shouldBeRemoved;
-            }`
+                shouldBeRemoved
+            }
+        `
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-        validateCode(outputText, `
+        expect(outputText).to.matchCode(`
             if (true) {
-                shouldBeKept;
+                shouldBeKept
             }
         `)
     })
@@ -26,17 +27,17 @@ describe('DeadIfsTransformer', () => {
     it('detects if (false) and cancels then branch', () => {
         const code = `
             if (false) {
-                shouldBeRemoved;
+                shouldBeRemoved
             } else {
-                shouldBeKept;
+                shouldBeKept
             }`
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-        validateCode(outputText, `
+        expect(outputText).to.matchCode(`
             if (false) { }
             else {
-                shouldBeKept;
+                shouldBeKept
             }
         `)
     })
@@ -46,17 +47,17 @@ describe('DeadIfsTransformer', () => {
             if (false) {
                 shouldBeRemoved
             } else if (true) {
-                shouldBeKept;
+                shouldBeKept
             } else {
-                shouldAlsoBeRemoved;
+                shouldAlsoBeRemoved
             }`
 
         const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-        validateCode(outputText, `
+        expect(outputText).to.matchCode(`
             if (false) { }
             else if (true) {
-                shouldBeKept;
+                shouldBeKept
             }
         `)
     })
@@ -64,42 +65,42 @@ describe('DeadIfsTransformer', () => {
     describe('string equality checks', () => {
         it('handles === when strings are equal', () => {
             const code = `
-                if ("same" === "same") {
-                    shouldBeKept;
+                if ('same' === 'same') {
+                    shouldBeKept
                 } else {
-                    shouldBeRemoved;
+                    shouldBeRemoved
                 }`
 
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-            validateCode(outputText, `
+            expect(outputText).to.matchCode(`
                 if (true) {
-                    shouldBeKept;
+                    shouldBeKept
                 }
             `)
         })
 
         it('handles === when actual strings are not equal', () => {
             const code = `
-                if ("text" === "another") {
-                    shouldBeRemoved;
+                if ('text' === 'another') {
+                    shouldBeRemoved
                 } else {
-                    shouldBeKept;
+                    shouldBeKept
                 }`
 
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-            validateCode(outputText, `
+            expect(outputText).to.matchCode(`
                 if (false) { }
                 else {
-                    shouldBeKept;
+                    shouldBeKept
                 }
             `)
         })
 
         it('handles !== when actual strings are equal', () => {
             const code = `
-                if ("same" !== "same") {
+                if ('same' !== 'same') {
                     shouldBeRemoved
                 } else {
                     shouldBeKept
@@ -107,27 +108,28 @@ describe('DeadIfsTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-            validateCode(outputText, `
+            expect(outputText).to.matchCode(`
                 if (false) { }
                 else {
-                    shouldBeKept;
+                    shouldBeKept
                 }
             `)
         })
 
         it('handles !== when actual strings are not equal', () => {
             const code = `
-                if ("text" !== "another") {
+                if ('text' !== 'another') {
                     shouldBeKept
                 } else {
                     shouldBeRemoved
-                }`
+                }
+            `
 
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
-            validateCode(outputText, `
+            expect(outputText).to.matchCode(`
                 if (true) {
-                    shouldBeKept;
+                    shouldBeKept
                 }
             `)
         })

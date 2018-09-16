@@ -14,7 +14,7 @@
     "lint": "run-p lint:src lint:test",
     "lint:src": "tslint --project src",
     "lint:test": "tslint --project test",
-    "test": "mocha -r typescript-support \"test/**/*.unit.ts\" --watch-extensions ts"
+    "test": "mocha -r typescript-support -r test/chai-setup.ts \"test/**/*.unit.ts\" --watch-extensions ts"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"
