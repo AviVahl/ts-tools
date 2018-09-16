@@ -58,7 +58,7 @@ describe('ReactDevTransformer', () => {
 
         expect(outputText).to.matchCode(`
             ${jsxFileNameDef}
-            (<div __self= "custom value" __source = {{ fileName: __jsxFileName, lineNumber: 1 }}/>)
+            (<div __self="custom value" __source={{ fileName: __jsxFileName, lineNumber: 1 }}/>)
         `)
     })
 })
