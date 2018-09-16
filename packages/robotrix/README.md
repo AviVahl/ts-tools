@@ -59,7 +59,8 @@ const transpileOutput = transpileModule(code, { transformers: { before: [deadIfs
 
 Transforms CommonJS calls/exports to ESM syntax.
 If a source file is identified as using `require`, `module`, or `exports`, it is wrapped with the following:
-```
+
+```ts
 [generated imports]
 let exports = {}, module = { exports }
 [original code]
