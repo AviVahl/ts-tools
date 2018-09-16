@@ -55,6 +55,27 @@ import { transpileModule } from 'typescript'
 const transpileOutput = transpileModule(code, { transformers: { before: [deadIfsTransformer] } })
 ```
 
+### CommonJS to ESM Transformer
+
+Transforms CommonJS calls/exports to ESM syntax.
+If a source file is identified as using `require`, `module`, or `exports`, it is wrapped with the following:
+```
+[generated imports]
+let exports = {}, module = { exports }
+[original code]
+export default module.exports
+```
+
+Each `require(...)` call with a string request is converted to a generated import statement with a unique identifier.
+
+```ts
+import { createCjsToEsmTransformer } from 'robotrix'
+import { transpileModule } from 'typescript'
+
+const cjsToEsmTransformer = createCjsToEsmTransformer()
+const transpileOutput = transpileModule(code, { transformers: { before: [cjsToEsmTransformer] } })
+```
+
 ## License
 
 MIT
