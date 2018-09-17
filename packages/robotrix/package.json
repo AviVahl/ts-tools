@@ -7,7 +7,6 @@
   "types": "./esm/index.d.ts",
   "scripts": {
     "clean": "rimraf ./cjs ./esm",
-    "prebuild": "yarn clean",
     "build": "run-p build:cjs build:esm",
     "build:cjs": "tsc --project src --outDir cjs --module commonjs",
     "build:esm": "tsc --project src --outDir esm --module esnext",
