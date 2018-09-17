@@ -81,13 +81,12 @@ const transpileOutput = transpileModule(code, { transformers: { before: [cjsToEs
 ```
 
 `createCjsToEsmTransformer()` also accepts an optional options object, where one can currently specify
-`shouldTransform?(request: string): boolean` to control whether to transform `require(...)` calls
-based on their target.
+`shouldTransform` to control whether to transform `require(...)` calls based on their target.
 
 ```ts
 const blacklisted = new Set(['fs', 'another', 'etc'])
 
-// doesn't convert any require(...) calls that target the above items  
+// doesn't convert any require(...) calls that target items in blacklisted
 const cjsToEsmTransformer = createCjsToEsmTransformer({
     shouldTransform: request => !blacklisted.has(request)
 })
