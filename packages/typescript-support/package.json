@@ -7,7 +7,9 @@
   "scripts": {
     "clean": "rimraf ./cjs",
     "build": "tsc -p src",
-    "lint": "tslint -p src && tslint -p test",
+    "lint": "run-p lint:src lint:test",
+    "lint:src": "tslint -p src",
+    "lint:test": "tslint -p test",
     "test": "mocha \"./test/**/*.unit.ts\" --watch-extensions ts -r typescript-support --timeout 10000"
   },
   "dependencies": {
