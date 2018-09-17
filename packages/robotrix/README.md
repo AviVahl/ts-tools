@@ -62,8 +62,11 @@ If a source file is identified as using `require`, `module`, or `exports`, it is
 
 ```ts
 [generated imports]
+
 let exports = {}, module = { exports }
+
 [original code]
+
 export default module.exports
 ```
 
