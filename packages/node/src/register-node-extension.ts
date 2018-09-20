@@ -1,6 +1,6 @@
 import * as ts from 'typescript'
 import * as sourceMapSupport from 'source-map-support'
-import { NodeTypeScriptService } from 'node-typescript-service'
+import { TypeScriptService } from '@ts-tools/typescript-service'
 
 const inlineMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
 
@@ -24,7 +24,7 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
     const sourceMaps = new Map<string, string>()
 
     // our service instance, to be used by the require hook
-    const nodeTsService = new NodeTypeScriptService({
+    const nodeTsService = new TypeScriptService({
         noConfigOptions: nodeCompilerOptions,
         overrideOptions: {
             module: ts.ModuleKind.CommonJS,

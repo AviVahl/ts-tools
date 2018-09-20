@@ -1,5 +1,5 @@
-# node-typescript-service
-[![npm version](https://badge.fury.io/js/node-typescript-service.svg)](https://www.npmjs.com/package/node-typescript-service)
+# @ts-tools/typescript-service
+[![npm version](https://badge.fury.io/js/@ts-tools/typescript-service.svg)](https://www.npmjs.com/package/@ts-tools/typescript-service)
 
 A service for on-demand transpilation of TypeScript source files.
 

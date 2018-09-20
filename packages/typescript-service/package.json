@@ -1,5 +1,5 @@
 {
-  "name": "node-typescript-service",
+  "name": "@ts-tools/typescript-service",
   "version": "0.4.5",
   "description": "TypeScript Language Services Helper in Node.",
   "main": "./cjs/index.js",
@@ -19,5 +19,8 @@
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
   "repository": "git@github.com:AviVahl/typescript-tools.git",
-  "homepage": "https://github.com/AviVahl/ts-tools/tree/master/packages/node-typescript-service"
+  "homepage": "https://github.com/AviVahl/ts-tools/tree/master/packages/typescript-service",
+  "publishConfig": {
+    "access": "public"
+  }
 }

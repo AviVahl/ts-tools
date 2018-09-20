@@ -2,7 +2,7 @@ import { statSync } from 'fs'
 import { dirname, normalize } from 'path'
 import * as ts from 'typescript'
 
-export interface INodeTypeScriptServiceOptions {
+export interface ITypeScriptServiceOptions {
     /**
      * TypeScript configuration file name.
      *
@@ -31,7 +31,7 @@ export interface INodeTypeScriptServiceOptions {
     customTransformers?: ts.CustomTransformers
 }
 
-const defaultOptions: Required<INodeTypeScriptServiceOptions> = {
+const defaultOptions: Required<ITypeScriptServiceOptions> = {
     tsconfigFileName: 'tsconfig.json',
     overrideOptions: {},
     noConfigOptions: {},
@@ -57,12 +57,12 @@ export interface ITranspilationOutput {
  * Options can be provided during construction
  *
  * @example
- * new NodeTypeScriptService()
- * new NodeTypeScriptService({tsconfigFileName: 'tsconfig.test.json'})
+ * new TypeScriptService()
+ * new TypeScriptService({ tsconfigFileName: 'tsconfig.test.json' })
  */
-export class NodeTypeScriptService {
+export class TypeScriptService {
     // resolved options used by the service
-    public options: Required<INodeTypeScriptServiceOptions>
+    public options: Required<ITypeScriptServiceOptions>
 
     // a map holding `tsconfig path` to a `language service` instance
     public runningServices = new Map<string, ts.LanguageService>()
@@ -76,7 +76,7 @@ export class NodeTypeScriptService {
     // cache of `directory path` to `tsconfig lookup result`, to save disk operations
     private directoryToTsConfig = new Map<string, string | undefined>()
 
-    constructor(options?: INodeTypeScriptServiceOptions) {
+    constructor(options?: ITypeScriptServiceOptions) {
         this.options = { ...defaultOptions, ...options }
     }
 

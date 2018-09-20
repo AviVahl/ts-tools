@@ -1,1 +1,1 @@
-export * from './node-ts-service'
+export * from './typescript-service'

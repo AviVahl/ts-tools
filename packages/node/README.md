@@ -1,5 +1,5 @@
-# typescript-support
-[![npm version](https://badge.fury.io/js/typescript-support.svg)](https://www.npmjs.com/package/typescript-support)
+# @ts-tools/node
+[![npm version](https://badge.fury.io/js/@ts-tools/node.svg)](https://www.npmjs.com/package/@ts-tools/node)
 
 [TypeScript](https://www.typescriptlang.org/) support for [Node.js](https://nodejs.org/en/).
 
@@ -15,17 +15,17 @@ Features:
 
 Install the library as a dev dependency in an existing TypeScript project:
 ```
-yarn add typescript-support --dev
+yarn add @ts-tools/node --dev
 ```
 
 Usage with [Node.js](https://nodejs.org/en/):
 ```
-node -r typescript-support ./my-script.ts
+node -r @ts-tools/node ./my-script.ts
 ```
 
 Usage with [Mocha](https://github.com/mochajs/mocha):
 ```
-mocha -r typescript-support "./test/**/*.unit.ts?(x)" --watch-extensions ts,tsx
+mocha -r @ts-tools/node "./test/**/*.unit.ts?(x)" --watch-extensions ts,tsx
 ```
 
 Usage with [Visual Studio Code](https://github.com/Microsoft/vscode):
@@ -37,7 +37,7 @@ Usage with [Visual Studio Code](https://github.com/Microsoft/vscode):
     "name": "Launch Program",
     "runtimeArgs": [
         "-r",
-        "typescript-support"
+        "@ts-tools/node"
     ],
     "args": [
         "${workspaceFolder}/src/my-script.ts"
@@ -48,7 +48,7 @@ Usage with [Visual Studio Code](https://github.com/Microsoft/vscode):
 If throwing on type errors is too invasive to your development process,
 you can use an alternative entry point that calls `console.warn()` instead:
 ```
-node -r typescript-support/warn ./my-script.ts
+node -r @ts-tools/node/warn ./my-script.ts
 ```
 
 ## Why?

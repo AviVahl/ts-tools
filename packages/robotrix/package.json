@@ -1,5 +1,5 @@
 {
-  "name": "robotrix",
+  "name": "@ts-tools/robotrix",
   "version": "0.4.0",
   "description": "Several useful TypeScript transpilation transformers",
   "main": "./cjs/index.js",
@@ -13,7 +13,7 @@
     "lint": "run-p lint:src lint:test",
     "lint:src": "tslint -p src",
     "lint:test": "tslint -p test",
-    "test": "mocha -r typescript-support -r test/chai-setup.ts \"test/**/*.unit.ts\" --watch-extensions ts"
+    "test": "mocha -r @ts-tools/node -r test/chai-setup.ts \"test/**/*.unit.ts\" --watch-extensions ts"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"
@@ -26,6 +26,9 @@
   "sideEffects": false,
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
-  "repository": "git@github.com:AviVahl/typescript-tools.git",
-  "homepage": "https://github.com/AviVahl/ts-tools/tree/master/packages/robotrix"
+  "repository": "git@github.com:AviVahl/ts-tools.git",
+  "homepage": "https://github.com/AviVahl/ts-tools/tree/master/packages/robotrix",
+  "publishConfig": {
+    "access": "public"
+  }
 }

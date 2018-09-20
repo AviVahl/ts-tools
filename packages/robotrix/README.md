@@ -1,5 +1,5 @@
-# robotrix
-[![npm version](https://badge.fury.io/js/robotrix.svg)](https://www.npmjs.com/package/robotrix)
+# @ts-tools/robotrix
+[![npm version](https://badge.fury.io/js/@ts-tools/robotrix.svg)](https://www.npmjs.com/package/@ts-tools/robotrix)
 
 Several useful [TypeScript](https://www.typescriptlang.org/) transpilation transformers.
 
@@ -7,7 +7,7 @@ Several useful [TypeScript](https://www.typescriptlang.org/) transpilation trans
 
 Install the library:
 ```
-yarn add robotrix
+yarn add @ts-tools/robotrix
 ```
 
 ## Transformers
@@ -17,7 +17,7 @@ yarn add robotrix
 Replaces `process.env.[PARAM]` expressions with string literals, using provided `env`.
 
 ```ts
-import { createNodeEnvTransformer } from 'robotrix'
+import { createNodeEnvTransformer } from '@ts-tools/robotrix'
 import { transpileModule } from 'typescript'
 
 const nodeEnvTransformer = createNodeEnvTransformer(process.env)
@@ -36,7 +36,7 @@ It adds the following attributes to all JSX elements:
 if `__source` was added, the following declaration is prepended to source file: `const __jsxFileName = [absolute file path]`
 
 ```ts
-import { reactDevTransformer } from 'robotrix'
+import { reactDevTransformer } from '@ts-tools/robotrix'
 import { transpileModule } from 'typescript'
 
 const transpileOutput = transpileModule(code, { transformers: { before: [reactDevTransformer] } })
@@ -49,7 +49,7 @@ Detects and removes dead `if` branches. Checks the expression of every `if` stat
 It detects `true`, `false`, and basic string equality comparison (`==`, `===`, `!=`, `!==`).
 
 ```ts
-import { deadIfsTransformer } from 'robotrix'
+import { deadIfsTransformer } from '@ts-tools/robotrix'
 import { transpileModule } from 'typescript'
 
 const transpileOutput = transpileModule(code, { transformers: { before: [deadIfsTransformer] } })
@@ -73,7 +73,7 @@ export default module.exports
 Each `require(...)` call with a string request is converted to a generated import statement with a unique identifier.
 
 ```ts
-import { createCjsToEsmTransformer } from 'robotrix'
+import { createCjsToEsmTransformer } from '@ts-tools/robotrix'
 import { transpileModule } from 'typescript'
 
 const cjsToEsmTransformer = createCjsToEsmTransformer()
