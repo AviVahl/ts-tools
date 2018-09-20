@@ -3,41 +3,41 @@ import { join, dirname } from 'path'
 import { platform } from 'os'
 import { runCommand } from './run-command'
 
-const fixturesDirectory = dirname(require.resolve('test-fixtures/package.json'))
+const fixturesRoot = dirname(require.resolve('test-fixtures/package.json'))
 
 describe('using node -r typescript-support [file]', () => {
     describe('with tsconfig.json', () => {
         it('throws on syntactic errors', () => {
-            const fileWithSyntaxError = join(fixturesDirectory, 'errors', 'file-with-syntax-error.ts')
+            const filePath = join(fixturesRoot, 'errors', 'file-with-syntax-error.ts')
 
-            const { output, exitCode } = runCommand(`node -r typescript-support ${fileWithSyntaxError}`)
+            const { output, exitCode } = runCommand(`node -r typescript-support ${filePath}`)
 
             expect(exitCode).to.not.equal(0)
             expect(output).to.include(`')' expected`)
         })
 
         it('throws on semantic errors', () => {
-            const fileWithTypeError = join(fixturesDirectory, 'errors', 'file-with-type-error.ts')
+            const filePath = join(fixturesRoot, 'errors', 'file-with-type-error.ts')
 
-            const { output, exitCode } = runCommand(`node -r typescript-support ${fileWithTypeError}`)
+            const { output, exitCode } = runCommand(`node -r typescript-support ${filePath}`)
 
             expect(exitCode).to.not.equal(0)
             expect(output).to.include(`Type '123' is not assignable to type 'string'`)
         })
 
         it('maps stack traces using source maps', () => {
-            const fileThatThrows = join(fixturesDirectory, 'source-maps', 'with-tsconfig', 'throwing.ts')
+            const filePath = join(fixturesRoot, 'source-maps', 'with-tsconfig', 'throwing.ts')
 
-            const { output, exitCode } = runCommand(`node -r typescript-support ${fileThatThrows}`)
+            const { output, exitCode } = runCommand(`node -r typescript-support ${filePath}`)
 
             expect(exitCode).to.not.equal(0)
-            expect(output).to.include(`at runMe (${fileThatThrows}:11:15)`)
+            expect(output).to.include(`at runMe (${filePath}:11:15)`)
         })
 
         it('isolates two folders with different configs and throws errors', () => {
-            const workingFile = join(fixturesDirectory, 'type-isolation', 'with-tsconfig-b', 'passes-type-check.ts')
+            const filePath = join(fixturesRoot, 'type-isolation', 'with-tsconfig-b', 'passes-type-check.ts')
 
-            const { output, exitCode } = runCommand(`node -r typescript-support ${workingFile}`)
+            const { output, exitCode } = runCommand(`node -r typescript-support ${filePath}`)
 
             expect(exitCode).to.not.equal(0)
             expect(output).to.include(`Cannot find name 'describe'`)
@@ -48,18 +48,18 @@ describe('using node -r typescript-support [file]', () => {
 
     describe('no tsconfig.json', () => {
         it('maps stack traces using source maps', () => {
-            const fileThatThrows = join(fixturesDirectory, 'source-maps', 'throwing-without-tsconfig.ts')
+            const filePath = join(fixturesRoot, 'source-maps', 'throwing-without-tsconfig.ts')
 
-            const { output, exitCode } = runCommand(`node -r typescript-support ${fileThatThrows}`)
+            const { output, exitCode } = runCommand(`node -r typescript-support ${filePath}`)
 
             expect(exitCode).to.not.equal(0)
-            expect(output).to.include(`at runMe (${fileThatThrows}:9:11)`)
+            expect(output).to.include(`at runMe (${filePath}:9:11)`)
         })
 
         it('allows using imports', () => {
-            const fileWithImports = join(fixturesDirectory, 'no-tsconfig', 'imports.ts')
+            const filePath = join(fixturesRoot, 'no-tsconfig', 'imports.ts')
 
-            const { output, exitCode } = runCommand(`node -r typescript-support ${fileWithImports}`)
+            const { output, exitCode } = runCommand(`node -r typescript-support ${filePath}`)
 
             expect(exitCode).to.equal(0)
             expect(output).to.include(`Current platform is: ${platform()}`)
