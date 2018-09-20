@@ -1,5 +1,5 @@
-import { statSync } from 'fs'
 import { dirname, normalize } from 'path'
+import { statSync } from 'fs'
 import * as ts from 'typescript'
 
 export interface ITypeScriptServiceOptions {

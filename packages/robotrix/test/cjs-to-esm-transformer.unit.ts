@@ -1,5 +1,5 @@
-import { expect } from 'chai'
 import * as ts from 'typescript'
+import { expect } from 'chai'
 import { createCjsToEsmTransformer } from '../src'
 
 const cjsDef = `let exports = {}, module = { exports }`
