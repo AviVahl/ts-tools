@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/typescript-service",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "TypeScript Language Services Helper in Node.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
