@@ -19,5 +19,5 @@
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
   "repository": "git@github.com:AviVahl/typescript-tools.git",
-  "homepage": "https://github.com/AviVahl/typescript-tools/tree/master/packages/node-typescript-service"
+  "homepage": "https://github.com/AviVahl/ts-tools/tree/master/packages/node-typescript-service"
 }
