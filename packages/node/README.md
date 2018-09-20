@@ -1,5 +1,5 @@
 # @ts-tools/node
-[![npm version](https://badge.fury.io/js/@ts-tools/node.svg)](https://www.npmjs.com/package/@ts-tools/node)
+[![npm version](https://img.shields.io/npm/v/@ts-tools/node.svg)](https://www.npmjs.com/package/@ts-tools/node)
 
 [TypeScript](https://www.typescriptlang.org/) support for [Node.js](https://nodejs.org/en/).
 
