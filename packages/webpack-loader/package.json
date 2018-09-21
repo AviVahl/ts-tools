@@ -1,0 +1,34 @@
+{
+  "name": "@ts-tools/webpack-loader",
+  "version": "0.1.0",
+  "main": "cjs/index.js",
+  "types": "cjs/index.d.ts",
+  "scripts": {
+    "clean": "rimraf ./cjs",
+    "build": "yarn build:cjs",
+    "build:cjs": "tsc -p src",
+    "lint": "run-p lint:src lint:test",
+    "lint:src": "tslint -p src",
+    "lint:test": "tslint -p test",
+    "test": "mocha -r @ts-tools/node \"test/**/*.unit.ts\" --watch-extensions ts"
+  },
+  "peerDependencies": {
+    "typescript": ">=2.8.0",
+    "webpack": ">=4"
+  },
+  "dependencies": {
+    "@ts-tools/typescript-service": "^0.5.1",
+    "loader-utils": "^1.1.0"
+  },
+  "files": [
+    "cjs",
+    "src"
+  ],
+  "author": "Avi Vahl <avi.vahl@wix.com>",
+  "license": "MIT",
+  "repository": "git@github.com:AviVahl/ts-tools.git",
+  "homepage": "https://github.com/AviVahl/ts-tools/tree/master/packages/webpack-loader",
+  "publishConfig": {
+    "access": "public"
+  }
+}
