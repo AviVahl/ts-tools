@@ -8,6 +8,8 @@ Several packages to assist [TypeScript](https://www.typescriptlang.org/) develop
 
 - **[@ts-tools/node](https://github.com/AviVahl/ts-tools/tree/master/packages/node)** - Easy-to-use, monorepo-friendly, TypeScript support for running `.ts`/`.tsx` files directly from source.
 
+- **[@ts-tools/webpack-loader](https://github.com/AviVahl/ts-tools/tree/master/packages/webpack-loader)** - TypeScript loader for webpack.
+
 - **[@ts-tools/typescript-service](https://github.com/AviVahl/ts-tools/tree/master/packages/typescript-service)** - A service for on-demand transpilation of TypeScript source files.
 
 - **[@ts-tools/robotrix](https://github.com/AviVahl/ts-tools/tree/master/packages/robotrix)** - Several useful TypeScript transpilation transformers.
