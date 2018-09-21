@@ -13,7 +13,8 @@
     "test": "mocha -r @ts-tools/node \"test/**/*.unit.ts\" --watch-extensions ts"
   },
   "peerDependencies": {
-    "typescript": ">=2.8.0"
+    "typescript": ">=2.8.0",
+    "webpack": ">=4"
   },
   "dependencies": {
     "@ts-tools/typescript-service": "^0.5.1",
