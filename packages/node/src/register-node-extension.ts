@@ -24,7 +24,7 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
     const sourceMaps = new Map<string, string>()
 
     // our service instance, to be used by the require hook
-    const nodeTsService = new TypeScriptService({
+    const tsService = new TypeScriptService({
         noConfigOptions: nodeCompilerOptions,
         overrideOptions: {
             module: ts.ModuleKind.CommonJS,
@@ -55,7 +55,7 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
     // our require extension transpiles the file to js using the service
     // and then runs the resulting js like any regular js
     function requireExtension(nodeModule: NodeModule, filePath: string): void {
-        const { diagnostics, outputText } = nodeTsService.transpileFile(filePath)
+        const { diagnostics, outputText } = tsService.transpileFile(filePath)
 
         if (diagnostics && diagnostics.length && onDiagnostics) {
             onDiagnostics(diagnostics)
