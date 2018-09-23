@@ -42,23 +42,13 @@ function visitIfExpression(node: ts.Expression): ts.Expression {
             kind === ts.SyntaxKind.EqualsEqualsEqualsToken ||
             kind === ts.SyntaxKind.EqualsEqualsToken
         ) {
-            const newNode = node.left.text === node.right.text ? ts.createTrue() : ts.createFalse()
-            const originalText = node.getText()
-            if (!originalText.includes(`*/`)) {
-                ts.addSyntheticTrailingComment(newNode, ts.SyntaxKind.MultiLineCommentTrivia, ` ${originalText} `)
-            }
-            return newNode
+            return node.left.text === node.right.text ? ts.createTrue() : ts.createFalse()
         } else if (
             // operator is `!=` or `!==`
             kind === ts.SyntaxKind.ExclamationEqualsEqualsToken ||
             kind === ts.SyntaxKind.ExclamationEqualsToken
         ) {
-            const newNode = node.left.text !== node.right.text ? ts.createTrue() : ts.createFalse()
-            const originalText = node.getText()
-            if (!originalText.includes(`*/`)) {
-                ts.addSyntheticTrailingComment(newNode, ts.SyntaxKind.MultiLineCommentTrivia, ` ${originalText} `)
-            }
-            return newNode
+            return node.left.text !== node.right.text ? ts.createTrue() : ts.createFalse()
         }
     }
     return node

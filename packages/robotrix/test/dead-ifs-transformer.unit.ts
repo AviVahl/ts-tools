@@ -74,7 +74,7 @@ describe('DeadIfsTransformer', () => {
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
             expect(outputText).to.matchCode(`
-                if (true /* 'same' === 'same' */) {
+                if (true) {
                     shouldBeKept
                 }
             `)
@@ -91,7 +91,7 @@ describe('DeadIfsTransformer', () => {
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
             expect(outputText).to.matchCode(`
-                if (false /* 'text' === 'another' */) { }
+                if (false) { }
                 else {
                     shouldBeKept
                 }
@@ -109,7 +109,7 @@ describe('DeadIfsTransformer', () => {
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
             expect(outputText).to.matchCode(`
-                if (false /* 'same' !== 'same' */) { }
+                if (false) { }
                 else {
                     shouldBeKept
                 }
@@ -128,7 +128,7 @@ describe('DeadIfsTransformer', () => {
             const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
 
             expect(outputText).to.matchCode(`
-                if (true /* 'text' !== 'another' */) {
+                if (true) {
                     shouldBeKept
                 }
             `)
