@@ -14,17 +14,17 @@ const noConfigOptions: ts.CompilerOptions = {
 }
 
 const overrideOptions: ts.CompilerOptions = {
+    // webpack supports it and we want tree shaking out of the box
     module: ts.ModuleKind.ESNext,
 
     // make sure source maps work out-of-the-box
-    // currently, `devtool` being set to `source-map` or `inline-source-map` works well
-    // `eval` fails, which is a shame
     sourceMap: true,
     inlineSourceMap: false,
     inlineSources: true,
     sourceRoot: undefined,
     mapRoot: undefined,
 
+    // we are not going to generate .d.ts files for the bundle
     declaration: false,
     declarationMap: false,
 
