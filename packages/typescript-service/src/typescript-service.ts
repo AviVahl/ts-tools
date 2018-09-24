@@ -1,8 +1,30 @@
-import { dirname, normalize } from 'path'
-import { statSync } from 'fs'
 import * as ts from 'typescript'
 
+export interface ITypeScriptServiceHost {
+    newLine: string
+    useCaseSensitiveFileNames: boolean
+    dirname(path: string): string,
+    normalize(path: string): string
+    getDefaultLibFilePath(options: ts.CompilerOptions): string
+    getModifiedTime(path: string): Date | undefined
+    getCurrentDirectory(): string
+    realpath?(path: string): string
+    readDirectory(
+        rootDir: string,
+        extensions: ReadonlyArray<string>,
+        excludes: ReadonlyArray<string> | undefined,
+        includes: ReadonlyArray<string>,
+        depth?: number
+    ): string[]
+    fileExists(path: string): boolean
+    directoryExists(path: string): boolean
+    readFile(path: string, encoding?: string): string | undefined
+    getDirectories(path: string): string[]
+}
+
 export interface ITypeScriptServiceOptions {
+    host: ITypeScriptServiceHost
+
     /**
      * TypeScript configuration file name.
      *
@@ -31,7 +53,7 @@ export interface ITypeScriptServiceOptions {
     customTransformers?: ts.CustomTransformers
 }
 
-const defaultOptions: Required<ITypeScriptServiceOptions> = {
+const defaultOptions = {
     tsconfigFileName: 'tsconfig.json',
     overrideOptions: {},
     noConfigOptions: {},
@@ -68,16 +90,19 @@ export class TypeScriptService {
     public runningServices = new Map<string, ts.LanguageService>()
 
     // we might create more than a single language service per service, so we share documents between them
-    private sharedDocumentRegistry = ts.createDocumentRegistry(
-        ts.sys.useCaseSensitiveFileNames,
-        ts.sys.getCurrentDirectory()
-    )
+    private documentRegistry: ts.DocumentRegistry
 
     // cache of `directory path` to `tsconfig lookup result`, to save disk operations
     private directoryToTsConfig = new Map<string, string | undefined>()
 
-    constructor(options?: ITypeScriptServiceOptions) {
+    constructor(options: ITypeScriptServiceOptions) {
         this.options = { ...defaultOptions, ...options }
+
+        const { useCaseSensitiveFileNames, getCurrentDirectory } = this.options.host
+        this.documentRegistry = ts.createDocumentRegistry(
+            useCaseSensitiveFileNames,
+            getCurrentDirectory()
+        )
     }
 
     /**
@@ -93,21 +118,24 @@ export class TypeScriptService {
             options: ts.CompilerOptions,
             languageService: ts.LanguageService
         } {
-        const jsonSourceFile = ts.readJsonConfigFile(configFilePath, ts.sys.readFile)
-        const configDirectoryPath = dirname(configFilePath)
-        const { fileNames: originalFileNames, options, errors: diagnostics } =
-            ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, ts.sys, configDirectoryPath)
 
-        const fileNames = originalFileNames.map(normalize)
+        const { host, overrideOptions } = this.options
+        const jsonSourceFile = ts.readJsonConfigFile(configFilePath, host.readFile)
+        const configDirectoryPath = host.dirname(configFilePath)
+
+        const { fileNames: originalFileNames, options, errors: diagnostics } =
+            ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, host, configDirectoryPath)
+
+        const fileNames = originalFileNames.map(host.normalize)
 
         // create the host
         const languageServiceHost = this.createLanguageServiceHost(fileNames, {
             ...options,
-            ...this.options.overrideOptions
+            ...overrideOptions
         })
 
         // create the language service using the host
-        const languageService = ts.createLanguageService(languageServiceHost, this.sharedDocumentRegistry)
+        const languageService = ts.createLanguageService(languageServiceHost, this.documentRegistry)
 
         // register it in our running services
         this.runningServices.set(configFilePath, languageService)
@@ -133,7 +161,7 @@ export class TypeScriptService {
             }
         }
 
-        const fileDirectoryPath = dirname(filePath)
+        const fileDirectoryPath = this.options.host.dirname(filePath)
         const tsConfigPath = this.getTsConfigPath(fileDirectoryPath)
 
         if (!tsConfigPath) {
@@ -218,7 +246,9 @@ export class TypeScriptService {
     private transpileUsingDefaultOptions(
         filePath: string
     ): ITranspilationOutput {
-        const tsCode = ts.sys.readFile(filePath)
+        const { host, noConfigOptions: compilerOptions, customTransformers: transformers } = this.options
+
+        const tsCode = host.readFile(filePath)
         if (!tsCode) {
             return {
                 filePath,
@@ -231,8 +261,8 @@ export class TypeScriptService {
 
         const { outputText, diagnostics, sourceMapText } = ts.transpileModule(tsCode, {
             fileName: filePath,
-            compilerOptions: this.options.noConfigOptions,
-            transformers: this.options.customTransformers
+            compilerOptions,
+            transformers
         })
 
         return {
@@ -254,7 +284,11 @@ export class TypeScriptService {
         if (this.directoryToTsConfig.has(baseDirectory)) {
             return this.directoryToTsConfig.get(baseDirectory)
         }
-        const tsConfigPath = ts.findConfigFile(baseDirectory, ts.sys.fileExists, this.options.tsconfigFileName)
+        const tsConfigPath = ts.findConfigFile(
+            baseDirectory,
+            this.options.host.fileExists,
+            this.options.tsconfigFileName
+        )
         this.directoryToTsConfig.set(baseDirectory, tsConfigPath)
         return tsConfigPath
     }
@@ -263,6 +297,22 @@ export class TypeScriptService {
         fileNames: string[],
         compilerOptions: ts.CompilerOptions
     ): ts.LanguageServiceHost {
+
+        const { host, customTransformers } = this.options
+        const {
+            newLine,
+            getModifiedTime,
+            readFile,
+            getCurrentDirectory,
+            fileExists,
+            directoryExists,
+            readDirectory,
+            getDefaultLibFilePath: getDefaultLibFileName,
+            useCaseSensitiveFileNames,
+            getDirectories,
+            realpath
+        } = host
+
         return {
             getCompilationSettings: () => compilerOptions,
             getNewLine: () => {
@@ -272,28 +322,25 @@ export class TypeScriptService {
                     case ts.NewLineKind.LineFeed:
                         return '\n'
                     default:
-                        return ts.sys.newLine
+                        return newLine
                 }
             },
             getScriptFileNames: () => fileNames,
             getScriptVersion: filePath => {
-                try {
-                    return statSync(filePath).mtime.toString()
-                } catch {
-                    return `${Date.now()}`
-                }
+                const modifiedTime = getModifiedTime(filePath)
+                return modifiedTime ? modifiedTime.toString() : `${Date.now()}`
             },
-            getScriptSnapshot: filePath => ts.ScriptSnapshot.fromString(ts.sys.readFile(filePath) || ''),
-            getCurrentDirectory: ts.sys.getCurrentDirectory,
-            getDefaultLibFileName: ts.getDefaultLibFilePath,
-            useCaseSensitiveFileNames: () => ts.sys.useCaseSensitiveFileNames,
-            readDirectory: ts.sys.readDirectory,
-            readFile: ts.sys.readFile,
-            fileExists: ts.sys.fileExists,
-            directoryExists: ts.sys.directoryExists,
-            getDirectories: ts.sys.getDirectories,
-            realpath: ts.sys.realpath,
-            getCustomTransformers: () => this.options.customTransformers
+            getScriptSnapshot: filePath => ts.ScriptSnapshot.fromString(readFile(filePath) || ''),
+            getCurrentDirectory,
+            getDefaultLibFileName,
+            useCaseSensitiveFileNames: () => useCaseSensitiveFileNames,
+            readDirectory,
+            readFile,
+            fileExists,
+            directoryExists,
+            getDirectories,
+            realpath,
+            getCustomTransformers: () => customTransformers
         }
     }
 

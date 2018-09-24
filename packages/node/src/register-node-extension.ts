@@ -1,6 +1,8 @@
+import { normalize, dirname } from 'path'
 import * as ts from 'typescript'
 import * as sourceMapSupport from 'source-map-support'
 import { TypeScriptService } from '@ts-tools/typescript-service'
+const { sys } = ts
 
 const inlineMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
 
@@ -12,7 +14,7 @@ const nodeCompilerOptions: ts.CompilerOptions = {
     jsx: ts.JsxEmit.React, // opinionated, but we want built-in support for .tsx without tsconfig.json
 }
 
-const useColoredOutput = !!ts.sys.writeOutputIsTTY && ts.sys.writeOutputIsTTY()
+const useColoredOutput = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
 const tsFormatFn = useColoredOutput ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
 
 const formatDiagnosticsHost = ts.createCompilerHost(nodeCompilerOptions)
@@ -25,6 +27,21 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
 
     // our service instance, to be used by the require hook
     const tsService = new TypeScriptService({
+        host: {
+            directoryExists: sys.directoryExists,
+            fileExists: sys.fileExists,
+            getCurrentDirectory: sys.getCurrentDirectory,
+            getDefaultLibFilePath: ts.getDefaultLibFilePath,
+            getDirectories: sys.getDirectories,
+            getModifiedTime: sys.getModifiedTime!,
+            newLine: sys.newLine,
+            readDirectory: sys.readDirectory,
+            readFile: sys.readFile,
+            realpath: sys.realpath,
+            useCaseSensitiveFileNames: !sys.fileExists(__filename.toUpperCase()),
+            dirname,
+            normalize
+        },
         noConfigOptions: nodeCompilerOptions,
         overrideOptions: {
             module: ts.ModuleKind.CommonJS,

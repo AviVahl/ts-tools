@@ -1,7 +1,9 @@
+import { normalize, dirname } from 'path'
 import * as ts from 'typescript'
-import { TypeScriptService } from '@ts-tools/typescript-service'
+import { TypeScriptService, ITypeScriptServiceHost } from '@ts-tools/typescript-service'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
+const { sys } = ts
 
 const sourceMappingPrefix = `//# sourceMappingURL=`
 
@@ -32,7 +34,23 @@ const overrideOptions: ts.CompilerOptions = {
     outFile: undefined
 }
 
-const tsService = new TypeScriptService({ noConfigOptions, overrideOptions })
+const host: ITypeScriptServiceHost = {
+    directoryExists: sys.directoryExists,
+    fileExists: sys.fileExists,
+    getCurrentDirectory: sys.getCurrentDirectory,
+    getDefaultLibFilePath: ts.getDefaultLibFilePath,
+    getDirectories: sys.getDirectories,
+    getModifiedTime: sys.getModifiedTime!,
+    newLine: sys.newLine,
+    readDirectory: sys.readDirectory,
+    readFile: sys.readFile,
+    realpath: sys.realpath,
+    useCaseSensitiveFileNames: !sys.fileExists(__filename.toUpperCase()),
+    dirname,
+    normalize
+}
+
+const tsService = new TypeScriptService({ noConfigOptions, overrideOptions, host })
 
 const useColoredOutput = !!ts.sys.writeOutputIsTTY && ts.sys.writeOutputIsTTY()
 const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)
