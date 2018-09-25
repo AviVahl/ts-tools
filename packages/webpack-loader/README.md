@@ -14,13 +14,27 @@ Install the library as a dev dependency in an existing TypeScript project:
 yarn add @ts-tools/webpack-loader --dev
 ```
 
-Add the following to your webpack config's [module.rules](https://webpack.js.org/configuration/module/#module-rules):
+And adjust your webpack configuration to include:
 ```ts
-{
-    test: /\.tsx?$/,
-    loader: '@ts-tools/webpack-loader'
+exports.module = {
+    rules: [
+        {
+            test: /\.tsx?$/,
+            loader: '@ts-tools/webpack-loader'
+        }
+    ]
+}
+
+exports.resolve = {
+    extensions: ['.ts', '.tsx', '.mjs', '.js', '.json']
 }
 ```
+
+## Limitations
+
+Not implemented *yet*:
+- `compilerOptions.paths`, when used for abstractions. Type checking will be fine, but transpiled sources will not point to anything webpack can understand out of the box.
+- Does not support other loaders before it. Reads sources directly from the file system.
 
 ## Similar projects
 
