@@ -1,5 +1,5 @@
 import * as ts from 'typescript'
-import { ITypeScriptServiceHost } from './types'
+import { ITypeScriptServiceHost, ITranspilationOutput } from './types'
 
 export interface ITypeScriptServiceOptions {
     host: ITypeScriptServiceHost
@@ -39,20 +39,6 @@ const defaultOptions = {
     customTransformers: {}
 }
 
-export interface ITranspilationOutput {
-    /** Absolute file path to the input typescript file */
-    filePath: string
-
-    /** transpiled JavaScript code */
-    outputText: string
-
-    /** optional, separate source-maps (stringified JSON) */
-    sourceMapText?: string
-
-    /** Transpilation process diagnostics  */
-    diagnostics?: ts.Diagnostic[]
-}
-
 /**
  * On-demand TypeScript tranpilation service
  * Options can be provided during construction
@@ -82,6 +68,44 @@ export class TypeScriptService {
             useCaseSensitiveFileNames,
             getCurrentDirectory()
         )
+    }
+
+    /**
+     * Transpile a TypeScript file on the native file system
+     *
+     * @param filePath absolute path of the source file to transpile
+     */
+    public transpileFile(filePath: string): ITranspilationOutput {
+        for (const existingLanguageService of this.runningServices.values()) {
+            const program = existingLanguageService.getProgram()
+            if (program && program.getRootFileNames().includes(filePath)) {
+                return this.transpileUsingLanguageService(filePath, existingLanguageService)
+            }
+        }
+
+        const fileDirectoryPath = this.options.host.dirname(filePath)
+        const tsConfigPath = this.getTsConfigPath(fileDirectoryPath)
+
+        if (!tsConfigPath) {
+            return this.transpileUsingDefaultOptions(filePath)
+        }
+
+        const { fileNames, diagnostics, languageService } = this.loadConfigFile(tsConfigPath)
+
+        if (diagnostics.length) {
+            return {
+                diagnostics,
+                filePath,
+                outputText: ''
+            }
+        }
+
+        // verify the new service includes our file
+        if (fileNames.includes(filePath)) {
+            return this.transpileUsingLanguageService(filePath, languageService)
+        }
+
+        return this.transpileUsingDefaultOptions(filePath)
     }
 
     /**
@@ -125,44 +149,6 @@ export class TypeScriptService {
             options,
             languageService
         }
-    }
-
-    /**
-     * Transpile a TypeScript file on the native file system
-     *
-     * @param filePath absolute path of the source file to transpile
-     */
-    public transpileFile(filePath: string): ITranspilationOutput {
-        for (const existingLanguageService of this.runningServices.values()) {
-            const program = existingLanguageService.getProgram()
-            if (program && program.getRootFileNames().includes(filePath)) {
-                return this.transpileUsingLanguageService(filePath, existingLanguageService)
-            }
-        }
-
-        const fileDirectoryPath = this.options.host.dirname(filePath)
-        const tsConfigPath = this.getTsConfigPath(fileDirectoryPath)
-
-        if (!tsConfigPath) {
-            return this.transpileUsingDefaultOptions(filePath)
-        }
-
-        const { fileNames, diagnostics, languageService } = this.loadConfigFile(tsConfigPath)
-
-        if (diagnostics.length) {
-            return {
-                diagnostics,
-                filePath,
-                outputText: ''
-            }
-        }
-
-        // verify the new service includes our file
-        if (fileNames.includes(filePath)) {
-            return this.transpileUsingLanguageService(filePath, languageService)
-        }
-
-        return this.transpileUsingDefaultOptions(filePath)
     }
 
     private transpileUsingLanguageService(

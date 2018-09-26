@@ -75,3 +75,17 @@ export interface ITypeScriptServiceHost {
      */
     realpath?(path: string): string
 }
+
+export interface ITranspilationOutput {
+    /** Absolute file path to the input typescript file */
+    filePath: string
+
+    /** transpiled JavaScript code */
+    outputText: string
+
+    /** optional, separate source-maps (stringified JSON) */
+    sourceMapText?: string
+
+    /** Transpilation process diagnostics  */
+    diagnostics?: ts.Diagnostic[]
+}
