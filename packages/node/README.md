@@ -51,6 +51,13 @@ you can use an alternative entry point that calls `console.warn()` instead:
 node -r @ts-tools/node/warn ./my-script.ts
 ```
 
+## Known limitations
+
+- The following `compilerOptions` are not supported:
+  - `allowJs` and `checkJs` (only `.ts/.tsx` files are hooked).
+  - `baseUrl` and `paths`, when used for custom resolution of runtime abstractions (types work).
+  - `composite` projects.
+
 ## Why?
 
 I recently experimented with a neat project setup where I have one

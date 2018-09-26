@@ -69,8 +69,8 @@ exports.module = {
 ## Known limitations
 
 - The following `compilerOptions` are not supported:
-  - `allowJs` and `checkJs`
-  - `baseUrl` and `paths`, when used for custom resolution of runtime abstractions (types work)
+  - `allowJs` and `checkJs`.
+  - `baseUrl` and `paths`, when used for custom resolution of runtime abstractions (types work).
   - `composite` projects.
 - Using loaders before this loader is not supported, as it reads sources directly from the file system.
 - Using the loader to transpile `.js` files in `node_modules` will cause excessive lookups of `tsconfig`.
