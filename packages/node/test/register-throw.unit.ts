@@ -44,6 +44,15 @@ describe('using node -r @ts-tools/node [file]', () => {
             expect(output).to.include('should-error.ts')
         })
 
+        it.skip('supports baseUrl in tsconfig', () => {
+            const filePath = join(fixturesRoot, 'base-url', 'second', 'imports-via-base-url.ts')
+
+            const { output, exitCode } = runCommand(`node -r @ts-tools/node ${filePath}`)
+
+            expect(output).to.include(`Test PASSED!`)
+            expect(exitCode).to.equal(0)
+        })
+
     })
 
     describe('no tsconfig.json', () => {
