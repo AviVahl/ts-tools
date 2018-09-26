@@ -10,6 +10,7 @@ const inlineMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
 const nodeCompilerOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES2017,
     module: ts.ModuleKind.CommonJS,
+    esModuleInterop: true,
     inlineSourceMap: true,
     jsx: ts.JsxEmit.React, // opinionated, but we want built-in support for .tsx without tsconfig.json
 }

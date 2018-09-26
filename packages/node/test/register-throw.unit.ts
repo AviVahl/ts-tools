@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { join, dirname } from 'path'
+import { join, dirname, sep } from 'path'
 import { platform } from 'os'
 import { runCommand } from './run-command'
 
@@ -72,6 +72,7 @@ describe('using node -r @ts-tools/node [file]', () => {
 
             expect(exitCode).to.equal(0)
             expect(output).to.include(`Current platform is: ${platform()}`)
+            expect(output).to.include(`Path separator is: ${sep}`)
         })
     })
 

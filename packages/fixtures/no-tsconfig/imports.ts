@@ -1,4 +1,6 @@
-import {platform} from 'os'
+// tslint:disable:no-console
+import {platform} from 'os' // verify named imports
+import path from 'path' // verify interop without config
 
-// tslint:disable-next-line:no-console
 console.log(`Current platform is: ${platform()}`)
+console.log(`Path separator is: ${path.sep}`)
