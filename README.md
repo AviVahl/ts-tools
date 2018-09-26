@@ -6,7 +6,7 @@ Several packages to assist [TypeScript](https://www.typescriptlang.org/) develop
 
 ## Packages
 
-- **[@ts-tools/node](https://github.com/AviVahl/ts-tools/tree/master/packages/node)** - Easy-to-use, monorepo-friendly, TypeScript support for running `.ts`/`.tsx` files directly from source.
+- **[@ts-tools/node](https://github.com/AviVahl/ts-tools/tree/master/packages/node)** - TypeScript support for Node.js. Allows running `.ts`/`.tsx` files directly from source.
 
 - **[@ts-tools/webpack-loader](https://github.com/AviVahl/ts-tools/tree/master/packages/webpack-loader)** - TypeScript loader for webpack.
 
