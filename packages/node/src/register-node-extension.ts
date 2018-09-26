@@ -15,8 +15,8 @@ const nodeCompilerOptions: ts.CompilerOptions = {
     jsx: ts.JsxEmit.React, // opinionated, but we want built-in support for .tsx without tsconfig.json
 }
 
-const useColoredOutput = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
-const tsFormatFn = useColoredOutput ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
+const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
+const tsFormatFn = platformHasColors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
 
 const formatDiagnosticsHost = ts.createCompilerHost(nodeCompilerOptions)
 export const formatDiagnostics = (diagnostics: ts.Diagnostic[]) => tsFormatFn(diagnostics, formatDiagnosticsHost)

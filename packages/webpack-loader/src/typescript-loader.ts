@@ -52,7 +52,7 @@ const host: ITypeScriptServiceHost = {
 
 const tsService = new TypeScriptService({ noConfigOptions, overrideOptions, host })
 
-const useColoredOutput = !!ts.sys.writeOutputIsTTY && ts.sys.writeOutputIsTTY()
+const platformHasColors = !!ts.sys.writeOutputIsTTY && ts.sys.writeOutputIsTTY()
 const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)
 
 /**
@@ -73,11 +73,11 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
     const { diagnostics, outputText, sourceMapText } = tsService.transpileFile(this.resourcePath)
 
     // webpack's recommended method of parsing loader options, with our defaults
-    const loaderOptions = { colors: true, warnOnly: false, ...getOptions(this) } as ITypeScriptLoaderOptions
+    const loaderOptions: ITypeScriptLoaderOptions = { colors: platformHasColors, warnOnly: false, ...getOptions(this) }
 
     // expose diagnostics
     if (diagnostics && diagnostics.length) {
-        const formattedDiagnostics = useColoredOutput && loaderOptions.colors ?
+        const formattedDiagnostics = loaderOptions.colors ?
             ts.formatDiagnosticsWithColorAndContext(diagnostics, formatDiagnosticsHost) :
             ts.formatDiagnostics(diagnostics, formatDiagnosticsHost)
 
