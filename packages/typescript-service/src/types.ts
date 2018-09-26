@@ -89,3 +89,10 @@ export interface ITranspilationOutput {
     /** Transpilation process diagnostics  */
     diagnostics?: ts.Diagnostic[]
 }
+
+export interface ITsConfigLoadResult {
+    diagnostics: ts.Diagnostic[],
+    fileNames: string[],
+    options: ts.CompilerOptions,
+    languageService: ts.LanguageService
+}

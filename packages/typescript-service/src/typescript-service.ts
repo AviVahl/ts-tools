@@ -1,5 +1,5 @@
 import * as ts from 'typescript'
-import { ITypeScriptServiceHost, ITranspilationOutput } from './types'
+import { ITypeScriptServiceHost, ITranspilationOutput, ITsConfigLoadResult } from './types'
 
 export interface ITypeScriptServiceOptions {
     host: ITypeScriptServiceHost
@@ -113,14 +113,7 @@ export class TypeScriptService {
      * A language service will be registered for th
      * @param configFilePath absolute path to the configuration file (usually `tsconfig.json`)
      */
-    public loadConfigFile(
-        configFilePath: string
-    ): {
-            diagnostics: ts.Diagnostic[],
-            fileNames: string[],
-            options: ts.CompilerOptions,
-            languageService: ts.LanguageService
-        } {
+    public loadConfigFile(configFilePath: string): ITsConfigLoadResult {
 
         const { host, overrideOptions } = this.options
         const jsonSourceFile = ts.readJsonConfigFile(configFilePath, host.readFile)
