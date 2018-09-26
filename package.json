@@ -22,7 +22,7 @@
     "@types/react-dom": "^16.0.7",
     "@types/source-map-support": "^0.4.1",
     "@types/webpack": "^4.4.12",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "lerna": "^3.4.0",
     "memory-fs": "^0.4.1",
     "mocha": "^5.2.0",
@@ -32,7 +32,7 @@
     "rimraf": "^2.6.2",
     "tslint": "^5.11.0",
     "typescript": "~3.0.3",
-    "webpack": "^4.19.1"
+    "webpack": "^4.20.2"
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
