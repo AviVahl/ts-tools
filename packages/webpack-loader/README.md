@@ -30,11 +30,52 @@ exports.resolve = {
 }
 ```
 
-## Limitations
+## Options
 
-Not implemented *yet*:
-- `compilerOptions.paths`, when used for abstractions. Type checking will be fine, but transpiled sources will not point to anything webpack can understand out of the box.
-- Does not support other loaders before it. Reads sources directly from the file system.
+```ts
+interface ITypeScriptLoaderOptions {
+    /**
+     * Expose diagnostics as webpack warnings.
+     *
+     * @default false exposes diagnostics as webpack errors
+     */
+    warnOnly?: boolean
+
+    /**
+     * Use colors when formatting diagnostics.
+     *
+     * @default true (if current platform supports it)
+     */
+    colors?: boolean
+}
+```
+
+Options can be provided via the webpack configuration:
+```ts
+exports.module = {
+    rules: [
+        {
+            test: /\.tsx?$/,
+            loader: '@ts-tools/webpack-loader',
+            options: {
+                colors: false,
+                warnOnly: true
+            }
+        }
+    ]
+}
+```
+
+## Known limitations
+
+- The following `compilerOptions`:
+  - `allowJs` and `checkJs`
+  - `baseUrl` and `paths`, when used for custom resolution of runtime abstractions (types work)
+  - `composite` projects.
+- Does not support other loaders before it, as it reads sources directly from the file system.
+- Using the loader to transpile `.js` files in `node_modules` will cause excessive lookups of `tsconfig`.
+- `"module": "esnext"` is always forced, as `webpack` understands it best (allows tree shaking and dynamic chunks). This can cause issues for projects using `import A = require('a')`.
+- Sourcemaps are always forced on on during tranpilation, even if webpack has `devtool: false`. 
 
 ## Similar projects
 

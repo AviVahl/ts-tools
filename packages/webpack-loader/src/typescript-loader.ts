@@ -56,10 +56,22 @@ const platformHasColors = !!ts.sys.writeOutputIsTTY && ts.sys.writeOutputIsTTY()
 const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)
 
 /**
- * Loader options that con be provided from the webpack config or specifc request query string
+ * Loader options which can be provided via webpack configuration
+ * or a specific request query string
  */
 export interface ITypeScriptLoaderOptions {
+    /**
+     * Expose diagnostics as webpack warnings.
+     *
+     * @default false exposes diagnostics as webpack errors
+     */
     warnOnly?: boolean
+
+    /**
+     * Use colors when formatting diagnostics.
+     *
+     * @default true (if current platform supports it)
+     */
     colors?: boolean
 }
 
