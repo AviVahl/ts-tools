@@ -1,5 +1,5 @@
 import * as ts from 'typescript'
-import { ITypeScriptServiceHost, ITranspilationOutput, ITsConfigLoadResult } from './types'
+import { ITypeScriptServiceHost, ITranspilationOutput, ITsConfigLoadResult, ILanguageServiceInstance } from './types'
 
 export interface ITypeScriptServiceOptions {
     host: ITypeScriptServiceHost
@@ -51,8 +51,8 @@ export class TypeScriptService {
     // resolved options used by the service
     public options: Required<ITypeScriptServiceOptions>
 
-    // a map holding `tsconfig path` to a `language service` instance
-    public runningServices = new Map<string, ts.LanguageService>()
+    // a map holding `tsconfig path` to a `language service instance`
+    public runningServices = new Map<string, ILanguageServiceInstance>()
 
     // we might create more than a single language service per service, so we share documents between them
     private documentRegistry: ts.DocumentRegistry
@@ -76,10 +76,9 @@ export class TypeScriptService {
      * @param filePath absolute path of the source file to transpile
      */
     public transpileFile(filePath: string): ITranspilationOutput {
-        for (const existingLanguageService of this.runningServices.values()) {
-            const program = existingLanguageService.getProgram()
-            if (program && program.getRootFileNames().includes(filePath)) {
-                return this.transpileUsingLanguageService(filePath, existingLanguageService)
+        for (const existingInstance of this.runningServices.values()) {
+            if (existingInstance.rootfileNames.has(filePath)) {
+                return this.transpileUsingLanguageService(filePath, existingInstance.languageService)
             }
         }
 
@@ -119,10 +118,10 @@ export class TypeScriptService {
         const jsonSourceFile = ts.readJsonConfigFile(configFilePath, host.readFile)
         const configDirectoryPath = host.dirname(configFilePath)
 
-        const { fileNames: originalFileNames, options, errors: diagnostics } =
+        const { fileNames, options, errors: diagnostics } =
             ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, host, configDirectoryPath)
 
-        const fileNames = originalFileNames.map(host.normalize)
+        const rootfileNames = new Set(fileNames.map(host.normalize))
 
         // create the host
         const languageServiceHost = this.createLanguageServiceHost(fileNames, {
@@ -134,7 +133,7 @@ export class TypeScriptService {
         const languageService = ts.createLanguageService(languageServiceHost, this.documentRegistry)
 
         // register it in our running services
-        this.runningServices.set(configFilePath, languageService)
+        this.runningServices.set(configFilePath, { languageService, rootfileNames })
 
         return {
             diagnostics,

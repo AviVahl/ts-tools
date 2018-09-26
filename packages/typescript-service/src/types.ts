@@ -96,3 +96,8 @@ export interface ITsConfigLoadResult {
     options: ts.CompilerOptions,
     languageService: ts.LanguageService
 }
+
+export interface ILanguageServiceInstance {
+    languageService: ts.LanguageService
+    rootfileNames: ReadonlySet<string>
+}
