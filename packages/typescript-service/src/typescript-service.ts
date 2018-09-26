@@ -83,13 +83,13 @@ export class TypeScriptService {
         }
 
         const fileDirectoryPath = this.options.host.dirname(filePath)
-        const tsConfigPath = this.getTsConfigPath(fileDirectoryPath)
+        const configFilePath = this.getTsConfigPath(fileDirectoryPath)
 
-        if (!tsConfigPath) {
+        if (!configFilePath) {
             return this.transpileUsingDefaultOptions(filePath)
         }
 
-        const { fileNames, diagnostics, languageService } = this.loadConfigFile(tsConfigPath)
+        const { diagnostics, languageServiceInstance } = this.loadConfigFile(configFilePath)
 
         if (diagnostics.length) {
             return {
@@ -99,9 +99,12 @@ export class TypeScriptService {
             }
         }
 
+        // register it in our running services
+        this.runningServices.set(configFilePath, languageServiceInstance)
+
         // verify the new service includes our file
-        if (fileNames.includes(filePath)) {
-            return this.transpileUsingLanguageService(filePath, languageService)
+        if (languageServiceInstance.rootfileNames.has(filePath)) {
+            return this.transpileUsingLanguageService(filePath, languageServiceInstance.languageService)
         }
 
         return this.transpileUsingDefaultOptions(filePath)
@@ -118,28 +121,23 @@ export class TypeScriptService {
         const jsonSourceFile = ts.readJsonConfigFile(configFilePath, host.readFile)
         const configDirectoryPath = host.dirname(configFilePath)
 
-        const { fileNames, options, errors: diagnostics } =
+        const { fileNames, options: compilerOptions, errors: diagnostics } =
             ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, host, configDirectoryPath)
-
-        const rootfileNames = new Set(fileNames.map(host.normalize))
+        const normalizedFileNames = fileNames.map(host.normalize)
 
         // create the host
         const languageServiceHost = this.createLanguageServiceHost(fileNames, {
-            ...options,
+            ...compilerOptions,
             ...overrideOptions
         })
 
         // create the language service using the host
         const languageService = ts.createLanguageService(languageServiceHost, this.documentRegistry)
 
-        // register it in our running services
-        this.runningServices.set(configFilePath, { languageService, rootfileNames })
-
         return {
             diagnostics,
-            fileNames,
-            options,
-            languageService
+            compilerOptions,
+            languageServiceInstance: { languageService, rootfileNames: new Set(normalizedFileNames) }
         }
     }
 
