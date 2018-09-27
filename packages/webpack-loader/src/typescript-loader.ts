@@ -1,59 +1,15 @@
-import { normalize, dirname } from 'path'
 import * as ts from 'typescript'
-import { TypeScriptService, ITypeScriptServiceHost } from '@ts-tools/typescript-service'
+import { TypeScriptService } from '@ts-tools/typescript-service'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
-const { sys } = ts
-
-const sourceMappingPrefix = `//# sourceMappingURL=`
-
-const noConfigOptions: ts.CompilerOptions = {
-    target: ts.ScriptTarget.ES2017,
-    module: ts.ModuleKind.ESNext,
-    sourceMap: true,
-    inlineSources: true,
-    jsx: ts.JsxEmit.React, // opinionated, but we want built-in support for .tsx without tsconfig.json
-}
-
-const overrideOptions: ts.CompilerOptions = {
-    // webpack supports it and we want tree shaking out of the box
-    module: ts.ModuleKind.ESNext,
-
-    // make sure source maps work out-of-the-box
-    sourceMap: true,
-    inlineSourceMap: false,
-    inlineSources: true,
-    sourceRoot: undefined,
-    mapRoot: undefined,
-
-    // we are not going to generate .d.ts files for the bundle
-    declaration: false,
-    declarationMap: false,
-
-    outDir: undefined,
-    outFile: undefined
-}
-
-const host: ITypeScriptServiceHost = {
-    directoryExists: sys.directoryExists,
-    fileExists: sys.fileExists,
-    getCurrentDirectory: sys.getCurrentDirectory,
-    getDefaultLibFilePath: ts.getDefaultLibFilePath,
-    getDirectories: sys.getDirectories,
-    getModifiedTime: sys.getModifiedTime!,
-    newLine: sys.newLine,
-    readDirectory: sys.readDirectory,
-    readFile: sys.readFile,
-    realpath: sys.realpath,
-    useCaseSensitiveFileNames: !sys.fileExists(__filename.toUpperCase()),
-    dirname,
-    normalize
-}
-
-const tsService = new TypeScriptService({ noConfigOptions, overrideOptions, host })
-
-const platformHasColors = !!ts.sys.writeOutputIsTTY && ts.sys.writeOutputIsTTY()
-const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)
+import {
+    noConfigOptions,
+    overrideOptions,
+    nativeNodeHost,
+    sourceMappingPrefix,
+    platformHasColors,
+    formatDiagnosticsHost
+} from './constants'
 
 /**
  * Loader options which can be provided via webpack configuration
@@ -73,7 +29,16 @@ export interface ITypeScriptLoaderOptions {
      * @default true (if current platform supports it)
      */
     colors?: boolean
+
+    /**
+     * Keys to override in the `compilerOptions` section of the
+     * `tsconfig.json` file. This is not the `ts.CompilerOptions` interface,
+     * the values there are resolved.
+     */
+    compilerOptions?: object
 }
+
+const tsService = new TypeScriptService({ noConfigOptions, overrideOptions, host: nativeNodeHost })
 
 export const typescriptLoader: loader.Loader = function(/* source */) {
     // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
