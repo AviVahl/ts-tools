@@ -1,59 +1,9 @@
-import { normalize, dirname } from 'path'
 import * as ts from 'typescript'
 import * as sourceMapSupport from 'source-map-support'
-import { TypeScriptService, ITranspilationOptions } from '@ts-tools/typescript-service'
-const { sys } = ts
+import { TypeScriptService } from '@ts-tools/typescript-service'
+import { nativeNodeHost, transpilationOptions, inlineMapPrefix, tsFormatFn, formatDiagnosticsHost } from './constants'
 
-const inlineMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
-
-// Node 8+ compatible compiler options
-const noConfigOptions: ts.CompilerOptions = {
-    target: ts.ScriptTarget.ES2017,
-    module: ts.ModuleKind.CommonJS,
-    esModuleInterop: true,
-    inlineSourceMap: true,
-    jsx: ts.JsxEmit.React, // opinionated, but we want built-in support for .tsx without tsconfig.json
-}
-
-const tsConfigOverride = {
-    module: ts.ModuleKind.CommonJS,
-
-    sourceMap: false,
-    inlineSourceMap: true,
-    inlineSources: false,
-    sourceRoot: undefined,
-    mapRoot: undefined,
-
-    declaration: false,
-    declarationMap: false,
-
-    outDir: undefined,
-    outFile: undefined
-}
-
-const transpilationOptions: ITranspilationOptions = { noConfigOptions, tsConfigOverride }
-
-const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
-const tsFormatFn = platformHasColors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
-
-const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)
 export const formatDiagnostics = (diagnostics: ts.Diagnostic[]) => tsFormatFn(diagnostics, formatDiagnosticsHost)
-
-const nativeNodeHost = {
-    directoryExists: sys.directoryExists,
-    fileExists: sys.fileExists,
-    getCurrentDirectory: sys.getCurrentDirectory,
-    getDefaultLibFilePath: ts.getDefaultLibFilePath,
-    getDirectories: sys.getDirectories,
-    getModifiedTime: sys.getModifiedTime!,
-    newLine: sys.newLine,
-    readDirectory: sys.readDirectory,
-    readFile: sys.readFile,
-    realpath: sys.realpath,
-    useCaseSensitiveFileNames: !sys.fileExists(__filename.toUpperCase()),
-    dirname,
-    normalize
-}
 
 export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnostic[]) => void) {
 
