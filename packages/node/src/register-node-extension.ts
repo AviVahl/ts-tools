@@ -1,13 +1,13 @@
 import { normalize, dirname } from 'path'
 import * as ts from 'typescript'
 import * as sourceMapSupport from 'source-map-support'
-import { TypeScriptService } from '@ts-tools/typescript-service'
+import { TypeScriptService, ITranspilationOptions } from '@ts-tools/typescript-service'
 const { sys } = ts
 
 const inlineMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
 
 // Node 8+ compatible compiler options
-const nodeCompilerOptions: ts.CompilerOptions = {
+const noConfigOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES2017,
     module: ts.ModuleKind.CommonJS,
     esModuleInterop: true,
@@ -15,11 +15,45 @@ const nodeCompilerOptions: ts.CompilerOptions = {
     jsx: ts.JsxEmit.React, // opinionated, but we want built-in support for .tsx without tsconfig.json
 }
 
+const tsConfigOverride = {
+    module: ts.ModuleKind.CommonJS,
+
+    sourceMap: false,
+    inlineSourceMap: true,
+    inlineSources: false,
+    sourceRoot: undefined,
+    mapRoot: undefined,
+
+    declaration: false,
+    declarationMap: false,
+
+    outDir: undefined,
+    outFile: undefined
+}
+
+const transpilationOptions: ITranspilationOptions = { noConfigOptions, tsConfigOverride }
+
 const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
 const tsFormatFn = platformHasColors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
 
-const formatDiagnosticsHost = ts.createCompilerHost(nodeCompilerOptions)
+const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)
 export const formatDiagnostics = (diagnostics: ts.Diagnostic[]) => tsFormatFn(diagnostics, formatDiagnosticsHost)
+
+const nativeNodeHost = {
+    directoryExists: sys.directoryExists,
+    fileExists: sys.fileExists,
+    getCurrentDirectory: sys.getCurrentDirectory,
+    getDefaultLibFilePath: ts.getDefaultLibFilePath,
+    getDirectories: sys.getDirectories,
+    getModifiedTime: sys.getModifiedTime!,
+    newLine: sys.newLine,
+    readDirectory: sys.readDirectory,
+    readFile: sys.readFile,
+    realpath: sys.realpath,
+    useCaseSensitiveFileNames: !sys.fileExists(__filename.toUpperCase()),
+    dirname,
+    normalize
+}
 
 export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnostic[]) => void) {
 
@@ -27,39 +61,7 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
     const sourceMaps = new Map<string, string>()
 
     // our service instance, to be used by the require hook
-    const tsService = new TypeScriptService({
-        host: {
-            directoryExists: sys.directoryExists,
-            fileExists: sys.fileExists,
-            getCurrentDirectory: sys.getCurrentDirectory,
-            getDefaultLibFilePath: ts.getDefaultLibFilePath,
-            getDirectories: sys.getDirectories,
-            getModifiedTime: sys.getModifiedTime!,
-            newLine: sys.newLine,
-            readDirectory: sys.readDirectory,
-            readFile: sys.readFile,
-            realpath: sys.realpath,
-            useCaseSensitiveFileNames: !sys.fileExists(__filename.toUpperCase()),
-            dirname,
-            normalize
-        },
-        noConfigOptions: nodeCompilerOptions,
-        overrideOptions: {
-            module: ts.ModuleKind.CommonJS,
-
-            sourceMap: false,
-            inlineSourceMap: true,
-            inlineSources: false,
-            sourceRoot: undefined,
-            mapRoot: undefined,
-
-            declaration: false,
-            declarationMap: false,
-
-            outDir: undefined,
-            outFile: undefined
-        }
-    })
+    const tsService = new TypeScriptService(nativeNodeHost)
 
     // connects source maps of the service to source-map-support
     sourceMapSupport.install({
@@ -73,7 +75,7 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
     // our require extension transpiles the file to js using the service
     // and then runs the resulting js like any regular js
     function requireExtension(nodeModule: NodeModule, filePath: string): void {
-        const { diagnostics, outputText } = tsService.transpileFile(filePath)
+        const { diagnostics, outputText } = tsService.transpileFile(filePath, transpilationOptions)
 
         if (diagnostics && diagnostics.length && onDiagnostics) {
             onDiagnostics(diagnostics)

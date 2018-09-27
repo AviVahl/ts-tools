@@ -90,13 +90,7 @@ export interface ITranspilationOutput {
     diagnostics?: ts.Diagnostic[]
 }
 
-export interface ITsConfigLoadResult {
-    diagnostics: ts.Diagnostic[],
-    compilerOptions: ts.CompilerOptions,
-    languageServiceInstance: ILanguageServiceInstance
-}
-
 export interface ILanguageServiceInstance {
     languageService: ts.LanguageService
-    rootfileNames: ReadonlySet<string>
+    rootFileNames: ReadonlySet<string>
 }

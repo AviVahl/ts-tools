@@ -1,6 +1,6 @@
 import * as ts from 'typescript'
 import { normalize, dirname } from 'path'
-import { ITypeScriptServiceHost } from '@ts-tools/typescript-service'
+import { ITypeScriptServiceHost, ITranspilationOptions } from '@ts-tools/typescript-service'
 const { sys } = ts
 
 export const noConfigOptions: ts.CompilerOptions = {
@@ -11,7 +11,7 @@ export const noConfigOptions: ts.CompilerOptions = {
     jsx: ts.JsxEmit.React, // opinionated, but we want built-in support for .tsx without tsconfig.json
 }
 
-export const overrideOptions: ts.CompilerOptions = {
+export const tsConfigOverride: ts.CompilerOptions = {
     // webpack supports it and we want tree shaking out of the box
     module: ts.ModuleKind.ESNext,
 
@@ -28,6 +28,11 @@ export const overrideOptions: ts.CompilerOptions = {
 
     outDir: undefined,
     outFile: undefined
+}
+
+export const transpilationOptions: ITranspilationOptions = {
+    tsConfigOverride,
+    noConfigOptions
 }
 
 export const nativeNodeHost: ITypeScriptServiceHost = {

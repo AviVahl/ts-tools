@@ -3,12 +3,11 @@ import { TypeScriptService } from '@ts-tools/typescript-service'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
 import {
-    noConfigOptions,
-    overrideOptions,
     nativeNodeHost,
     sourceMappingPrefix,
     platformHasColors,
-    formatDiagnosticsHost
+    formatDiagnosticsHost,
+    transpilationOptions
 } from './constants'
 
 /**
@@ -38,7 +37,7 @@ export interface ITypeScriptLoaderOptions {
     compilerOptions?: object
 }
 
-const tsService = new TypeScriptService({ noConfigOptions, overrideOptions, host: nativeNodeHost })
+const tsService = new TypeScriptService(nativeNodeHost)
 
 export const typescriptLoader: loader.Loader = function(/* source */) {
     // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
@@ -47,7 +46,7 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
     // this also means we do not support other loaders before us
     // not ideal, but works for most use cases
     // will be changed in near future
-    const { diagnostics, outputText, sourceMapText } = tsService.transpileFile(this.resourcePath)
+    const { diagnostics, outputText, sourceMapText } = tsService.transpileFile(this.resourcePath, transpilationOptions)
 
     // webpack's recommended method of parsing loader options, with our defaults
     const loaderOptions: ITypeScriptLoaderOptions = { colors: platformHasColors, warnOnly: false, ...getOptions(this) }

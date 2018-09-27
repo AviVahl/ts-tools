@@ -1,42 +1,36 @@
 import * as ts from 'typescript'
-import { ITypeScriptServiceHost, ITranspilationOutput, ITsConfigLoadResult, ILanguageServiceInstance } from './types'
+import { ITypeScriptServiceHost, ITranspilationOutput, ILanguageServiceInstance } from './types'
 
 export interface ITypeScriptServiceOptions {
-    host: ITypeScriptServiceHost
-
     /**
      * TypeScript configuration file name.
      *
      * @default 'tsconfig.json'
      */
-    tsconfigFileName?: string,
+    tsconfigFileName?: string
 
     /**
-     * Compiler options to use when transpiling files using tsconfig.
-     * Overrides options defined in `tsconfig.json` files.
+     * Transformers to apply during transpilation.
      *
-     * @default {}
+     * @param resolvedOptions resolved compiler options (user + override)
+     * @param userOptions user's own tsconfig options, if found
      */
-    overrideOptions?: ts.CompilerOptions
-
-    /**
-     * Default compiler options to use when no tsconfig is found.
-     *
-     * @default {}
-     */
-    noConfigOptions?: ts.CompilerOptions
-
-    /**
-     * Transformers to apply during transpilation
-     */
-    customTransformers?: ts.CustomTransformers
+    getCustomTransformers?(
+        options?: ts.CompilerOptions
+    ): ts.CustomTransformers | undefined
 }
 
-const defaultOptions = {
-    tsconfigFileName: 'tsconfig.json',
-    overrideOptions: {},
-    noConfigOptions: {},
-    customTransformers: {}
+export interface ITranspilationOptions {
+    /**
+     * Compiler options to override when transpiling files using
+     * found `tsconfig.json`.
+     */
+    tsConfigOverride?: ts.CompilerOptions
+
+    /**
+     * Compiler options to use when no tsconfig is found.
+     */
+    noConfigOptions?: ts.CompilerOptions
 }
 
 /**
@@ -48,8 +42,7 @@ const defaultOptions = {
  * new TypeScriptService({ tsconfigFileName: 'tsconfig.test.json' })
  */
 export class TypeScriptService {
-    // resolved options used by the service
-    public options: Required<ITypeScriptServiceOptions>
+    public serviceOptions: ITypeScriptServiceOptions
 
     // a map holding `tsconfig path` to a `language service instance`
     public runningServices = new Map<string, ILanguageServiceInstance>()
@@ -60,14 +53,11 @@ export class TypeScriptService {
     // cache of `directory path` to `tsconfig lookup result`, to save disk operations
     private directoryToTsConfig = new Map<string, string | undefined>()
 
-    constructor(options: ITypeScriptServiceOptions) {
-        this.options = { ...defaultOptions, ...options }
+    constructor(private host: ITypeScriptServiceHost, options?: ITypeScriptServiceOptions) {
+        this.serviceOptions = { tsconfigFileName: 'tsconfig.json', ...options }
 
-        const { useCaseSensitiveFileNames, getCurrentDirectory } = this.options.host
-        this.documentRegistry = ts.createDocumentRegistry(
-            useCaseSensitiveFileNames,
-            getCurrentDirectory()
-        )
+        const { useCaseSensitiveFileNames, getCurrentDirectory } = this.host
+        this.documentRegistry = ts.createDocumentRegistry(useCaseSensitiveFileNames, getCurrentDirectory())
     }
 
     /**
@@ -75,70 +65,58 @@ export class TypeScriptService {
      *
      * @param filePath absolute path of the source file to transpile
      */
-    public transpileFile(filePath: string): ITranspilationOutput {
+    public transpileFile(
+        filePath: string,
+        { noConfigOptions, tsConfigOverride }: ITranspilationOptions = {}
+    ): ITranspilationOutput {
         for (const existingInstance of this.runningServices.values()) {
-            if (existingInstance.rootfileNames.has(filePath)) {
+            if (existingInstance.rootFileNames.has(filePath)) {
                 return this.transpileUsingLanguageService(filePath, existingInstance.languageService)
             }
         }
 
-        const fileDirectoryPath = this.options.host.dirname(filePath)
+        const fileDirectoryPath = this.host.dirname(filePath)
         const configFilePath = this.getTsConfigPath(fileDirectoryPath)
 
         if (!configFilePath) {
-            return this.transpileUsingDefaultOptions(filePath)
+            return this.transpileIsolated(filePath, noConfigOptions)
         }
+        const { errors, fileNames, options: userOptions } = this.loadConfigFile(configFilePath)
 
-        const { diagnostics, languageServiceInstance } = this.loadConfigFile(configFilePath)
-
-        if (diagnostics.length) {
+        if (errors.length) {
             return {
-                diagnostics,
+                diagnostics: errors,
                 filePath,
                 outputText: ''
             }
         }
 
-        // register it in our running services
-        this.runningServices.set(configFilePath, languageServiceInstance)
+        const resolvedOptions: ts.CompilerOptions = { ...userOptions, ...tsConfigOverride }
+        const languageServiceHost = this.createLanguageServiceHost(fileNames, resolvedOptions)
+        const languageService = ts.createLanguageService(languageServiceHost, this.documentRegistry)
 
-        // verify the new service includes our file
-        if (languageServiceInstance.rootfileNames.has(filePath)) {
-            return this.transpileUsingLanguageService(filePath, languageServiceInstance.languageService)
+        const rootFileNames = new Set(fileNames.map(this.host.normalize))
+
+        // register it in our running services
+        this.runningServices.set(configFilePath, { languageService, rootFileNames })
+
+        if (rootFileNames.has(filePath)) {
+            return this.transpileUsingLanguageService(filePath, languageService)
         }
 
-        return this.transpileUsingDefaultOptions(filePath)
+        return this.transpileIsolated(filePath, noConfigOptions)
     }
 
     /**
-     * Load a `tsconfig.json` file by providing a path to it.
-     * A language service will be registered for th
-     * @param configFilePath absolute path to the configuration file (usually `tsconfig.json`)
+     * Load a tsconfig file pointed to by `configFilePath`.
+     *
+     * @param configFilePath absolute path to the configuration file
      */
-    public loadConfigFile(configFilePath: string): ITsConfigLoadResult {
-
-        const { host, overrideOptions } = this.options
+    private loadConfigFile(configFilePath: string): ts.ParsedCommandLine {
+        const { host } = this
         const jsonSourceFile = ts.readJsonConfigFile(configFilePath, host.readFile)
         const configDirectoryPath = host.dirname(configFilePath)
-
-        const { fileNames, options: compilerOptions, errors: diagnostics } =
-            ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, host, configDirectoryPath)
-        const normalizedFileNames = fileNames.map(host.normalize)
-
-        // create the host
-        const languageServiceHost = this.createLanguageServiceHost(fileNames, {
-            ...compilerOptions,
-            ...overrideOptions
-        })
-
-        // create the language service using the host
-        const languageService = ts.createLanguageService(languageServiceHost, this.documentRegistry)
-
-        return {
-            diagnostics,
-            compilerOptions,
-            languageServiceInstance: { languageService, rootfileNames: new Set(normalizedFileNames) }
-        }
+        return ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, host, configDirectoryPath)
     }
 
     private transpileUsingLanguageService(
@@ -198,12 +176,11 @@ export class TypeScriptService {
         }
     }
 
-    private transpileUsingDefaultOptions(
-        filePath: string
+    private transpileIsolated(
+        filePath: string,
+        compilerOptions?: ts.CompilerOptions
     ): ITranspilationOutput {
-        const { host, noConfigOptions: compilerOptions, customTransformers: transformers } = this.options
-
-        const tsCode = host.readFile(filePath)
+        const tsCode = this.host.readFile(filePath)
         if (!tsCode) {
             return {
                 filePath,
@@ -213,11 +190,11 @@ export class TypeScriptService {
                 outputText: ''
             }
         }
-
+        const { getCustomTransformers } = this.serviceOptions
         const { outputText, diagnostics, sourceMapText } = ts.transpileModule(tsCode, {
             fileName: filePath,
             compilerOptions,
-            transformers
+            transformers: getCustomTransformers && getCustomTransformers(compilerOptions)
         })
 
         return {
@@ -239,11 +216,8 @@ export class TypeScriptService {
         if (this.directoryToTsConfig.has(baseDirectory)) {
             return this.directoryToTsConfig.get(baseDirectory)
         }
-        const tsConfigPath = ts.findConfigFile(
-            baseDirectory,
-            this.options.host.fileExists,
-            this.options.tsconfigFileName
-        )
+        const { tsconfigFileName } = this.serviceOptions
+        const tsConfigPath = ts.findConfigFile(baseDirectory, this.host.fileExists, tsconfigFileName)
         this.directoryToTsConfig.set(baseDirectory, tsConfigPath)
         return tsConfigPath
     }
@@ -252,8 +226,9 @@ export class TypeScriptService {
         fileNames: string[],
         compilerOptions: ts.CompilerOptions
     ): ts.LanguageServiceHost {
+        const { getCustomTransformers } = this.serviceOptions
+        const customTransformers = getCustomTransformers && getCustomTransformers(compilerOptions)
 
-        const { host, customTransformers } = this.options
         const {
             newLine,
             getModifiedTime,
@@ -266,7 +241,7 @@ export class TypeScriptService {
             useCaseSensitiveFileNames,
             getDirectories,
             realpath
-        } = host
+        } = this.host
 
         return {
             getCompilationSettings: () => compilerOptions,
