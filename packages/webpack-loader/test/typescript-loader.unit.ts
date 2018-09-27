@@ -49,7 +49,7 @@ describe('webpack loader', function() {
 
         expect(stats.hasErrors(), statsText).to.equal(true)
         expect(stats.hasWarnings(), statsText).to.equal(false)
-        expect(statsText).to.contain(`should-error.ts(4,34): error TS2304: Cannot find name 'describe'`)
+        expect(statsText).to.contain(`should-error.ts(4,34): error TS2582: Cannot find name 'describe'`)
         expect(statsText).to.not.contain(`passes-type-check.ts(`)
     })
 
