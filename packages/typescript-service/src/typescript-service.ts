@@ -12,11 +12,10 @@ export interface ITypeScriptServiceOptions {
     /**
      * Transformers to apply during transpilation.
      *
-     * @param resolvedOptions resolved compiler options (user + override)
      * @param userOptions user's own tsconfig options, if found
      */
     getCustomTransformers?(
-        options?: ts.CompilerOptions
+        userOptions?: ts.CompilerOptions
     ): ts.CustomTransformers | undefined
 }
 
@@ -92,7 +91,10 @@ export class TypeScriptService {
         }
 
         const resolvedOptions: ts.CompilerOptions = { ...userOptions, ...tsConfigOverride }
-        const languageServiceHost = this.createLanguageServiceHost(fileNames, resolvedOptions)
+        const { getCustomTransformers } = this.serviceOptions
+        const customTransformers = getCustomTransformers && getCustomTransformers(userOptions)
+
+        const languageServiceHost = this.createLanguageServiceHost(fileNames, resolvedOptions, customTransformers)
         const languageService = ts.createLanguageService(languageServiceHost, this.documentRegistry)
 
         const rootFileNames = new Set(fileNames.map(this.host.normalize))
@@ -194,7 +196,7 @@ export class TypeScriptService {
         const { outputText, diagnostics, sourceMapText } = ts.transpileModule(tsCode, {
             fileName: filePath,
             compilerOptions,
-            transformers: getCustomTransformers && getCustomTransformers(compilerOptions)
+            transformers: getCustomTransformers && getCustomTransformers()
         })
 
         return {
@@ -224,10 +226,9 @@ export class TypeScriptService {
 
     private createLanguageServiceHost(
         fileNames: string[],
-        compilerOptions: ts.CompilerOptions
+        compilerOptions: ts.CompilerOptions,
+        customTransformers?: ts.CustomTransformers
     ): ts.LanguageServiceHost {
-        const { getCustomTransformers } = this.serviceOptions
-        const customTransformers = getCustomTransformers && getCustomTransformers(compilerOptions)
 
         const {
             newLine,
