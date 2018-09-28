@@ -55,6 +55,25 @@ import { transpileModule } from 'typescript'
 const transpileOutput = transpileModule(code, { transformers: { before: [deadIfsTransformer] } })
 ```
 
+### Remap Imports Transformer
+
+Remaps targets of `esnext`'s static or dynamic imports/re-exports.
+
+```ts
+import { createRemapImportsTransformer } from '@ts-tools/robotrix'
+import { transpileModule } from 'typescript'
+
+const remapImportsTransformer = createRemapImportsTransformer({
+    remapTarget(target: string, containingFile: string): string {
+        // remaps 'lodash' to 'lodash-es'
+        // all others targets are untouched
+        return target === 'lodash' ? 'lodash-es' : target
+    }
+})
+
+const transpileOutput = transpileModule(code, { transformers: { before: [remapImportsTransformer] } })
+```
+
 ### CommonJS to ESM Transformer
 
 Transforms CommonJS calls/exports to ESM syntax.
