@@ -1,8 +1,8 @@
 import { normalize, dirname } from 'path'
 import * as ts from 'typescript'
-const { sys } = ts
-
 import { ITranspilationOptions } from '@ts-tools/typescript-service'
+
+const { sys } = ts
 
 export const inlineMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
 
