@@ -82,14 +82,12 @@ export class TypeScriptService {
             }
         }
 
-        const languageServiceHost = this.createLanguageServiceHost(fileNames, transpileOptions, userOptions)
-        const documentRegistry = this.getDocumentRegistry(host.cwd, host.isCaseSensitive)
-        const languageService = ts.createLanguageService(languageServiceHost, documentRegistry)
-
-        const rootFileNames = new Set(fileNames.map(host.normalize))
-
-        // register it in our running services
-        this.runningServices.set(configFilePath, { languageService, rootFileNames })
+        const { languageService, rootFileNames } = this.createLanguageService(
+            configFilePath,
+            fileNames,
+            transpileOptions,
+            userOptions
+        )
 
         if (rootFileNames.has(filePath)) {
             return this.transpileUsingLanguageService(filePath, languageService)
@@ -223,12 +221,13 @@ export class TypeScriptService {
         return tsConfigPath
     }
 
-    private createLanguageServiceHost(
+    private createLanguageService(
+        configFilePath: string,
         fileNames: string[],
         transpileOptions: ITranspilationOptions,
         userOptions: ts.CompilerOptions
-    ): ts.LanguageServiceHost {
-        const {host, getCustomTransformers, tsConfigOverride} = transpileOptions
+    ): ILanguageServiceInstance {
+        const { host, getCustomTransformers, tsConfigOverride } = transpileOptions
         const {
             newLine,
             getModifiedTime,
@@ -244,9 +243,9 @@ export class TypeScriptService {
         } = host
 
         const customTransformers = getCustomTransformers && getCustomTransformers(userOptions)
-        const resolvedOptions: ts.CompilerOptions = {...userOptions, ...tsConfigOverride}
+        const resolvedOptions: ts.CompilerOptions = { ...userOptions, ...tsConfigOverride }
 
-        return {
+        const languageServiceHost: ts.LanguageServiceHost = {
             getCompilationSettings: () => resolvedOptions,
             getNewLine: () => {
                 switch (resolvedOptions.newLine) {
@@ -275,6 +274,17 @@ export class TypeScriptService {
             realpath,
             getCustomTransformers: () => customTransformers
         }
+
+        const documentRegistry = this.getDocumentRegistry(host.cwd, host.isCaseSensitive)
+
+        const serviceInstance: ILanguageServiceInstance = {
+            rootFileNames: new Set(fileNames.map(host.normalize)),
+            languageService: ts.createLanguageService(languageServiceHost, documentRegistry)
+        }
+
+        this.runningServices.set(configFilePath, serviceInstance)
+
+        return serviceInstance
     }
 
     private getDocumentRegistry(cwd: string, isCaseSensitive: boolean): ts.DocumentRegistry {
