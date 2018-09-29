@@ -3,11 +3,10 @@ import { TypeScriptService } from '@ts-tools/typescript-service'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
 import {
-    nativeNodeHost,
-    sourceMappingPrefix,
+    externalSourceMapPrefix,
     platformHasColors,
     formatDiagnosticsHost,
-    transpilationOptions
+    transpilationOptions,
 } from './constants'
 
 /**
@@ -37,7 +36,7 @@ export interface ITypeScriptLoaderOptions {
     compilerOptions?: object
 }
 
-const tsService = new TypeScriptService(nativeNodeHost)
+const tsService = new TypeScriptService()
 
 export const typescriptLoader: loader.Loader = function(/* source */) {
     // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
@@ -72,7 +71,7 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         rawSourceMap.sources[0] = getRemainingRequest(this)
     }
 
-    const sourceMappingIdx = outputText.lastIndexOf(sourceMappingPrefix)
+    const sourceMappingIdx = outputText.lastIndexOf(externalSourceMapPrefix)
 
     // provide webpack with the transpilation result
     this.callback(null, sourceMappingIdx === -1 ? outputText : outputText.slice(0, sourceMappingIdx), rawSourceMap)

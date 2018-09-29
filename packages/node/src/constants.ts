@@ -1,10 +1,6 @@
 import { normalize, dirname } from 'path'
 import * as ts from 'typescript'
-import { ITranspilationOptions } from '@ts-tools/typescript-service'
-
-const { sys } = ts
-
-export const inlineMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
+import { ITranspilationOptions, ITypeScriptServiceHost } from '@ts-tools/typescript-service'
 
 // Node 8+ compatible compiler options
 const noConfigOptions: ts.CompilerOptions = {
@@ -28,24 +24,26 @@ const tsConfigOverride = {
     outFile: undefined
 }
 
-export const transpilationOptions: ITranspilationOptions = { noConfigOptions, tsConfigOverride }
-
-const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
-export const tsFormatFn = platformHasColors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
-export const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)
-
-export const nativeNodeHost = {
-    directoryExists: sys.directoryExists,
-    fileExists: sys.fileExists,
-    getCurrentDirectory: sys.getCurrentDirectory,
+const { sys } = ts
+const nativeNodeHost: ITypeScriptServiceHost = {
+    directoryExistsSync: sys.directoryExists,
+    fileExistsSync: sys.fileExists,
+    cwd: sys.getCurrentDirectory(),
     getDefaultLibFilePath: ts.getDefaultLibFilePath,
-    getDirectories: sys.getDirectories,
+    readdirSync: sys.getDirectories,
     getModifiedTime: sys.getModifiedTime!,
     newLine: sys.newLine,
     readDirectory: sys.readDirectory,
-    readFile: sys.readFile,
-    realpath: sys.realpath,
-    useCaseSensitiveFileNames: !sys.fileExists(__filename.toUpperCase()),
+    readFileSync: sys.readFile,
+    realpathSync: sys.realpath,
+    isCaseSensitive: !sys.fileExists(__filename.toUpperCase()),
     dirname,
     normalize
 }
+
+export const transpilationOptions: ITranspilationOptions = { noConfigOptions, tsConfigOverride, host: nativeNodeHost }
+
+export const inlineSourceMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
+const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
+export const tsFormatFn = platformHasColors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
+export const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)

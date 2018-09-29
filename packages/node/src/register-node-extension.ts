@@ -1,7 +1,7 @@
 import * as ts from 'typescript'
 import * as sourceMapSupport from 'source-map-support'
 import { TypeScriptService } from '@ts-tools/typescript-service'
-import { nativeNodeHost, transpilationOptions, inlineMapPrefix, tsFormatFn, formatDiagnosticsHost } from './constants'
+import { transpilationOptions, inlineSourceMapPrefix, tsFormatFn, formatDiagnosticsHost } from './constants'
 
 export const formatDiagnostics = (diagnostics: ts.Diagnostic[]) => tsFormatFn(diagnostics, formatDiagnosticsHost)
 
@@ -11,7 +11,7 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
     const sourceMaps = new Map<string, string>()
 
     // our service instance, to be used by the require hook
-    const tsService = new TypeScriptService(nativeNodeHost)
+    const tsService = new TypeScriptService()
 
     // connects source maps of the service to source-map-support
     sourceMapSupport.install({
@@ -31,11 +31,11 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
             onDiagnostics(diagnostics)
         }
 
-        const inlineSourceMapIdx = outputText.lastIndexOf(inlineMapPrefix)
+        const inlineSourceMapIdx = outputText.lastIndexOf(inlineSourceMapPrefix)
         if (inlineSourceMapIdx !== -1) {
             sourceMaps.set(
                 filePath,
-                outputText.slice(inlineSourceMapIdx + inlineMapPrefix.length).trimRight()
+                outputText.slice(inlineSourceMapIdx + inlineSourceMapPrefix.length).trimRight()
             )
         } else {
             sourceMaps.delete(filePath)
