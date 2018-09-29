@@ -298,7 +298,7 @@ export class TypeScriptService {
         return documentRegistry
     }
 
-    private createErrorDiagnostic(messageText: string) {
+    private createErrorDiagnostic(messageText: string): ts.Diagnostic {
         return {
             messageText,
             category: ts.DiagnosticCategory.Error,
