@@ -44,7 +44,7 @@ export class TypeScriptService {
     // a map holding `tsconfig path` to a `language service instance`
     public runningServices = new Map<string, ILanguageServiceInstance>()
 
-    // we might create more than a single language service per service, so we share documents between them
+    // might create multiple language services, so share documents between them
     private documentRegistries: Map<string, ts.DocumentRegistry> = new Map()
 
     // cache of `directory path` to `tsconfig lookup result`, to save disk operations
