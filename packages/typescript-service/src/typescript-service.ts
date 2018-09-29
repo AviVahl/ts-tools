@@ -260,7 +260,7 @@ export class TypeScriptService {
             getScriptFileNames: () => fileNames,
             getScriptVersion: filePath => {
                 const modifiedTime = getModifiedTime(filePath)
-                return modifiedTime ? modifiedTime.toString() : `${Date.now()}`
+                return modifiedTime ? `${modifiedTime.getTime()}` : `${Date.now()}`
             },
             getScriptSnapshot: filePath => ts.ScriptSnapshot.fromString(readFile(filePath) || ''),
             getCurrentDirectory: () => cwd,
