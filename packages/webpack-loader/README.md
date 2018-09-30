@@ -78,7 +78,7 @@ exports.module = {
 - `"module": "esnext"` is always forced, as `webpack` understands it best (allows tree shaking and dynamic chunks). This can cause issues for projects using `import A = require('a')`. Turn on `allowSyntheticDefaultImports` and `esModuleInterop` and use import default. Webpack ensures CommonJS modules are always exposed as a default export as well.
 - Sourcemaps are always forced *on* during tranpilation, even if webpack has `devtool: false`. 
 - Declarations (and their maps) are forced *off* when bundling.
-- `.d.ts` files in `src` or `node_modules` are not being watched. Even ones that actually affect type checking result.
+- Changes in `.d.ts` files in `src` or `node_modules` will not *trigger* a rebuild of the `.ts/x` files they affect. They will, however, be up-to-date and affect type checking if such a rebuild is triggered.
 
 ## Similar projects
 
