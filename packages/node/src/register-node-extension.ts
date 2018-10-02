@@ -1,11 +1,8 @@
-import * as ts from 'typescript'
 import * as sourceMapSupport from 'source-map-support'
 import { TypeScriptService } from '@ts-tools/typescript-service'
-import { transpilationOptions, inlineSourceMapPrefix, tsFormatFn, formatDiagnosticsHost } from './constants'
+import { transpilationOptions, inlineSourceMapPrefix, tsFormatFn } from './constants'
 
-export const formatDiagnostics = (diagnostics: ts.Diagnostic[]) => tsFormatFn(diagnostics, formatDiagnosticsHost)
-
-export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnostic[]) => void) {
+export function registerNodeExtension(onDiagnostics?: (diagnosticsText: string) => void) {
 
     // a map holding `file path` to its `matching source maps` (base64-encoded, stringified JSON)
     const sourceMaps = new Map<string, string>()
@@ -25,10 +22,10 @@ export function registerNodeExtension(onDiagnostics?: (diagnostics: ts.Diagnosti
     // our require extension transpiles the file to js using the service
     // and then runs the resulting js like any regular js
     function requireExtension(nodeModule: NodeModule, filePath: string): void {
-        const { diagnostics, outputText } = tsService.transpileFile(filePath, transpilationOptions)
+        const { diagnostics, outputText, baseHost } = tsService.transpileFile(filePath, transpilationOptions)
 
         if (diagnostics && diagnostics.length && onDiagnostics) {
-            onDiagnostics(diagnostics)
+            onDiagnostics(tsFormatFn(diagnostics, baseHost))
         }
 
         const inlineSourceMapIdx = outputText.lastIndexOf(inlineSourceMapPrefix)

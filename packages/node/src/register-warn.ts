@@ -1,6 +1,6 @@
-import { registerNodeExtension, formatDiagnostics } from './register-node-extension'
+import { registerNodeExtension } from './register-node-extension'
 
-registerNodeExtension(diagnostics => {
+registerNodeExtension(diagnosticsText => {
     // tslint:disable-next-line:no-console
-    console.warn(formatDiagnostics(diagnostics))
+    console.warn(diagnosticsText)
 })

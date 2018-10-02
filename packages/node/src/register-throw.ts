@@ -1,5 +1,5 @@
-import { registerNodeExtension, formatDiagnostics } from './register-node-extension'
+import { registerNodeExtension } from './register-node-extension'
 
-registerNodeExtension(function throwDiagnostics(diagnostics) {
-    throw new Error(formatDiagnostics(diagnostics))
+registerNodeExtension(function throwDiagnostics(diagnosticsText) {
+    throw new Error(diagnosticsText)
 })

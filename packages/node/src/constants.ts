@@ -1,6 +1,5 @@
-import { normalize, dirname } from 'path'
 import * as ts from 'typescript'
-import { ITranspilationOptions, ITypeScriptServiceHost } from '@ts-tools/typescript-service'
+import { ITranspilationOptions } from '@ts-tools/typescript-service'
 
 // Node 8+ compatible compiler options
 const noConfigOptions: ts.CompilerOptions = {
@@ -24,26 +23,9 @@ const tsConfigOverride = {
     outFile: undefined
 }
 
-const { sys } = ts
-const nativeNodeHost: ITypeScriptServiceHost = {
-    directoryExistsSync: sys.directoryExists,
-    fileExistsSync: sys.fileExists,
-    cwd: sys.getCurrentDirectory(),
-    getDefaultLibFilePath: ts.getDefaultLibFilePath,
-    readdirSync: sys.getDirectories,
-    getModifiedTime: sys.getModifiedTime!,
-    newLine: sys.newLine,
-    readDirectory: sys.readDirectory,
-    readFileSync: sys.readFile,
-    realpathSync: sys.realpath,
-    isCaseSensitive: !sys.fileExists(__filename.toUpperCase()),
-    dirname,
-    normalize
-}
-
-export const transpilationOptions: ITranspilationOptions = { noConfigOptions, tsConfigOverride, host: nativeNodeHost }
+export const transpilationOptions: ITranspilationOptions = { noConfigOptions, tsConfigOverride }
 
 export const inlineSourceMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
+const { sys } = ts
 const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
 export const tsFormatFn = platformHasColors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
-export const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)
