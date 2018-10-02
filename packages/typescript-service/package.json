@@ -3,10 +3,13 @@
   "version": "0.6.0",
   "description": "TypeScript Language Services Helper in Node.",
   "main": "./cjs/index.js",
-  "types": "./cjs/index.d.ts",
+  "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
   "scripts": {
-    "clean": "rimraf ./cjs",
-    "build": "tsc -p src",
+    "clean": "rimraf ./cjs ./esm",
+    "build": "run-p build:cjs build:esm",
+    "build:cjs": "tsc -p src --outDir cjs --module commonjs",
+    "build:esm": "tsc -p src --outDir esm --module esnext",
     "lint": "tslint -p src"
   },
   "peerDependencies": {
@@ -14,6 +17,7 @@
   },
   "files": [
     "cjs",
+    "esm",
     "src"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
