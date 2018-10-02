@@ -43,6 +43,17 @@ describe('webpack loader', function() {
         )
     })
 
+    it(`exposes errors relative to webpack's context`, async () => {
+        const entry = join(fixturesRoot, 'errors', 'file-with-type-error.ts')
+        const { stats, statsText } = await bundleWithLoader({ entry, context: fixturesRoot })
+
+        expect(stats.hasErrors(), statsText).to.equal(true)
+        expect(stats.hasWarnings(), statsText).to.equal(false)
+        expect(statsText).to.contain(
+            `\nerrors/file-with-type-error.ts(1,7): error TS2322: Type '123' is not assignable to type 'string'`
+        )
+    })
+
     it('supports tsconfig.json types isolation', async () => {
         const entry = join(fixturesRoot, 'type-isolation', 'with-tsconfig-b', 'passes-type-check.ts')
         const { stats, statsText } = await bundleWithLoader({ entry })

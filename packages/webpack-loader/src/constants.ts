@@ -1,6 +1,5 @@
 import * as ts from 'typescript'
-import { normalize, dirname } from 'path'
-import { ITypeScriptServiceHost, ITranspilationOptions } from '@ts-tools/typescript-service'
+import { ITranspilationOptions } from '@ts-tools/typescript-service'
 
 const noConfigOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES2017,
@@ -29,30 +28,11 @@ const tsConfigOverride: ts.CompilerOptions = {
     outFile: undefined
 }
 
-const { sys } = ts
-const nativeNodeHost: ITypeScriptServiceHost = {
-    directoryExistsSync: sys.directoryExists,
-    fileExistsSync: sys.fileExists,
-    cwd: sys.getCurrentDirectory(),
-    getDefaultLibFilePath: ts.getDefaultLibFilePath,
-    readdirSync: sys.getDirectories,
-    getModifiedTime: sys.getModifiedTime!,
-    newLine: sys.newLine,
-    readDirectory: sys.readDirectory,
-    readFileSync: sys.readFile,
-    realpathSync: sys.realpath,
-    isCaseSensitive: !sys.fileExists(__filename.toUpperCase()),
-    dirname,
-    normalize
-}
-
 export const transpilationOptions: ITranspilationOptions = {
     tsConfigOverride,
-    noConfigOptions,
-    host: nativeNodeHost
+    noConfigOptions
 }
 
 export const externalSourceMapPrefix = `//# sourceMappingURL=`
 
 export const platformHasColors = !!ts.sys.writeOutputIsTTY && ts.sys.writeOutputIsTTY()
-export const formatDiagnosticsHost = ts.createCompilerHost(noConfigOptions)

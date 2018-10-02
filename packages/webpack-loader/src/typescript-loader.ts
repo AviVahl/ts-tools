@@ -2,12 +2,7 @@ import * as ts from 'typescript'
 import { TypeScriptService } from '@ts-tools/typescript-service'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
-import {
-    externalSourceMapPrefix,
-    platformHasColors,
-    formatDiagnosticsHost,
-    transpilationOptions,
-} from './constants'
+import { externalSourceMapPrefix, platformHasColors, transpilationOptions } from './constants'
 
 /**
  * Loader options which can be provided via webpack configuration
@@ -30,38 +25,62 @@ export interface ITypeScriptLoaderOptions {
 
     /**
      * Keys to override in the `compilerOptions` section of the
-     * `tsconfig.json` file. This is not the `ts.CompilerOptions` interface,
-     * the values there are resolved.
+     * `tsconfig.json` file.
      */
     compilerOptions?: object
+
+    /**
+     * Configuration file name to look for.
+     *
+     * @default 'tsconfig.json'
+     */
+    tsconfigFileName?: string
 }
 
-const tsService = new TypeScriptService()
+export const tsService = new TypeScriptService()
 
 export const typescriptLoader: loader.Loader = function(/* source */) {
+    const loaderOptions: ITypeScriptLoaderOptions = {
+        colors: platformHasColors,
+        warnOnly: false,
+        compilerOptions: {},
+        ...getOptions(this) // webpack's recommended method to parse loader options
+    }
+
+    const tsFormatFn = loaderOptions.colors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
+
+    const { errors: optionsDiagnostics, options: overrideOptions } = ts.convertCompilerOptionsFromJson(
+        loaderOptions.compilerOptions,
+        this.rootContext
+    )
+
+    if (optionsDiagnostics.length) {
+        this.callback(new Error(tsFormatFn(optionsDiagnostics, ts.createCompilerHost({}))))
+        return
+    }
+
+    const tsConfigOverride = { ...transpilationOptions.tsConfigOverride, ...overrideOptions }
+    const noConfigOptions = { ...transpilationOptions.noConfigOptions, ...overrideOptions }
     // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
     // instead, it uses native node APIs (via @ts-tools/typescript-service)
     // so we use the file path directly (this.resourcePath) instead of the `source` passed to us
     // this also means we do not support other loaders before us
     // not ideal, but works for most use cases
     // will be changed in near future
-    const { diagnostics, outputText, sourceMapText } = tsService.transpileFile(this.resourcePath, transpilationOptions)
-
-    // webpack's recommended method of parsing loader options, with our defaults
-    const loaderOptions: ITypeScriptLoaderOptions = { colors: platformHasColors, warnOnly: false, ...getOptions(this) }
+    const { diagnostics, outputText, sourceMapText, baseHost } = tsService.transpileFile(this.resourcePath, {
+        cwd: this.rootContext,
+        tsConfigOverride,
+        noConfigOptions,
+        tsconfigFileName: loaderOptions.tsconfigFileName
+    })
 
     // expose diagnostics
     if (diagnostics && diagnostics.length) {
-        const formattedDiagnostics = loaderOptions.colors ?
-            ts.formatDiagnosticsWithColorAndContext(diagnostics, formatDiagnosticsHost) :
-            ts.formatDiagnostics(diagnostics, formatDiagnosticsHost)
-
-        const diagnosticsError = new Error(formattedDiagnostics)
-
+        const transpileError = new Error(tsFormatFn(diagnostics, baseHost))
         if (loaderOptions.warnOnly) {
-            this.emitWarning(diagnosticsError)
+            this.emitWarning(transpileError)
         } else {
-            this.emitError(diagnosticsError)
+            this.emitError(transpileError)
         }
     }
 

@@ -47,6 +47,19 @@ interface ITypeScriptLoaderOptions {
      * @default true (if current platform supports it)
      */
     colors?: boolean
+
+    /**
+     * Keys to override in the `compilerOptions` section of the
+     * `tsconfig.json` file.
+     */
+    compilerOptions?: object
+
+    /**
+     * Configuration file name to look for.
+     *
+     * @default 'tsconfig.json'
+     */
+    tsconfigFileName?: string
 }
 ```
 
@@ -59,7 +72,10 @@ exports.module = {
             loader: '@ts-tools/webpack-loader',
             options: {
                 colors: false,
-                warnOnly: true
+                warnOnly: true,
+                compilerOptions: {
+                    target: 'es5'
+                }
             }
         }
     ]
@@ -68,17 +84,16 @@ exports.module = {
 
 ## Known limitations
 
-- webpack's `rootContext` isn't used as cwd (current working directory), so paths in diagnostics are relative to the real cwd. 
+- Using loaders before this loader is not supported, as it reads sources directly from the file system.
+- Sourcemaps are always forced *on* during tranpilation, even if webpack has `devtool: false`. 
 - The following `compilerOptions` are not supported:
-  - `allowJs` and `checkJs`.
+  - `allowJs` and `checkJs` (might work, but untested).
   - `baseUrl` and `paths`, when used for custom resolution of runtime abstractions (types work).
   - `composite` projects.
-- Using loaders before this loader is not supported, as it reads sources directly from the file system.
-- Using the loader to transpile `.js` files in `node_modules` will cause excessive lookups of `tsconfig`, although transpilation works.
-- `"module": "esnext"` is always forced, as `webpack` understands it best (allows tree shaking and dynamic chunks). This can cause issues for projects using `import A = require('a')`. Turn on `allowSyntheticDefaultImports` and `esModuleInterop` and use import default. Webpack ensures CommonJS modules are always exposed as a default export as well.
-- Sourcemaps are always forced *on* during tranpilation, even if webpack has `devtool: false`. 
+- Using the loader to transpile `.js` files in `node_modules` will cause excessive lookups of `tsconfig` files, although transpilation itself works.
 - Declarations (and their maps) are forced *off* when bundling.
 - Changes in `.d.ts` files in `src` or `node_modules` will not *trigger* a rebuild of the `.ts/x` files they affect. They will, however, be up-to-date and affect type checking if such a rebuild is triggered.
+- `"module": "esnext"` is forced by default, as `webpack` understands it best (allows tree shaking and dynamic chunks). This can cause issues for projects using `import A = require('a')`. To resolve, turn on `allowSyntheticDefaultImports` and `esModuleInterop` (in `tsconfig.json`) and use import default. Webpack ensures CommonJS modules are always exposed as a default export, so this works properly.
 
 ## Similar projects
 

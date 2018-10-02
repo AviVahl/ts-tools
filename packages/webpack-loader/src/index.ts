@@ -1,4 +1,3 @@
-import { typescriptLoader, ITypeScriptLoaderOptions } from './typescript-loader'
-
+import { typescriptLoader } from './typescript-loader'
 export default typescriptLoader
-export { ITypeScriptLoaderOptions, typescriptLoader }
+export * from './typescript-loader'

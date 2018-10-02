@@ -1,6 +1,6 @@
 import webpack from 'webpack'
 import MemoryFS from 'memory-fs'
-import { ITypeScriptLoaderOptions } from '../src'
+import { ITypeScriptLoaderOptions, tsService } from '../src'
 
 export interface IBundleWithLoaderOptions {
     /**
@@ -21,9 +21,15 @@ export interface IBundleWithLoaderOptions {
     context?: string
 }
 
+// direct path to loader's source
+const loaderPath = require.resolve('../src/index.ts')
+
 export async function bundleWithLoader(
     { entry, loaderOptions, context }: IBundleWithLoaderOptions
 ): Promise<{ stats: webpack.Stats, statsText: string }> {
+    // clear loader's cache before bundling.
+    // cwd is cached on baseHost, and several tests use same fixture with different cwd
+    tsService.runningServices = new Map()
 
     const compiler = webpack({
         entry,
@@ -34,7 +40,7 @@ export async function bundleWithLoader(
             rules: [
                 {
                     test: /\.tsx?$/,
-                    loader: require.resolve('../src/index.ts'),
+                    loader: loaderPath,
                     options: { colors: false, ...loaderOptions }
                 }
             ]
