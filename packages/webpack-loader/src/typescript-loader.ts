@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 import { TypeScriptService } from '@ts-tools/typescript-service'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'

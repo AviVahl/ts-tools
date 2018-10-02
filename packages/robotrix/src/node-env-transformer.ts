@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 
 /**
  * Create a transformer factory that replaces `process.env.[PARAM]`

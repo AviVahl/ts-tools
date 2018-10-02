@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 
 const SELF = '__self'
 const SOURCE = '__source'

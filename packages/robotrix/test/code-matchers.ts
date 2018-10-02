@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 
 const compilerOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES2017,

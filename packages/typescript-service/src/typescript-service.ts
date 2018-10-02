@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 import { IBaseHost, ICustomFs, ITranspilationOutput, ILanguageServiceInstance } from './types'
 import {
     createDefaultBaseHost,

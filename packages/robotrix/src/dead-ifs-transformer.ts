@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 
 /**
  * Detects and removes dead `if` branches.

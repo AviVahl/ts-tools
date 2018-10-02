@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 
 declare module 'typescript' {
     // needed for custom readDirectory

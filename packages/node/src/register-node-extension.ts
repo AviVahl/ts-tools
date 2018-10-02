@@ -1,4 +1,4 @@
-import * as sourceMapSupport from 'source-map-support'
+import sourceMapSupport from 'source-map-support'
 import { TypeScriptService } from '@ts-tools/typescript-service'
 import { transpilationOptions, inlineSourceMapPrefix, tsFormatFn } from './constants'
 

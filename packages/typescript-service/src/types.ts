@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 
 /**
  * Minimum native APIs and information required for service functionality.

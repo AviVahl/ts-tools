@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 import { expect } from 'chai'
 import { createCjsToEsmTransformer } from '../src'
 

@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 import { ITranspilationOptions } from '@ts-tools/typescript-service'
 
 // Node 8+ compatible compiler options
