@@ -1,5 +1,6 @@
 cjs
 esm
+.vscode
 
 # Logs
 logs
