@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/webpack-loader",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "cjs/index.js",
   "types": "cjs/index.d.ts",
   "scripts": {
@@ -17,7 +17,7 @@
     "webpack": ">=4"
   },
   "dependencies": {
-    "@ts-tools/typescript-service": "^0.6.0",
+    "@ts-tools/typescript-service": "^0.7.0",
     "loader-utils": "^1.1.0"
   },
   "files": [
