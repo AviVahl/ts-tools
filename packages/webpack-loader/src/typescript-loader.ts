@@ -2,7 +2,9 @@ import ts from 'typescript'
 import { TypeScriptService } from '@ts-tools/typescript-service'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
-import { externalSourceMapPrefix, platformHasColors, transpilationOptions } from './constants'
+
+const externalSourceMapPrefix = `//# sourceMappingURL=`
+const platformHasColors = !!ts.sys.writeOutputIsTTY && ts.sys.writeOutputIsTTY()
 
 /**
  * Loader options which can be provided via webpack configuration
@@ -46,21 +48,8 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         compilerOptions: {},
         ...getOptions(this) // webpack's recommended method to parse loader options
     }
-
     const tsFormatFn = loaderOptions.colors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
 
-    const { errors: optionsDiagnostics, options: overrideOptions } = ts.convertCompilerOptionsFromJson(
-        loaderOptions.compilerOptions,
-        this.rootContext
-    )
-
-    if (optionsDiagnostics.length) {
-        this.callback(new Error(tsFormatFn(optionsDiagnostics, ts.createCompilerHost({}))))
-        return
-    }
-
-    const tsConfigOverride = { ...transpilationOptions.tsConfigOverride, ...overrideOptions }
-    const noConfigOptions = { ...transpilationOptions.noConfigOptions, ...overrideOptions }
     // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
     // instead, it uses native node APIs (via @ts-tools/typescript-service)
     // so we use the file path directly (this.resourcePath) instead of the `source` passed to us
@@ -69,8 +58,53 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
     // will be changed in near future
     const { diagnostics, outputText, sourceMapText, baseHost } = tsService.transpileFile(this.resourcePath, {
         cwd: this.rootContext,
-        tsConfigOverride,
-        noConfigOptions,
+        getCompilerOptions: (formatHost, tsconfigOptions) => {
+            const compilerOptions: ts.CompilerOptions = {
+                ...tsconfigOptions,
+                module: ts.ModuleKind.ESNext, // webpack supports it and we want tree shaking out of the box
+            }
+
+            if (tsconfigOptions && tsconfigOptions.module === ts.ModuleKind.CommonJS) {
+                if (tsconfigOptions.esModuleInterop) {
+                    // allowSyntheticDefaultImports is no longer implicitly turned on for ts<3.1
+                    compilerOptions.allowSyntheticDefaultImports = true
+                }
+                if (!tsconfigOptions.moduleResolution) {
+                    // moduleResolution is no longer implicitly set to NodeJs
+                    compilerOptions.moduleResolution = ts.ModuleResolutionKind.NodeJs
+                }
+            } else if (!tsconfigOptions) {
+                // no config was found, so assume es2017+jsx. opinionated, but can be overidden via loader options.
+                compilerOptions.target = ts.ScriptTarget.ES2017
+                compilerOptions.jsx = ts.JsxEmit.React
+            }
+
+            const { errors: optionsDiagnostics, options: overrideOptions } = ts.convertCompilerOptionsFromJson(
+                loaderOptions.compilerOptions,
+                this.rootContext
+            )
+
+            if (optionsDiagnostics.length) {
+                this.emitError(new Error(tsFormatFn(optionsDiagnostics, formatHost)))
+            } else {
+                Object.assign(compilerOptions, overrideOptions)
+            }
+
+            // we dont accept any user overrides of sourcemap configuration
+            // instead, we force external sourcemaps (with inline sources) on/off based on webpack signals.
+
+            compilerOptions.sourceMap = compilerOptions.inlineSources = this.sourceMap
+            compilerOptions.inlineSourceMap = false
+            compilerOptions.mapRoot = compilerOptions.sourceRoot = undefined
+
+            // force declarations off, as we don't have .d.ts bundling.
+            // noEmit will not give us any output, so force that off.
+            // output locations are irrelevant, as we bundle. this ensures source maps have proper relative paths.
+            compilerOptions.declaration = compilerOptions.declarationMap = compilerOptions.noEmit = false
+            compilerOptions.outDir = compilerOptions.out = compilerOptions.outFile = undefined
+
+            return compilerOptions
+        },
         tsconfigFileName: loaderOptions.tsconfigFileName
     })
 
@@ -84,14 +118,16 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         }
     }
 
-    const rawSourceMap = JSON.parse(sourceMapText!) as import ('source-map').RawSourceMap
+    if (sourceMapText) {
+        const rawSourceMap = JSON.parse(sourceMapText) as import ('source-map').RawSourceMap
+        if (rawSourceMap.sources.length === 1) {
+            rawSourceMap.sources[0] = getRemainingRequest(this)
+        }
+        const sourceMappingIdx = outputText.lastIndexOf(externalSourceMapPrefix)
 
-    if (rawSourceMap.sources.length === 1) {
-        rawSourceMap.sources[0] = getRemainingRequest(this)
+        this.callback(null, sourceMappingIdx === -1 ? outputText : outputText.slice(0, sourceMappingIdx), rawSourceMap)
+    } else {
+        this.callback(null, outputText)
     }
 
-    const sourceMappingIdx = outputText.lastIndexOf(externalSourceMapPrefix)
-
-    // provide webpack with the transpilation result
-    this.callback(null, sourceMappingIdx === -1 ? outputText : outputText.slice(0, sourceMappingIdx), rawSourceMap)
 }

@@ -6,6 +6,7 @@
 Features:
 - Full syntactic and semantic **type checking**.
 - Loads configuration from the closest `tsconfig.json`, with support for **multiple configurations** inside a project.
+- Automated source map configuration based on current `devtool` configuration.
 
 ## Getting started
 
@@ -85,7 +86,6 @@ exports.module = {
 ## Known limitations
 
 - Using loaders before this loader is not supported, as it reads sources directly from the file system.
-- Sourcemaps are always forced *on* during tranpilation, even if webpack has `devtool: false`. 
 - The following `compilerOptions` are not supported:
   - `allowJs` and `checkJs` (might work, but untested).
   - `baseUrl` and `paths`, when used for custom resolution of runtime abstractions (types work).
