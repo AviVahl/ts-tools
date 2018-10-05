@@ -1,7 +1,7 @@
 # @ts-tools/robotrix
 [![npm version](https://img.shields.io/npm/v/@ts-tools/robotrix.svg)](https://www.npmjs.com/package/@ts-tools/robotrix)
 
-Several useful [TypeScript](https://www.typescriptlang.org/) transpilation transformers.
+Useful [TypeScript](https://www.typescriptlang.org/) transpilation transformers.
 
 ## Getting started
 
