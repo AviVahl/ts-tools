@@ -26,8 +26,8 @@
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
-  "repository": "git@github.com:AviVahl/ts-tools.git",
-  "homepage": "https://github.com/AviVahl/ts-tools/tree/master/packages/webpack-loader",
+  "repository": "https://github.com/AviVahl/ts-tools/tree/master/packages/webpack-loader",
+  "homepage": "https://github.com/AviVahl/ts-tools",
   "publishConfig": {
     "access": "public"
   }

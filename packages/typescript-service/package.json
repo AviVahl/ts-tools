@@ -22,8 +22,8 @@
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
-  "repository": "git@github.com:AviVahl/ts-tools.git",
-  "homepage": "https://github.com/AviVahl/ts-tools/tree/master/packages/typescript-service",
+  "repository": "https://github.com/AviVahl/ts-tools/tree/master/packages/typescript-service",
+  "homepage": "https://github.com/AviVahl/ts-tools",
   "publishConfig": {
     "access": "public"
   }
