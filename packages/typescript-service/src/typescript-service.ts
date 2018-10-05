@@ -1,10 +1,7 @@
 import ts from 'typescript'
 import { IBaseHost, ICustomFs, ITranspilationOutput, ILanguageServiceInstance } from './types'
 import {
-    createDefaultBaseHost,
-    createCustomBaseHost,
-    createDefaultLanguageServiceHost,
-    createCustomLanguageServiceHost
+    createBaseHost, createCustomFsBaseHost, createLanguageServiceHost, createCustomFsLanguageServiceHost
 } from './create-host'
 
 export interface ITranspilationOptions {
@@ -19,17 +16,6 @@ export interface ITranspilationOptions {
     cwd?: string
 
     /**
-     * Compiler options to override when transpiling files using
-     * found `tsconfig.json`.
-     */
-    tsConfigOverride?: ts.CompilerOptions
-
-    /**
-     * Compiler options to use when no tsconfig is found.
-     */
-    noConfigOptions?: ts.CompilerOptions
-
-    /**
      * TypeScript configuration file name.
      *
      * @default 'tsconfig.json'
@@ -37,12 +23,23 @@ export interface ITranspilationOptions {
     tsconfigFileName?: string
 
     /**
+     * Provided callback should return the final resolved compiler options.
+     *
+     * @param tsconfigOptions user's own tsconfig options, if found
+     */
+    getCompilerOptions(
+        baseHost: IBaseHost,
+        tsconfigOptions?: Readonly<ts.CompilerOptions>
+    ): ts.CompilerOptions
+
+    /**
      * Transformers to apply during transpilation.
      *
-     * @param userOptions user's own tsconfig options, if found
+     * @param tsconfigOptions user's own tsconfig options, if found
      */
     getCustomTransformers?(
-        userOptions?: ts.CompilerOptions
+        baseHost: IBaseHost,
+        tsconfigOptions?: Readonly<ts.CompilerOptions>
     ): ts.CustomTransformers | undefined
 }
 
@@ -84,7 +81,7 @@ export class TypeScriptService {
 
         // create base host
         const { customFs, tsconfigFileName, cwd = ts.sys.getCurrentDirectory() } = transpileOptions
-        const baseHost = customFs ? createCustomBaseHost(cwd, customFs) : createDefaultBaseHost(cwd)
+        const baseHost = customFs ? createCustomFsBaseHost(cwd, customFs) : createBaseHost(cwd)
         const { dirname, fileExists, readFile } = baseHost
         const fileDirectoryPath = dirname(filePath)
 
@@ -103,7 +100,7 @@ export class TypeScriptService {
         const {
             errors,
             fileNames,
-            options: userOptions
+            options: tsconfigOptions
         } = ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, baseHost, configDirectoryPath)
 
         if (errors.length) {
@@ -117,7 +114,7 @@ export class TypeScriptService {
 
         // create a new language service based on tsconfig
         const serviceInstance = this.createLanguageService(
-            fileNames, baseHost, transpileOptions, userOptions
+            fileNames, baseHost, transpileOptions, tsconfigOptions
         )
 
         // register new language service
@@ -202,7 +199,6 @@ export class TypeScriptService {
         baseHost: IBaseHost,
         options: ITranspilationOptions
     ): ITranspilationOutput {
-        const { getCustomTransformers, noConfigOptions } = options
         const tsCode = baseHost.readFile(filePath)
         if (!tsCode) {
             return {
@@ -214,11 +210,14 @@ export class TypeScriptService {
                 baseHost
             }
         }
-        const { outputText, diagnostics, sourceMapText } = ts.transpileModule(tsCode, {
-            fileName: filePath,
-            compilerOptions: noConfigOptions,
-            transformers: getCustomTransformers && getCustomTransformers(noConfigOptions)
-        })
+        const { getCustomTransformers, getCompilerOptions } = options
+        const transformers = getCustomTransformers && getCustomTransformers(baseHost)
+        const compilerOptions = getCompilerOptions(baseHost)
+
+        const { outputText, diagnostics, sourceMapText } = ts.transpileModule(
+            tsCode,
+            { compilerOptions, transformers, fileName: filePath }
+        )
 
         return {
             filePath,
@@ -251,16 +250,16 @@ export class TypeScriptService {
         fileNames: string[],
         baseHost: IBaseHost,
         transpileOptions: ITranspilationOptions,
-        userOptions: ts.CompilerOptions
+        tsconfigOptions: ts.CompilerOptions
     ): ILanguageServiceInstance {
-        const { customFs, getCustomTransformers, tsConfigOverride } = transpileOptions
+        const { customFs, getCustomTransformers, getCompilerOptions } = transpileOptions
 
-        const customTransformers = getCustomTransformers && getCustomTransformers(userOptions)
-        const resolvedOptions: ts.CompilerOptions = { ...userOptions, ...tsConfigOverride }
+        const customTransformers = getCustomTransformers && getCustomTransformers(baseHost, tsconfigOptions)
+        const compilerOptions = getCompilerOptions(baseHost, tsconfigOptions)
 
         const languageServiceHost = customFs ?
-            createCustomLanguageServiceHost(baseHost, fileNames, resolvedOptions, customFs, customTransformers) :
-            createDefaultLanguageServiceHost(baseHost, fileNames, resolvedOptions, customTransformers)
+            createCustomFsLanguageServiceHost(baseHost, fileNames, compilerOptions, customFs, customTransformers) :
+            createLanguageServiceHost(baseHost, fileNames, compilerOptions, customTransformers)
 
         const { getCurrentDirectory, useCaseSensitiveFileNames } = baseHost
         const documentRegistry = this.getDocumentRegistry(getCurrentDirectory(), useCaseSensitiveFileNames)

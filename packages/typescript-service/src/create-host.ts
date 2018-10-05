@@ -4,7 +4,7 @@ import { ICustomFs, IBaseHost } from './types'
 const identity = (val: string) => val
 const toLowerCase = (val: string) => val.toLowerCase()
 
-export function createDefaultBaseHost(cwd: string): IBaseHost {
+export function createBaseHost(cwd: string): IBaseHost {
     return {
         fileExists: sys.fileExists,
         directoryExists: sys.directoryExists,
@@ -21,7 +21,7 @@ export function createDefaultBaseHost(cwd: string): IBaseHost {
     }
 }
 
-export function createCustomBaseHost(cwd: string, customFs: ICustomFs): IBaseHost {
+export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseHost {
     const { isCaseSensitive, statSync, readFileSync, readdirSync, join, dirname, normalize } = customFs
 
     function getFileSystemEntries(path: string): { files: string[], directories: string[] } {
@@ -72,7 +72,7 @@ export function createCustomBaseHost(cwd: string, customFs: ICustomFs): IBaseHos
     }
 }
 
-export function createDefaultLanguageServiceHost(
+export function createLanguageServiceHost(
     baseHost: IBaseHost,
     fileNames: string[],
     compilerOptions: ts.CompilerOptions,
@@ -99,7 +99,7 @@ export function createDefaultLanguageServiceHost(
     }
 }
 
-export function createCustomLanguageServiceHost(
+export function createCustomFsLanguageServiceHost(
     baseHost: IBaseHost,
     fileNames: string[],
     compilerOptions: ts.CompilerOptions,
