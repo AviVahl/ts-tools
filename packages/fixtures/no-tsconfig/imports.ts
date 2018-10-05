@@ -1,4 +1,3 @@
-// tslint:disable:no-console
 import {platform} from 'os' // verify named imports
 import path from 'path' // verify interop without config
 
