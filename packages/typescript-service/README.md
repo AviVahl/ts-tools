@@ -4,8 +4,8 @@
 An on-demand [TypeScript](https://www.typescriptlang.org/) transpilation service.
 
 Features:
+- Full syntactic and semantic **type checking**.
 - Automatically searches for and loads the closest `tsconfig`.
-- Full **syntactic** and **semantic** type checking support.
 - Ability to force specific `compilerOptions`, no matter which `tsconfig` loads.
 - Reuses existing services, if relevant, for transpilation of new files.
 - Supports custom current working directory, per config.
