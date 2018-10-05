@@ -1,13 +1,17 @@
 # @ts-tools/typescript-service
 [![npm version](https://img.shields.io/npm/v/@ts-tools/typescript-service.svg)](https://www.npmjs.com/package/@ts-tools/typescript-service)
 
-A service for on-demand transpilation of TypeScript source files.
+An on-demand [TypeScript](https://www.typescriptlang.org/) transpilation service.
 
 Features:
-- Configuration loading from `tsconfig.json` files.
-- Automatically searches for the closest `tsconfig.json`, and loads a language service for complete syntactic/semantic type checking.
+- Automatically searches for and loads the closest `tsconfig`.
+- Full **syntactic** and **semantic** type checking support.
 - Ability to force specific `compilerOptions`, no matter which `tsconfig` loads.
 - Reuses existing services, if relevant, for transpilation of new files.
+- Supports custom current working directory, per config.
+- Supports specifying custom transformers, per config.
+- Allows usage of custom file systems, setting up everything required around it.
+- Uses isolated module transpilation when no `tsconfig` is found.
 
 ## License
 
