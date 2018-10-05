@@ -35,7 +35,7 @@ export function reactDevTransformer(context: ts.TransformationContext): ts.Trans
 
         function addJSXMetadata(node: ts.Node): ts.Node | ts.Node[] {
 
-            // we only transoform jsx attributes nodes that have parent jsx elements
+            // we only transform jsx attributes nodes that have parent jsx elements
             if (!ts.isJsxAttributes(node) || !node.parent) {
                 return ts.visitEachChild(node, addJSXMetadata, context)
             }

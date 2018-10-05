@@ -31,60 +31,62 @@ export interface ICjsToEsmTransformerOptions {
 export function createCjsToEsmTransformer(
     options: ICjsToEsmTransformerOptions = {}
 ): ts.TransformerFactory<ts.SourceFile> {
-    const { shouldTransform = () => true } = options
+    return context => sourceFile => transformSourceFile(sourceFile, context, options)
+}
 
-    return context => {
-        return sourceFile => {
-            let fileUsesCommonJs = false
+function transformSourceFile(
+    sourceFile: ts.SourceFile,
+    context: ts.TransformationContext,
+    { shouldTransform = () => true }: ICjsToEsmTransformerOptions
+): ts.SourceFile {
+    let fileUsesCommonJs = false
 
-            const newImports: ts.ImportDeclaration[] = []
-            sourceFile = ts.visitEachChild(sourceFile, visitCommonJS, context)
+    const newImports: ts.ImportDeclaration[] = []
+    sourceFile = ts.visitEachChild(sourceFile, visitCommonJS, context)
 
-            if (fileUsesCommonJs) {
-                const newStatements = [
-                    ...newImports,
-                    createCjsModuleDefinition(),
-                    ...sourceFile.statements,
-                    createCjsExportDefault()
-                ]
+    if (fileUsesCommonJs) {
+        const newStatements = [
+            ...newImports,
+            createCjsModuleDefinition(),
+            ...sourceFile.statements,
+            createCjsExportDefault()
+        ]
 
-                sourceFile = ts.updateSourceFileNode(sourceFile, newStatements)
-            }
+        sourceFile = ts.updateSourceFileNode(sourceFile, newStatements)
+    }
 
-            return sourceFile
+    return sourceFile
 
-            function visitCommonJS(node: ts.Node): ts.Node | ts.Node[] | undefined {
-                if (
-                    ts.isFunctionLike(node) &&
-                    node.parameters.some(({ name }) => ts.isIdentifier(name) && name.text === 'require')
-                ) {
-                    // do no iterate into bodys of functions defining a `require` parameter
-                    // mocha's bundle uses this pattern. we don't want to transform `require`
-                    // calls inside such functions
-                    return node
-                } else if (isCjsExportsAccess(node)) {
-                    fileUsesCommonJs = true
-                } else if (isCJsRequireCall(node) && shouldTransform((node.arguments[0] as ts.StringLiteral).text)) {
-                    fileUsesCommonJs = true
+    function visitCommonJS(node: ts.Node): ts.Node | ts.Node[] | undefined {
+        if (
+            ts.isFunctionLike(node) &&
+            node.parameters.some(({ name }) => ts.isIdentifier(name) && name.text === 'require')
+        ) {
+            // do no iterate into bodys of functions defining a `require` parameter
+            // mocha's bundle uses this pattern. we don't want to transform `require`
+            // calls inside such functions
+            return node
+        } else if (isCjsExportsAccess(node)) {
+            fileUsesCommonJs = true
+        } else if (isCJsRequireCall(node) && shouldTransform((node.arguments[0] as ts.StringLiteral).text)) {
+            fileUsesCommonJs = true
 
-                    const importIdentifier = createImportIdentifier(node)
+            const importIdentifier = createImportIdentifier(node)
 
-                    newImports.push(
-                        ts.createImportDeclaration(
-                            undefined /* decorators */,
-                            undefined /* modifiers */,
-                            ts.createImportClause(importIdentifier, undefined /* namedBindings */),
-                            node.arguments[0]
-                        )
-                    )
+            newImports.push(
+                ts.createImportDeclaration(
+                    undefined /* decorators */,
+                    undefined /* modifiers */,
+                    ts.createImportClause(importIdentifier, undefined /* namedBindings */),
+                    node.arguments[0]
+                )
+            )
 
-                    // replace require call with identifier
-                    return importIdentifier
-                }
-
-                return ts.visitEachChild(node, visitCommonJS, context)
-            }
+            // replace require call with identifier
+            return importIdentifier
         }
+
+        return ts.visitEachChild(node, visitCommonJS, context)
     }
 }
 

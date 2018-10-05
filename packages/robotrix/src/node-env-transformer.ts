@@ -8,9 +8,7 @@ export function createNodeEnvTransformer(
     env: { [key: string]: string | undefined }
 ): ts.TransformerFactory<ts.SourceFile> {
     return context => {
-        return sourceFile => {
-            return ts.visitEachChild(sourceFile, visitNodeEnv, context)
-        }
+        return sourceFile => ts.visitEachChild(sourceFile, visitNodeEnv, context)
 
         function visitNodeEnv(node: ts.Node): ts.Node | ts.Node[] {
             if (
