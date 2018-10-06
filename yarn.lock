@@ -622,10 +622,10 @@
     "@types/node" "*"
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.4.14":
-  version "16.4.14"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.4.14.tgz#47c604c8e46ed674bbdf4aabf82b34b9041c6a04"
-  integrity sha512-Gh8irag2dbZ2K6vPn+S8+LNrULuG3zlCgJjVUrvuiUK7waw9d9CFk2A/tZFyGhcMDUyO7tznbx1ZasqlAGjHxA==
+"@types/react@*", "@types/react@^16.4.15":
+  version "16.4.15"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.4.15.tgz#1f24f1d03b1fc682d92f8485be99d59bf7981191"
+  integrity sha512-EFQyVZhZCrRjwYDVziTEUGri/ygArIi/ES+JAI0j+3FR0LZ0uRfq2Ed7YnZ1CCn9CM3malSWwTKw5Jo0gVV82A==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -2378,9 +2378,9 @@ find-up@^3.0.0:
     locate-path "^3.0.0"
 
 flatmap-stream@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/flatmap-stream/-/flatmap-stream-0.1.0.tgz#ed54e01422cd29281800914fcb968d58b685d5f1"
-  integrity sha512-Nlic4ZRYxikqnK5rj3YoxDVKGGtUjcNDUtvQ7XsdGLZmMwdUYnXf10o1zcXtzEZTBgc6GxeRpQxV/Wu3WPIIHA==
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/flatmap-stream/-/flatmap-stream-0.1.1.tgz#d34f39ef3b9aa5a2fc225016bd3adf28ac5ae6ea"
+  integrity sha512-lAq4tLbm3sidmdCN8G3ExaxH7cUCtP5mgDvrYowsx84dcYkJJ4I28N7gkxA6+YlSXzaGLJYIDEi9WGfXzMiXdw==
 
 flush-write-stream@^1.0.0:
   version "1.0.3"
@@ -5062,9 +5062,9 @@ source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.1:
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
 spdx-correct@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/spdx-correct/-/spdx-correct-3.0.1.tgz#434434ff9d1726b4d9f4219d1004813d80639e30"
-  integrity sha512-hxSPZbRZvSDuOvADntOElzJpenIR7wXJkuoUcUtS0erbgt2fgeaoPIYretfKpslMhfFDY4k0MZ2F5CUzhBsSvQ==
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/spdx-correct/-/spdx-correct-3.0.2.tgz#19bb409e91b47b1ad54159243f7312a858db3c2e"
+  integrity sha512-q9hedtzyXHr5S0A1vEPoK/7l8NpfkFYTq6iCY+Pno2ZbdZR6WexZFtqeVGkGxW3TEJMN914Z55EnAGMmenlIQQ==
   dependencies:
     spdx-expression-parse "^3.0.0"
     spdx-license-ids "^3.0.0"
