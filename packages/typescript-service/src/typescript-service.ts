@@ -6,14 +6,14 @@ import {
 
 export interface ITranspilationOptions {
     /**
-     * This can be provided so that hosts are built around the custom fs.
-     */
-    customFs?: ICustomFs
-
-    /**
      * Absolute path to the current working directory.
      */
     cwd?: string
+
+    /**
+     * This can be provided so that hosts are built around the custom fs.
+     */
+    customFs?: ICustomFs
 
     /**
      * TypeScript configuration file name.
@@ -21,6 +21,14 @@ export interface ITranspilationOptions {
      * @default 'tsconfig.json'
      */
     tsconfigFileName?: string
+
+    /**
+     * Should transpilation be isolated, meaning no `tsconfig.json`
+     * lookup, and no type checking.
+     *
+     * @default false
+     */
+    isolated?: boolean
 
     /**
      * Provided callback should return the final resolved compiler options.
@@ -80,12 +88,17 @@ export class TypeScriptService {
         }
 
         // create base host
-        const { customFs, tsconfigFileName, cwd = ts.sys.getCurrentDirectory() } = transpileOptions
+        const { customFs, tsconfigFileName, isolated, cwd = ts.sys.getCurrentDirectory() } = transpileOptions
         const baseHost = customFs ? createCustomFsBaseHost(cwd, customFs) : createBaseHost(cwd)
         const { dirname, fileExists, readFile } = baseHost
-        const fileDirectoryPath = dirname(filePath)
+
+        if (isolated) {
+            // user explicitly specified no tsconfig lookup
+            return this.transpileIsolated(filePath, baseHost, transpileOptions)
+        }
 
         // search for tsconfig
+        const fileDirectoryPath = dirname(filePath)
         const configFilePath = this.getTsConfigPath(fileDirectoryPath, fileExists, tsconfigFileName)
 
         if (!configFilePath) {
