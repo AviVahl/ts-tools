@@ -39,6 +39,7 @@ export interface ITypeScriptLoaderOptions {
     tsconfigFileName?: string
 }
 
+const NODE_MODULES_REGEX = /[/\\]node_modules[/\\]/
 export const tsService = new TypeScriptService()
 
 export const typescriptLoader: loader.Loader = function(/* source */) {
@@ -49,14 +50,15 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         ...getOptions(this) // webpack's recommended method to parse loader options
     }
     const tsFormatFn = loaderOptions.colors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
+    const { resourcePath } = this
 
     // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
     // instead, it uses native node APIs (via @ts-tools/typescript-service)
-    // so we use the file path directly (this.resourcePath) instead of the `source` passed to us
+    // so we use the file path directly (resourcePath) instead of the `source` passed to us
     // this also means we do not support other loaders before us
     // not ideal, but works for most use cases
     // will be changed in near future
-    const { diagnostics, outputText, sourceMapText, baseHost } = tsService.transpileFile(this.resourcePath, {
+    const { diagnostics, outputText, sourceMapText, baseHost } = tsService.transpileFile(resourcePath, {
         cwd: this.rootContext,
         getCompilerOptions: (formatHost, tsconfigOptions) => {
             const compilerOptions: ts.CompilerOptions = {
@@ -105,7 +107,8 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
 
             return compilerOptions
         },
-        tsconfigFileName: loaderOptions.tsconfigFileName
+        tsconfigFileName: loaderOptions.tsconfigFileName,
+        isolated: NODE_MODULES_REGEX.test(resourcePath)
     })
 
     // expose diagnostics
