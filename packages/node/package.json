@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/node",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "TypeScript support for Node.js.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
@@ -13,7 +13,7 @@
     "test": "mocha -r @ts-tools/node \"./test/**/*.unit.ts\" --watch-extensions ts --timeout 10000"
   },
   "dependencies": {
-    "@ts-tools/typescript-service": "^0.7.0",
+    "@ts-tools/typescript-service": "^0.7.1",
     "source-map-support": "^0.5.9"
   },
   "peerDependencies": {
