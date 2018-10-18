@@ -26,5 +26,6 @@
   "homepage": "https://github.com/AviVahl/ts-tools",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "sideEffects": false
 }
