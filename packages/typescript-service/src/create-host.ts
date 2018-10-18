@@ -22,7 +22,7 @@ export function createBaseHost(cwd: string): IBaseHost {
 }
 
 export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseHost {
-    const { isCaseSensitive, statSync, readFileSync, readdirSync, join, dirname, normalize } = customFs
+    const { caseSensitive, statSync, readFileSync, readdirSync, join, dirname, normalize } = customFs
 
     function getFileSystemEntries(path: string): { files: string[], directories: string[] } {
         const files: string[] = []
@@ -46,7 +46,7 @@ export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseH
     return {
         readDirectory(rootDir, extensions, excludes, includes, depth) {
             return ts.matchFiles(
-                rootDir, extensions, excludes, includes, isCaseSensitive, rootDir, depth, getFileSystemEntries
+                rootDir, extensions, excludes, includes, caseSensitive, rootDir, depth, getFileSystemEntries
             )
         },
         getDirectories(path) {
@@ -63,8 +63,8 @@ export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseH
         readFile(path) {
             return readFileSync(path, 'utf8')
         },
-        useCaseSensitiveFileNames: isCaseSensitive,
-        getCanonicalFileName: isCaseSensitive ? identity : toLowerCase,
+        useCaseSensitiveFileNames: caseSensitive,
+        getCanonicalFileName: caseSensitive ? identity : toLowerCase,
         getCurrentDirectory: () => cwd,
         getNewLine: () => ts.sys.newLine,
         dirname,
@@ -106,7 +106,7 @@ export function createCustomFsLanguageServiceHost(
     customFs: ICustomFs,
     customTransformers?: ts.CustomTransformers,
 ): ts.LanguageServiceHost {
-    const { statSync, readFileSync, join, defaultLibsDirectory, isCaseSensitive } = customFs
+    const { statSync, readFileSync, join, defaultLibsDirectory, caseSensitive } = customFs
     const targetNewLine = ts.getNewLineCharacter(compilerOptions, baseHost.getNewLine)
 
     return {
@@ -122,7 +122,7 @@ export function createCustomFsLanguageServiceHost(
             return fileContents ? ts.ScriptSnapshot.fromString(fileContents) : undefined
         },
         getDefaultLibFileName: options => join(defaultLibsDirectory, ts.getDefaultLibFileName(options)),
-        useCaseSensitiveFileNames: () => isCaseSensitive,
+        useCaseSensitiveFileNames: () => caseSensitive,
         getCustomTransformers: customTransformers ? () => customTransformers : undefined,
         getNewLine: () => targetNewLine
     }

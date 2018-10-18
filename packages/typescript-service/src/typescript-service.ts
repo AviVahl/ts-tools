@@ -286,13 +286,13 @@ export class TypeScriptService {
         return serviceInstance
     }
 
-    private getDocumentRegistry(cwd: string, isCaseSensitive: boolean): ts.DocumentRegistry {
-        const registryKey = cwd + isCaseSensitive
+    private getDocumentRegistry(cwd: string, caseSensitive: boolean): ts.DocumentRegistry {
+        const registryKey = cwd + caseSensitive
         const existingRegistry = this.documentRegistries.get(registryKey)
         if (existingRegistry) {
             return existingRegistry
         }
-        const documentRegistry = ts.createDocumentRegistry(isCaseSensitive, cwd)
+        const documentRegistry = ts.createDocumentRegistry(caseSensitive, cwd)
         this.documentRegistries.set(registryKey, documentRegistry)
         return documentRegistry
     }

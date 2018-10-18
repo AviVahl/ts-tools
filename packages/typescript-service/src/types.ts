@@ -7,7 +7,7 @@ export interface ICustomFs {
     /**
      * Whether paths are case-sensitive.
      */
-    isCaseSensitive: boolean
+    caseSensitive: boolean
 
     /**
      * Absolute path to the directory where typescript's
