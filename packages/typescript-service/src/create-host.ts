@@ -28,18 +28,20 @@ export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseH
         const files: string[] = []
         const directories: string[] = []
 
-        const dirEntries = readdirSync(path)
-        for (const entryName of dirEntries) {
-            const entryStats = statSync(join(path, entryName))
-            if (!entryStats) {
-                continue
+        try {
+            const dirEntries = readdirSync(path)
+            for (const entryName of dirEntries) {
+                const entryStats = statSync(join(path, entryName))
+                if (!entryStats) {
+                    continue
+                }
+                if (entryStats.isFile()) {
+                    files.push(entryName)
+                } else if (entryStats.isDirectory()) {
+                    directories.push(entryName)
+                }
             }
-            if (entryStats.isFile()) {
-                files.push(entryName)
-            } else if (entryStats.isDirectory()) {
-                directories.push(entryName)
-            }
-        }
+        } catch { /* */ }
         return { files, directories }
     }
 
@@ -53,20 +55,30 @@ export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseH
             return getFileSystemEntries(path).directories
         },
         fileExists(path) {
-            const stats = statSync(path)
-            return !!stats && stats.isFile()
+            try {
+                return statSync(path).isFile()
+            } catch {
+                return false
+            }
         },
         directoryExists(path) {
-            const stats = statSync(path)
-            return !!stats && stats.isDirectory()
+            try {
+                return statSync(path).isDirectory()
+            } catch {
+                return false
+            }
         },
         readFile(path) {
-            return readFileSync(path, 'utf8')
+            try {
+                return readFileSync(path, 'utf8')
+            } catch {
+                return undefined
+            }
         },
         useCaseSensitiveFileNames: caseSensitive,
         getCanonicalFileName: caseSensitive ? identity : toLowerCase,
         getCurrentDirectory: () => cwd,
-        getNewLine: () => ts.sys.newLine,
+        getNewLine: () => ts.sys ? ts.sys.newLine : '\n',
         dirname,
         normalize
     }

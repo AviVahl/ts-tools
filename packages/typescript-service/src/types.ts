@@ -20,9 +20,9 @@ export interface ICustomFs {
      * string representation (using `encoding` to decode the text).
      *
      * Default encoding is 'utf8'.
-     * If file doesn't exist, return `undefined`.
+     * Throws if file doesn't exist or error.
      */
-    readFileSync(path: string, encoding?: string): string | undefined
+    readFileSync(path: string, encoding?: string): string
 
     /**
      * Get base names of files and directories inside `path`.
@@ -30,9 +30,9 @@ export interface ICustomFs {
     readdirSync(path: string): string[]
 
     /**
-     * Get stats of `path`. Returns `undefined` if path doesn't exist or error.
+     * Get stats of `path`. Throws if path doesn't exist or error.
      */
-    statSync(path: string): { mtime: Date, isFile(): boolean, isDirectory(): boolean } | undefined
+    statSync(path: string): { mtime: Date, isFile(): boolean, isDirectory(): boolean }
 
     /**
      * Optional. Returns the real path of a provided `path`.
@@ -71,6 +71,9 @@ export interface ITranspilationOutput {
 
     /** Host used during transpilation. Useful for formatting diagnostics.  */
     baseHost: IBaseHost
+
+    /** Resolved module requests, if possible to extract */
+    resolvedModules?: ts.Map<ts.ResolvedModuleFull | undefined>
 }
 
 /**
