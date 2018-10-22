@@ -1,5 +1,7 @@
 import ts from 'typescript'
 
+type NativeMap<K, V> = Map<K, V>
+
 declare module 'typescript' {
     // needed for custom readDirectory
     export function matchFiles(
@@ -26,4 +28,8 @@ declare module 'typescript' {
 
     // dirname, typescript version (slashes normalized to posix-style). needed for default baseHost.
     export function getDirectoryPath(path: string): string
+
+    export interface SourceFile {
+        resolvedModules?: NativeMap<string, ts.ResolvedModuleFull | undefined>;
+    }
 }

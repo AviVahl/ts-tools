@@ -73,7 +73,7 @@ export interface ITranspilationOutput {
     baseHost: IBaseHost
 
     /** Resolved module requests, if possible to extract */
-    resolvedModules?: ts.Map<ts.ResolvedModuleFull | undefined>
+    resolvedModules?: Map<string, ts.ResolvedModuleFull | undefined>
 }
 
 /**

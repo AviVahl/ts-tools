@@ -162,7 +162,7 @@ export class TypeScriptService {
             }
         }
 
-        const jsOutputFile = outputFiles.filter(outputFile => outputFile.name.endsWith('.js')).shift()
+        const [jsOutputFile] = outputFiles.filter(outputFile => outputFile.name.endsWith('.js'))
 
         if (!jsOutputFile) {
             return {
@@ -174,36 +174,30 @@ export class TypeScriptService {
                 baseHost
             }
         }
-        const sourceMapOutputFile = outputFiles.filter(outputFile => outputFile.name.endsWith('.js.map')).shift()
+        const [sourceMapOutputFile] = outputFiles.filter(outputFile => outputFile.name.endsWith('.js.map'))
         const sourceMapText = sourceMapOutputFile && sourceMapOutputFile.text
+        const program = languageService.getProgram()
+        const sourceFile = program && program.getSourceFile(filePath)
+
         const syntacticDiagnostics = languageService.getSyntacticDiagnostics(filePath)
+        let diagnostics: ts.Diagnostic[] | undefined
 
         if (syntacticDiagnostics.length) {
-            return {
-                diagnostics: syntacticDiagnostics,
-                filePath,
-                outputText: jsOutputFile.text,
-                sourceMapText,
-                baseHost
-            }
-        }
-
-        const semanticDiagnostics = languageService.getSemanticDiagnostics(filePath)
-        if (semanticDiagnostics.length) {
-            return {
-                diagnostics: semanticDiagnostics,
-                filePath,
-                outputText: jsOutputFile.text,
-                sourceMapText,
-                baseHost
+            diagnostics = syntacticDiagnostics
+        } else {
+            const semanticDiagnostics = languageService.getSemanticDiagnostics(filePath)
+            if (semanticDiagnostics.length) {
+                diagnostics = semanticDiagnostics
             }
         }
 
         return {
+            diagnostics,
             filePath,
             outputText: jsOutputFile.text,
             sourceMapText,
-            baseHost
+            baseHost,
+            resolvedModules: sourceFile && sourceFile.resolvedModules
         }
     }
 

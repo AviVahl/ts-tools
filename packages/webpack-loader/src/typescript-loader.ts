@@ -1,5 +1,5 @@
 import ts from 'typescript'
-import { TypeScriptService } from '@ts-tools/typescript-service'
+import { TypeScriptService, ITranspilationOptions } from '@ts-tools/typescript-service'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
 
@@ -52,13 +52,7 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
     const tsFormatFn = loaderOptions.colors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
     const { resourcePath } = this
 
-    // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
-    // instead, it uses native node APIs (via @ts-tools/typescript-service)
-    // so we use the file path directly (resourcePath) instead of the `source` passed to us
-    // this also means we do not support other loaders before us
-    // not ideal, but works for most use cases
-    // will be changed in near future
-    const { diagnostics, outputText, sourceMapText, baseHost } = tsService.transpileFile(resourcePath, {
+    const transpileOptions: ITranspilationOptions = {
         cwd: this.rootContext,
         getCompilerOptions: (formatHost, tsconfigOptions) => {
             const compilerOptions: ts.CompilerOptions = {
@@ -109,7 +103,28 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         },
         tsconfigFileName: loaderOptions.tsconfigFileName,
         isolated: NODE_MODULES_REGEX.test(resourcePath)
-    })
+    }
+
+    // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
+    // instead, it uses native node APIs (via @ts-tools/typescript-service)
+    // so we use the file path directly (resourcePath) instead of the `source` passed to us
+    // this also means we do not support other loaders before us
+    // not ideal, but works for most use cases
+    // will be changed in near future
+    const { diagnostics, outputText, sourceMapText, baseHost, resolvedModules } = tsService.transpileFile(
+        resourcePath,
+        transpileOptions
+    )
+
+    // make sure files we import types from are declared as deps and watched
+    // these can be .d.ts in node_modules or even .ts/x files in our project
+    if (resolvedModules) {
+        for (const resolvedModule of resolvedModules.values()) {
+            if (resolvedModule) {
+                this.addDependency(resolvedModule.resolvedFileName)
+            }
+        }
+    }
 
     // expose diagnostics
     if (diagnostics && diagnostics.length) {
