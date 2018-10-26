@@ -1,7 +1,7 @@
 import ts from 'typescript'
 
 export interface IRemapImportsTransformerOptions {
-    remapTarget(target: string, containingFile: string): string
+    remapTarget(target: string, containingFile: string, sourceFile: ts.SourceFile): string
 }
 
 /**
@@ -35,7 +35,7 @@ function transformSourceFile(
             ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)
         ) {
             const originalTarget = node.moduleSpecifier.text
-            const remappedTarget = remapTarget(originalTarget, fileName)
+            const remappedTarget = remapTarget(originalTarget, fileName, sourceFile)
             if (originalTarget !== remappedTarget) {
                 return ts.updateImportDeclaration(
                     node,
@@ -49,7 +49,7 @@ function transformSourceFile(
             ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
         ) {
             const originalTarget = node.moduleSpecifier.text
-            const remappedTarget = remapTarget(originalTarget, fileName)
+            const remappedTarget = remapTarget(originalTarget, fileName, sourceFile)
             if (originalTarget !== remappedTarget) {
                 return ts.updateExportDeclaration(
                     node,
@@ -79,7 +79,7 @@ function transformSourceFile(
             ts.isStringLiteral(node.arguments[0])
         ) {
             const originalTarget = (node.arguments[0] as ts.StringLiteral).text
-            const remappedTarget = remapTarget(originalTarget, fileName)
+            const remappedTarget = remapTarget(originalTarget, fileName, sourceFile)
             if (originalTarget !== remappedTarget) {
                 return ts.updateCall(
                     node,
