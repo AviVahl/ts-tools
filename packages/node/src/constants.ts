@@ -1,6 +1,11 @@
 import ts, { CompilerOptions } from 'typescript'
 import { ITranspilationOptions } from '@ts-tools/typescript-service'
 
+const { sys } = ts
+const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
+export const tsFormatFn = platformHasColors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
+export const inlineSourceMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
+
 const forcedOptions: CompilerOptions = {
     module: ts.ModuleKind.CommonJS,
 
@@ -36,8 +41,3 @@ export const transpilationOptions: ITranspilationOptions = {
         return compilerOptions
     }
 }
-
-export const inlineSourceMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
-const { sys } = ts
-const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
-export const tsFormatFn = platformHasColors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
