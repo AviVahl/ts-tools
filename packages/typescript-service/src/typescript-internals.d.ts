@@ -30,6 +30,6 @@ declare module 'typescript' {
     export function getDirectoryPath(path: string): string
 
     export interface SourceFile {
-        resolvedModules?: NativeMap<string, ts.ResolvedModuleFull | undefined>;
+        resolvedModules?: NativeMap<string, ts.ResolvedModuleFull | undefined>
     }
 }

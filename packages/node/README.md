@@ -9,6 +9,7 @@ Features:
 - Full syntactic and semantic **type checking**.
 - Loads configuration from the closest `tsconfig.json`, with support for **multiple configurations** inside a project.
 - Built-in support for **source-maps**, powered by [source-map-support](https://github.com/evanw/node-source-map-support).
+- Built-in support for **baseUrl** and **paths** by using a custom transformer that remaps imports.
 - Node 8+ **friendly** defaults, for basic transpilation when no `tsconfig.json` is found.
 
 ## Getting started
@@ -55,7 +56,6 @@ node -r @ts-tools/node/warn ./my-script.ts
 
 - The following `compilerOptions` are not supported:
   - `allowJs` and `checkJs` (only `.ts/.tsx` files are hooked).
-  - `baseUrl` and `paths`, when used for custom resolution of runtime abstractions (types work).
   - `composite` projects.
 
 ## Why?
