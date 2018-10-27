@@ -111,6 +111,36 @@ const cjsToEsmTransformer = createCjsToEsmTransformer({
 })
 ```
 
+### Resolved Modules Transformer
+
+Remaps static/dynamic esm imports/re-exports to the actual files resolved by TypeScript.
+It ignores relative targets (`./` or `../`) or ones resolved to definition (`.d.ts`) files.
+
+Unlike other transformers in **robotrix**, this transformer requires TypeScript to resolve imports
+as part of a typed-checked transpilation (where a `ts.Program` is involved). This means
+it can be used when creating a custom `ts.LanguageService` and specifying `getCustomTransformers()`
+during host creation.
+
+```ts
+import { resolvedModulesTransformer } from '@ts-tools/robotrix'
+import { createLanguageService, LanguageServiceHost } from 'typescript'
+
+const languageServiceHost: LanguageServiceHost = {
+    getCustomTransformers() {
+        return {
+            before: [
+                resolvedModulesTransformer
+            ]
+        }
+    }
+    // ...rest of the host implementation is up to you
+}
+
+const languageService = createLanguageService(languageServiceHost)
+```
+
+
+
 ## License
 
 MIT

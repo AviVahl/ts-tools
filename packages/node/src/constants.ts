@@ -1,6 +1,6 @@
 import ts, { CompilerOptions } from 'typescript'
 import { ITranspilationOptions } from '@ts-tools/typescript-service'
-import { createRemapImportsTransformer } from '@ts-tools/robotrix'
+import { resolvedModulesTransformer } from '@ts-tools/robotrix'
 
 const { sys } = ts
 const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
@@ -42,29 +42,6 @@ export const transpilationOptions: ITranspilationOptions = {
         return compilerOptions
     },
     getCustomTransformers(_baseHost, compilerOptions): ts.CustomTransformers | undefined {
-        if (compilerOptions && compilerOptions.baseUrl) {
-            const transformer = createRemapImportsTransformer({
-                remapTarget(request, _containingFile, { resolvedModules }) {
-                    if (!resolvedModules || request.startsWith('./') || request.startsWith('../')) {
-                        // relative request or no typescript mapping.
-                        return request
-                    }
-
-                    const resolvedModule = resolvedModules.get(request)
-                    if (
-                        resolvedModule &&
-                        !resolvedModule.isExternalLibraryImport &&
-                        resolvedModule.extension !== ts.Extension.Dts
-                    ) {
-                        // remap request to absolute resolved file
-                        return resolvedModule.resolvedFileName
-                    }
-                    return request
-                }
-            })
-
-            return { before: [transformer] }
-        }
-        return undefined
+        return compilerOptions && compilerOptions.baseUrl ? { before: [resolvedModulesTransformer] } : undefined
     }
 }

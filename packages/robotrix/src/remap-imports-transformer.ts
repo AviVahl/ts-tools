@@ -8,15 +8,15 @@ export interface IRemapImportsTransformerOptions {
  * Remaps targets of esnext static or dynamic imports/re-exports.
  */
 export function createRemapImportsTransformer(
-    options: IRemapImportsTransformerOptions
+    { remapTarget }: IRemapImportsTransformerOptions
 ): ts.TransformerFactory<ts.SourceFile> {
-    return context => sourceFile => transformSourceFile(sourceFile, context, options)
+    return context => sourceFile => remapSourceFileImports(sourceFile, context, remapTarget)
 }
 
-function transformSourceFile(
+export function remapSourceFileImports(
     sourceFile: ts.SourceFile,
     context: ts.TransformationContext,
-    { remapTarget }: IRemapImportsTransformerOptions
+    remapTarget: IRemapImportsTransformerOptions['remapTarget']
 ): ts.SourceFile {
     const { fileName } = sourceFile
     return ts.visitEachChild(sourceFile, visitStaticImportsExports, context)
