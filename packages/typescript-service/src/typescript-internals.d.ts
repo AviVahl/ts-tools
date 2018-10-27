@@ -1,6 +1,9 @@
 import ts from 'typescript'
 
-type NativeMap<K, V> = Map<K, V>
+// define this type outside `declare module` to have access to native Map
+// typescript has its own Map interface, which is not iterable using for-const-of
+// actual implementation uses native Map, so this is safe
+type ResolvedModules = Map<string, ts.ResolvedModuleFull | undefined>
 
 declare module 'typescript' {
     // needed for custom readDirectory
@@ -30,6 +33,6 @@ declare module 'typescript' {
     export function getDirectoryPath(path: string): string
 
     export interface SourceFile {
-        resolvedModules?: NativeMap<string, ts.ResolvedModuleFull | undefined>
+        resolvedModules?: ResolvedModules
     }
 }
