@@ -23,7 +23,7 @@ describe('webpack loader', function() {
         expect(stats.hasWarnings(), statsText).to.equal(false)
     })
 
-    it.skip('allows bundling files using baseUrl to resolve other files', async () => {
+    it('allows bundling files using baseUrl to resolve other files', async () => {
         const entry = join(fixturesRoot, 'base-url', 'second', 'imports-via-base-url.ts')
         const { stats, statsText } = await bundleWithLoader({ entry, context: join(fixturesRoot, 'base-url') })
 

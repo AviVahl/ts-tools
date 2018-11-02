@@ -61,7 +61,10 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
                 module: ts.ModuleKind.ESNext, // webpack supports it and we want tree shaking out of the box
             }
 
-            if (tsconfigOptions && tsconfigOptions.module === ts.ModuleKind.CommonJS) {
+            if (
+                tsconfigOptions &&
+                (!tsconfigOptions.module || tsconfigOptions.module === ts.ModuleKind.CommonJS)
+            ) {
                 if (tsconfigOptions.esModuleInterop) {
                     // allowSyntheticDefaultImports is no longer implicitly turned on for ts<3.1
                     compilerOptions.allowSyntheticDefaultImports = true
