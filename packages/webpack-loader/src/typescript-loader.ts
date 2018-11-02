@@ -1,5 +1,6 @@
 import ts from 'typescript'
 import { TypeScriptService, ITranspilationOptions } from '@ts-tools/typescript-service'
+import { resolvedModulesTransformer } from '@ts-tools/robotrix'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
 
@@ -60,7 +61,10 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
                 module: ts.ModuleKind.ESNext, // webpack supports it and we want tree shaking out of the box
             }
 
-            if (tsconfigOptions && tsconfigOptions.module === ts.ModuleKind.CommonJS) {
+            if (
+                tsconfigOptions &&
+                (!tsconfigOptions.module || tsconfigOptions.module === ts.ModuleKind.CommonJS)
+            ) {
                 if (tsconfigOptions.esModuleInterop) {
                     // allowSyntheticDefaultImports is no longer implicitly turned on for ts<3.1
                     compilerOptions.allowSyntheticDefaultImports = true
@@ -102,7 +106,10 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
             return compilerOptions
         },
         tsconfigFileName: loaderOptions.tsconfigFileName,
-        isolated: NODE_MODULES_REGEX.test(resourcePath)
+        isolated: NODE_MODULES_REGEX.test(resourcePath),
+        getCustomTransformers(_baseHost, compilerOptions) {
+            return compilerOptions && compilerOptions.baseUrl ? { before: [resolvedModulesTransformer] } : undefined
+        }
     }
 
     // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
