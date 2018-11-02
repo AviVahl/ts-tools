@@ -7,6 +7,7 @@ Features:
 - Full syntactic and semantic **type checking**.
 - Loads configuration from the closest `tsconfig.json`, with support for **multiple configurations** inside a project.
 - Automated source map configuration based on current `devtool` configuration.
+- Built-in support for **baseUrl** and **paths** by using a custom transformer that remaps imports.
 
 ## Getting started
 
