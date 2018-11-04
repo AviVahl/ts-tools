@@ -20,11 +20,8 @@ function remapImportsToResolvedModules(request: string, _containingFile: string,
     }
 
     const resolvedModule = resolvedModules.get(request)
-    if (
-        resolvedModule &&
-        !resolvedModule.isExternalLibraryImport &&
-        resolvedModule.extension !== ts.Extension.Dts
-    ) {
+
+    if (resolvedModule && resolvedModule.extension !== ts.Extension.Dts) {
         // remap request to absolute resolved file
         return resolvedModule.resolvedFileName
     }
