@@ -102,7 +102,7 @@ export function createLanguageServiceHost(
         },
         getScriptSnapshot(filePath) {
             const fileContents = sys.readFile(filePath)
-            return fileContents ? ts.ScriptSnapshot.fromString(fileContents) : undefined
+            return fileContents !== undefined ? ts.ScriptSnapshot.fromString(fileContents) : undefined
         },
         getDefaultLibFileName: ts.getDefaultLibFilePath,
         useCaseSensitiveFileNames: () => sys.useCaseSensitiveFileNames,

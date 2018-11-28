@@ -207,7 +207,7 @@ export class TypeScriptService {
         options: ITranspilationOptions
     ): ITranspilationOutput {
         const tsCode = baseHost.readFile(filePath)
-        if (!tsCode) {
+        if (tsCode === undefined) {
             return {
                 filePath,
                 diagnostics: [

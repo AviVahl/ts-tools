@@ -53,6 +53,13 @@ describe('using node -r @ts-tools/node [file]', () => {
             expect(exitCode).to.equal(0)
         })
 
+        it('does not throw on empty files', () => {
+            const filePath = join(fixturesRoot, 'default-config', 'empty-file.ts')
+
+            const { exitCode } = runCommand(`node -r @ts-tools/node ${filePath}`)
+
+            expect(exitCode).to.equal(0)
+        })
     })
 
     describe('no tsconfig.json', () => {
@@ -73,6 +80,14 @@ describe('using node -r @ts-tools/node [file]', () => {
             expect(exitCode).to.equal(0)
             expect(output).to.include(`Current platform is: ${platform()}`)
             expect(output).to.include(`Path separator is: ${sep}`)
+        })
+
+        it('does not throw on empty files', () => {
+            const filePath = join(fixturesRoot, 'no-tsconfig', 'empty-file.ts')
+
+            const { exitCode } = runCommand(`node -r @ts-tools/node ${filePath}`)
+
+            expect(exitCode).to.equal(0)
         })
     })
 
