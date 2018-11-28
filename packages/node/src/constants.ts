@@ -1,5 +1,5 @@
 import ts, { CompilerOptions } from 'typescript'
-import { ITranspilationOptions } from '@ts-tools/typescript-service'
+import { ITranspilationOptions } from '@ts-tools/service'
 import { resolvedModulesTransformer } from '@ts-tools/robotrix'
 
 const { sys } = ts

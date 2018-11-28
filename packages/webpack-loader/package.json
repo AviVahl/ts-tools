@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@ts-tools/robotrix": "^0.7.1",
-    "@ts-tools/typescript-service": "^0.9.1",
+    "@ts-tools/service": "^0.9.1",
     "loader-utils": "^1.1.0"
   },
   "files": [

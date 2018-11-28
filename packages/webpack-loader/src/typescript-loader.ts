@@ -1,5 +1,5 @@
 import ts from 'typescript'
-import { TypeScriptService, ITranspilationOptions } from '@ts-tools/typescript-service'
+import { TypeScriptService, ITranspilationOptions } from '@ts-tools/service'
 import { resolvedModulesTransformer } from '@ts-tools/robotrix'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
@@ -113,7 +113,7 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
     }
 
     // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
-    // instead, it uses native node APIs (via @ts-tools/typescript-service)
+    // instead, it uses native node APIs (via @ts-tools/service)
     // so we use the file path directly (resourcePath) instead of the `source` passed to us
     // this also means we do not support other loaders before us
     // not ideal, but works for most use cases

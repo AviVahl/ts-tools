@@ -1,7 +1,7 @@
 {
-  "name": "@ts-tools/typescript-service",
+  "name": "@ts-tools/service",
   "version": "0.9.1",
-  "description": "TypeScript Language Services Helper in Node.",
+  "description": "An on-demand TypeScript transpilation service.",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
   "types": "./esm/index.d.ts",
@@ -22,7 +22,7 @@
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
-  "repository": "https://github.com/AviVahl/ts-tools/tree/master/packages/typescript-service",
+  "repository": "https://github.com/AviVahl/ts-tools/tree/master/packages/service",
   "homepage": "https://github.com/AviVahl/ts-tools",
   "publishConfig": {
     "access": "public"

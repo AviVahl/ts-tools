@@ -1,5 +1,5 @@
-# @ts-tools/typescript-service
-[![npm version](https://img.shields.io/npm/v/@ts-tools/typescript-service.svg)](https://www.npmjs.com/package/@ts-tools/typescript-service)
+# @ts-tools/service
+[![npm version](https://img.shields.io/npm/v/@ts-tools/service.svg)](https://www.npmjs.com/package/@ts-tools/service)
 
 An on-demand [TypeScript](https://www.typescriptlang.org/) transpilation service.
 
