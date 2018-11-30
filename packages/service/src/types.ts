@@ -81,6 +81,13 @@ export interface ITranspilationOutput {
  * formatting diagnostics, and resolving modules.
  */
 export interface IBaseHost extends ts.ParseConfigHost, ts.FormatDiagnosticsHost, ts.ModuleResolutionHost {
+    readDirectory(
+        path: string,
+        extensions?: ReadonlyArray<string>,
+        exclude?: ReadonlyArray<string>,
+        include?: ReadonlyArray<string>,
+        depth?: number
+    ): string[]
     getCurrentDirectory(): string
     directoryExists(directoryPath: string): boolean
     getDirectories(path: string): string[]

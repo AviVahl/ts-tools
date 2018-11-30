@@ -13,14 +13,15 @@ declare module 'typescript' {
         excludes: ReadonlyArray<string> | undefined,
         includes: ReadonlyArray<string> | undefined,
         useCaseSensitiveFileNames: boolean,
-        currentDirectory: string, depth: number | undefined,
+        currentDirectory: string,
+        depth: number | undefined,
         getFileSystemEntries: (path: string) => FileSystemEntries
     ): string[]
 
     // used by matchFiles above
     export interface FileSystemEntries {
-        files: ReadonlyArray<string>
-        directories: ReadonlyArray<string>
+        readonly files: ReadonlyArray<string>
+        readonly directories: ReadonlyArray<string>
     }
 
     // needed to resolve newLine, while taking compilerOptions into consideration, for each `LanguageServiceHost`
