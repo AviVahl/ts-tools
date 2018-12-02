@@ -1,0 +1,36 @@
+{
+  "name": "@ts-tools/build",
+  "version": "0.1.0",
+  "description": "CLI for easier building of multi-target TypeScript libraries.",
+  "main": "./cjs/index.js",
+  "types": "./cjs/index.d.ts",
+  "bin": {
+    "ts-build": "./cli.js"
+  },
+  "scripts": {
+    "clean": "rimraf ./cjs",
+    "build": "tsc -p src",
+    "lint": "tslint -p src"
+  },
+  "peerDependencies": {
+    "typescript": ">=2.8.0"
+  },
+  "dependencies": {
+    "@ts-tools/service": "^0.9.2",
+    "chalk": "^2.4.1",
+    "commander": "^2.19.0",
+    "proper-fs": "^1.1.0"
+  },
+  "files": [
+    "cjs",
+    "src",
+    "cli.js"
+  ],
+  "author": "Avi Vahl <avi.vahl@wix.com>",
+  "license": "MIT",
+  "repository": "https://github.com/AviVahl/ts-tools/tree/master/packages/build",
+  "homepage": "https://github.com/AviVahl/ts-tools",
+  "publishConfig": {
+    "access": "public"
+  }
+}
