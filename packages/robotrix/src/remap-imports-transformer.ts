@@ -5,7 +5,7 @@ export interface IRemapImportsTransformerOptions {
 }
 
 /**
- * Remaps targets of esnext static or dynamic imports/re-exports.
+ * Remaps esnext and commonjs imports.
  */
 export function createRemapImportsTransformer(
     { remapTarget }: IRemapImportsTransformerOptions
@@ -67,14 +67,15 @@ export function remapSourceFileImports(
     }
 
     /**
-     * Visitor for dynamic imports, such as:
+     * Visitor for dynamic and commonjs imports, such as:
      *
      * import('target').then(...)
+     * require('target')
      */
     function visitDynamicImports(node: ts.Node): ts.Node {
         if (
             ts.isCallExpression(node) &&
-            node.expression.kind === ts.SyntaxKind.ImportKeyword &&
+            (isDynamicImportKeyword(node.expression) || isRequireIdentifier(node.expression)) &&
             node.arguments.length === 1 &&
             ts.isStringLiteral(node.arguments[0])
         ) {
@@ -92,4 +93,12 @@ export function remapSourceFileImports(
 
         return ts.visitEachChild(node, visitDynamicImports, context)
     }
+}
+
+function isRequireIdentifier(expression: ts.LeftHandSideExpression): expression is ts.Identifier {
+    return ts.isIdentifier(expression) && expression.text === 'require'
+}
+
+function isDynamicImportKeyword(expression: ts.LeftHandSideExpression) {
+    return expression.kind === ts.SyntaxKind.ImportKeyword
 }
