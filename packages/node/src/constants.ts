@@ -42,6 +42,6 @@ export const transpilationOptions: ITranspilationOptions = {
         return compilerOptions
     },
     getCustomTransformers(_baseHost, compilerOptions): ts.CustomTransformers | undefined {
-        return compilerOptions && compilerOptions.baseUrl ? { before: [resolvedModulesTransformer] } : undefined
+        return compilerOptions && compilerOptions.baseUrl ? { after: [resolvedModulesTransformer] } : undefined
     }
 }

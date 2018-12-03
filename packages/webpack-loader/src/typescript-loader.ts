@@ -108,7 +108,7 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         tsconfigFileName: loaderOptions.tsconfigFileName,
         isolated: NODE_MODULES_REGEX.test(resourcePath),
         getCustomTransformers(_baseHost, compilerOptions) {
-            return compilerOptions && compilerOptions.baseUrl ? { before: [resolvedModulesTransformer] } : undefined
+            return compilerOptions && compilerOptions.baseUrl ? { after: [resolvedModulesTransformer] } : undefined
         }
     }
 
