@@ -120,7 +120,10 @@ export function build(options: IBuildOptions): IOutputFile[] {
                     const relativeToSrc = path.relative(srcDirectoryPath, outputFilePath)
                     const targetFilePath = path.join(formatOutDir, relativeToSrc)
                     const targetFileDirectoryPath = path.dirname(targetFilePath)
-                    const relativeRequestToSrc = path.relative(targetFileDirectoryPath, nativeSrcFilePath)
+                    const relativeRequestToSrc = path.relative(
+                        targetFileDirectoryPath,
+                        nativeSrcFilePath
+                    ).replace(/\\/g, '/')
                     const contents = outputFilePath.endsWith('.map') ? remapSourceMap(text, relativeRequestToSrc) : text
                     outputFiles.push({
                         filePath: targetFilePath,
