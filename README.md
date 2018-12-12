@@ -13,6 +13,8 @@ Several packages to assist [TypeScript](https://www.typescriptlang.org/) develop
 
 - **[@ts-tools/robotrix](https://github.com/AviVahl/ts-tools/tree/master/packages/robotrix)** - Useful TypeScript transpilation transformers.
 
+- **[@ts-tools/build](https://github.com/AviVahl/ts-tools/tree/master/packages/build)** - CLI for easier building of multi-target TypeScript libraries.
+
 ## License
 
 MIT
