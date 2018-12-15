@@ -40,7 +40,6 @@ export interface ITypeScriptLoaderOptions {
     tsconfigFileName?: string
 }
 
-const NODE_MODULES_REGEX = /[/\\]node_modules[/\\]/
 export const tsService = new TypeScriptService()
 
 export const typescriptLoader: loader.Loader = function(/* source */) {
@@ -106,7 +105,6 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
             return compilerOptions
         },
         tsconfigFileName: loaderOptions.tsconfigFileName,
-        isolated: NODE_MODULES_REGEX.test(resourcePath),
         getCustomTransformers(_baseHost, compilerOptions) {
             return compilerOptions && compilerOptions.baseUrl ? { after: [resolvedModulesTransformer] } : undefined
         }
