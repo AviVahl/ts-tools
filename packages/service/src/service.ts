@@ -13,7 +13,7 @@ export interface ITranspilationOptions {
     /**
      * This can be provided so that hosts are built around the custom fs.
      */
-    customFs?: ICustomFs
+    getCustomFs?: () => ICustomFs
 
     /**
      * TypeScript configuration file name.
@@ -88,7 +88,8 @@ export class TypeScriptService {
         }
 
         // create base host
-        const { customFs, tsconfigFileName, isolated, cwd = ts.sys.getCurrentDirectory() } = transpileOptions
+        const { getCustomFs, tsconfigFileName, isolated, cwd = ts.sys.getCurrentDirectory() } = transpileOptions
+        const customFs = getCustomFs && getCustomFs()
         const baseHost = customFs ? createCustomFsBaseHost(cwd, customFs) : createBaseHost(cwd)
         const { dirname, fileExists, readFile } = baseHost
 
@@ -127,7 +128,7 @@ export class TypeScriptService {
 
         // create a new language service based on tsconfig
         const serviceInstance = this.createLanguageService(
-            fileNames, baseHost, transpileOptions, tsconfigOptions
+            fileNames, baseHost, transpileOptions, tsconfigOptions, customFs
         )
 
         // register new language service
@@ -257,9 +258,10 @@ export class TypeScriptService {
         fileNames: string[],
         baseHost: IBaseHost,
         transpileOptions: ITranspilationOptions,
-        tsconfigOptions: ts.CompilerOptions
+        tsconfigOptions: ts.CompilerOptions,
+        customFs?: ICustomFs
     ): ILanguageServiceInstance {
-        const { customFs, getCustomTransformers, getCompilerOptions } = transpileOptions
+        const { getCustomTransformers, getCompilerOptions } = transpileOptions
 
         const customTransformers = getCustomTransformers && getCustomTransformers(baseHost, tsconfigOptions)
         const compilerOptions = getCompilerOptions(baseHost, tsconfigOptions)
