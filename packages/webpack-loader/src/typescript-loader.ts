@@ -1,11 +1,15 @@
+import { dirname, join, normalize } from 'path'
 import ts from 'typescript'
 import { TypeScriptService, ITranspilationOptions } from '@ts-tools/service'
 import { resolvedModulesTransformer } from '@ts-tools/robotrix'
 import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
 
+const { sys } = ts
 const externalSourceMapPrefix = `//# sourceMappingURL=`
-const platformHasColors = !!ts.sys.writeOutputIsTTY && ts.sys.writeOutputIsTTY()
+const platformHasColors = !!sys && !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
+
+const defaultLibsDirectory = dirname(ts.getDefaultLibFilePath({}))
 
 /**
  * Loader options which can be provided via webpack configuration
@@ -50,7 +54,6 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         ...getOptions(this) // webpack's recommended method to parse loader options
     }
     const tsFormatFn = loaderOptions.colors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
-    const { resourcePath } = this
 
     const transpileOptions: ITranspilationOptions = {
         cwd: this.rootContext,
@@ -65,7 +68,7 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
                 (!tsconfigOptions.module || tsconfigOptions.module === ts.ModuleKind.CommonJS)
             ) {
                 if (tsconfigOptions.esModuleInterop) {
-                    // allowSyntheticDefaultImports is no longer implicitly turned on for ts<3.1
+                    // allowSyntheticDefaultImports is not implicitly turned on for ts<3.1
                     compilerOptions.allowSyntheticDefaultImports = true
                 }
                 if (!tsconfigOptions.moduleResolution) {
@@ -91,7 +94,6 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
 
             // we dont accept any user overrides of sourcemap configuration
             // instead, we force external sourcemaps (with inline sources) on/off based on webpack signals.
-
             compilerOptions.sourceMap = compilerOptions.inlineSources = this.sourceMap
             compilerOptions.inlineSourceMap = false
             compilerOptions.mapRoot = compilerOptions.sourceRoot = undefined
@@ -107,17 +109,26 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         tsconfigFileName: loaderOptions.tsconfigFileName,
         getCustomTransformers(_baseHost, compilerOptions) {
             return compilerOptions && compilerOptions.baseUrl ? { after: [resolvedModulesTransformer] } : undefined
-        }
+        },
+        getCustomFs: () => ({
+            // normalize paths because typescript uses linux-like path representation in Windows
+            // while webpack uses native paths
+            readFileSync: (path, encoding = 'utf8') => this.fs.readFileSync(normalize(path)).toString(encoding),
+            statSync: path => this.fs.statSync(normalize(path)),
+            readdirSync: path => this.fs.readdirSync(normalize(path)),
+            realpathSync: path => this.fs.readlinkSync(normalize(path)),
+            dirname,
+            join,
+            normalize,
+            defaultLibsDirectory,
+            caseSensitive: !!sys && sys.useCaseSensitiveFileNames
+        })
     }
 
-    // atm, the loader does not use webpack's `inputFileSystem` to create a custom language service
-    // instead, it uses native node APIs (via @ts-tools/service)
-    // so we use the file path directly (resourcePath) instead of the `source` passed to us
-    // this also means we do not support other loaders before us
-    // not ideal, but works for most use cases
-    // will be changed in near future
+    // transpile using `this.resourcePath`, ignoring the `source` provided to loader.
+    // this means no support for preceding loaders changing source yet
     const { diagnostics, outputText, sourceMapText, baseHost, resolvedModules } = tsService.transpileFile(
-        resourcePath,
+        this.resourcePath,
         transpileOptions
     )
 
@@ -142,7 +153,7 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
     }
 
     if (sourceMapText) {
-        const rawSourceMap = JSON.parse(sourceMapText) as import ('source-map').RawSourceMap
+        const rawSourceMap = JSON.parse(sourceMapText) as import('source-map').RawSourceMap
         if (rawSourceMap.sources.length === 1) {
             rawSourceMap.sources[0] = getRemainingRequest(this)
         }
