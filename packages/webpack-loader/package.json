@@ -24,7 +24,7 @@
   },
   "files": [
     "cjs",
-    "src"
+    "src/**/*.ts"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",

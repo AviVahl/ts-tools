@@ -21,7 +21,7 @@
   "files": [
     "cjs",
     "esm",
-    "src"
+    "src/**/*.ts"
   ],
   "sideEffects": false,
   "author": "Avi Vahl <avi.vahl@wix.com>",

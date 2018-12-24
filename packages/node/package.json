@@ -22,7 +22,7 @@
   },
   "files": [
     "cjs",
-    "src",
+    "src/**/*.ts",
     "warn.js"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",

@@ -18,7 +18,7 @@
   "files": [
     "cjs",
     "esm",
-    "src"
+    "src/**/*.ts"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",

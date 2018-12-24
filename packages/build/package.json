@@ -23,7 +23,7 @@
   },
   "files": [
     "cjs",
-    "src",
+    "src/**/*.ts",
     "cli.js"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
