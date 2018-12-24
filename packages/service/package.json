@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/service",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An on-demand TypeScript transpilation service.",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
