@@ -116,7 +116,7 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
             readFileSync: (path, encoding = 'utf8') => this.fs.readFileSync(normalize(path)).toString(encoding),
             statSync: path => this.fs.statSync(normalize(path)),
             readdirSync: path => this.fs.readdirSync(normalize(path)),
-            realpathSync: path => this.fs.readlinkSync(normalize(path)),
+            realpathSync: sys && sys.realpath,
             dirname,
             join,
             normalize,
