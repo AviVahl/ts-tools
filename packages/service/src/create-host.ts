@@ -22,7 +22,7 @@ export function createBaseHost(cwd: string): IBaseHost {
 }
 
 export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseHost {
-    const { caseSensitive, statSync, readFileSync, readdirSync, join, dirname, normalize } = customFs
+    const { caseSensitive, statSync, readFileSync, readdirSync, join, dirname, normalize, realpathSync } = customFs
 
     function getFileSystemEntries(path: string): { files: string[], directories: string[] } {
         const files: string[] = []
@@ -79,6 +79,7 @@ export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseH
         getCanonicalFileName: caseSensitive ? identity : toLowerCase,
         getCurrentDirectory: () => cwd,
         getNewLine: () => ts.sys ? ts.sys.newLine : '\n',
+        realpath: realpathSync,
         dirname,
         normalize
     }
