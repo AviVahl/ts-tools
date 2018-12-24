@@ -86,12 +86,12 @@ exports.module = {
 
 ## Known limitations
 
-- Using loaders before this loader is not supported, as it reads sources directly from the file system.
 - The following `compilerOptions` are not supported:
   - `allowJs` and `checkJs` (might work, but untested).
   - `composite` projects.
 - Declarations (and their maps) are forced *off* when bundling.
 - `"module": "esnext"` is forced by default, as `webpack` understands it best (allows tree shaking and dynamic chunks). This may cause issues for projects using `import A = require('a')` syntax. Can be resolved by turning on `allowSyntheticDefaultImports` and `esModuleInterop` (in `tsconfig`) and using `import A from 'a'`. Webpack ensures CommonJS modules are always exposed as a default export, so this works properly.
+- Source changes by preceding loaders are ignored, as this loader reads sources directly from webpack's input file system.
 
 ## Similar projects
 
