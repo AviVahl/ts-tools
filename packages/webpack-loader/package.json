@@ -20,7 +20,7 @@
   "dependencies": {
     "@ts-tools/robotrix": "^0.7.3",
     "@ts-tools/service": "^1.0.2",
-    "loader-utils": "^1.1.0"
+    "loader-utils": "^1.2.3"
   },
   "files": [
     "cjs",
