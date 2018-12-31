@@ -145,6 +145,16 @@ export class TypeScriptService {
         return this.transpileIsolated(filePath, baseHost, transpileOptions)
     }
 
+    /**
+     * Clears all running language services, document registries,
+     * and tsconfig resolution cache.
+     */
+    public clear() {
+        this.runningServices.clear()
+        this.documentRegistries.clear()
+        this.directoryToTsConfig.clear()
+    }
+
     private transpileUsingLanguageService(
         filePath: string,
         languageService: ts.LanguageService,

@@ -29,7 +29,7 @@ export async function bundleWithLoader(
 ): Promise<{ stats: webpack.Stats, statsText: string }> {
     // clear loader's cache before bundling.
     // cwd is cached on baseHost, and several tests use same fixture with different cwd
-    tsService.runningServices = new Map()
+    tsService.clear()
 
     const compiler = webpack({
         entry,
