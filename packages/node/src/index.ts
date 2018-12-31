@@ -1,1 +1,1 @@
-import './register-throw'
+export * from './register-throw'

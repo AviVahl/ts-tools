@@ -1,1 +1,1 @@
-require('./cjs/register-warn')
+module.exports = require('./cjs/register-warn')

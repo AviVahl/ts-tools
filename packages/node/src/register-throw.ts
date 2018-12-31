@@ -1,5 +1,7 @@
 import { registerNodeExtension } from './register-node-extension'
 
-registerNodeExtension(function throwDiagnostics(diagnosticsText) {
+const { tsService, sourceMaps } = registerNodeExtension(function throwDiagnostics(diagnosticsText) {
     throw new Error(diagnosticsText)
 })
+
+export { tsService, sourceMaps }

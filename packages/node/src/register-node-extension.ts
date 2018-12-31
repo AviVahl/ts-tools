@@ -2,7 +2,9 @@ import sourceMapSupport from 'source-map-support'
 import { TypeScriptService } from '@ts-tools/service'
 import { transpilationOptions, inlineSourceMapPrefix, tsFormatFn } from './constants'
 
-export function registerNodeExtension(onDiagnostics?: (diagnosticsText: string) => void) {
+export function registerNodeExtension(
+    onDiagnostics?: (diagnosticsText: string) => void
+): { tsService: TypeScriptService, sourceMaps: Map<string, string> } {
 
     // a map holding `file path` to its `matching source maps` (base64-encoded, stringified JSON)
     const sourceMaps = new Map<string, string>()
@@ -43,4 +45,6 @@ export function registerNodeExtension(onDiagnostics?: (diagnosticsText: string) 
 
     // register our extension for the two default supported extensions
     require.extensions['.ts'] = require.extensions['.tsx'] = requireExtension
+
+    return { tsService, sourceMaps }
 }
