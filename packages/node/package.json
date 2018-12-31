@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/node",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "TypeScript support for Node.js.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@ts-tools/robotrix": "^0.7.3",
-    "@ts-tools/service": "^1.0.2",
+    "@ts-tools/service": "^1.0.3",
     "source-map-support": "^0.5.9"
   },
   "peerDependencies": {
