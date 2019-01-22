@@ -1,30 +1,23 @@
-import sourceMapSupport from 'source-map-support'
-import { TypeScriptService } from '@ts-tools/service'
-import { transpilationOptions, inlineSourceMapPrefix, tsFormatFn } from './constants'
+import { ITranspilationOptions } from '@ts-tools/service'
+import { inlineSourceMapPrefix, tsFormatFn } from './constants'
+import { packageState } from './package-state'
 
-export function registerNodeExtension(
+export interface IRegisterExtensionOptions {
+    transpileOptions: ITranspilationOptions
     onDiagnostics?: (diagnosticsText: string) => void
-): { tsService: TypeScriptService, sourceMaps: Map<string, string> } {
+}
 
-    // a map holding `file path` to its `matching source maps` (base64-encoded, stringified JSON)
-    const sourceMaps = new Map<string, string>()
+export function registerNodeExtension({ transpileOptions, onDiagnostics }: IRegisterExtensionOptions): void {
+    if (packageState.registered) {
+        return // avoid double registeration
+    }
 
-    // our service instance, to be used by the require hook
-    const tsService = new TypeScriptService()
-
-    // connects source maps of the service to source-map-support
-    sourceMapSupport.install({
-        environment: 'node',
-        retrieveSourceMap: (filePath) => {
-            const fileSourceMap = sourceMaps.get(filePath)
-            return fileSourceMap ? { map: Buffer.from(fileSourceMap, 'base64').toString(), url: filePath } : null
-        }
-    })
+    const { tsService, sourceMaps } = packageState
 
     // our require extension transpiles the file to js using the service
     // and then runs the resulting js like any regular js
     function requireExtension(nodeModule: NodeModule, filePath: string): void {
-        const { diagnostics, outputText, baseHost } = tsService.transpileFile(filePath, transpilationOptions)
+        const { diagnostics, outputText, baseHost } = tsService.transpileFile(filePath, transpileOptions)
 
         if (diagnostics && diagnostics.length && onDiagnostics) {
             onDiagnostics(tsFormatFn(diagnostics, baseHost))
@@ -32,10 +25,8 @@ export function registerNodeExtension(
 
         const inlineSourceMapIdx = outputText.lastIndexOf(inlineSourceMapPrefix)
         if (inlineSourceMapIdx !== -1) {
-            sourceMaps.set(
-                filePath,
-                outputText.slice(inlineSourceMapIdx + inlineSourceMapPrefix.length).trimRight()
-            )
+            const base64SourceMap = outputText.slice(inlineSourceMapIdx + inlineSourceMapPrefix.length).trimRight()
+            sourceMaps.set(filePath, base64SourceMap)
         } else {
             sourceMaps.delete(filePath)
         }
@@ -46,5 +37,5 @@ export function registerNodeExtension(
     // register our extension for the two default supported extensions
     require.extensions['.ts'] = require.extensions['.tsx'] = requireExtension
 
-    return { tsService, sourceMaps }
+    packageState.registered = true
 }

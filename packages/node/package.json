@@ -10,11 +10,12 @@
     "lint": "run-p lint:src lint:test",
     "lint:src": "tslint -p src",
     "lint:test": "tslint -p test",
-    "test": "mocha -r @ts-tools/node \"./test/**/*.unit.ts\" --watch-extensions ts --timeout 10000"
+    "test": "mocha -r @ts-tools/node/r \"./test/**/*.unit.ts\" --watch-extensions ts --timeout 10000"
   },
   "dependencies": {
     "@ts-tools/robotrix": "^0.7.3",
     "@ts-tools/service": "^1.0.3",
+    "is-ci": "^2.0.0",
     "source-map-support": "^0.5.10"
   },
   "peerDependencies": {
@@ -23,6 +24,9 @@
   "files": [
     "cjs",
     "src/**/*.ts",
+    "dev.js",
+    "isolated.js",
+    "r.js",
     "warn.js"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",

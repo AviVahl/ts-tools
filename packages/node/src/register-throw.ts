@@ -1,7 +1,9 @@
+import { defaultTranspileOptions } from './constants'
 import { registerNodeExtension } from './register-node-extension'
 
-const { tsService, sourceMaps } = registerNodeExtension(function throwDiagnostics(diagnosticsText) {
-    throw new Error(diagnosticsText)
+registerNodeExtension({
+    onDiagnostics(diagnosticsText) {
+        throw new Error(diagnosticsText)
+    },
+    transpileOptions: defaultTranspileOptions
 })
-
-export { tsService, sourceMaps }
