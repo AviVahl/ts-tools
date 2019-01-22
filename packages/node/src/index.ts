@@ -1,8 +1,8 @@
 export {
+    defaultCompilerOptions,
     defaultTranspileOptions,
-    isolatedTranspileOptions,
-    forcedCompilerOptions,
-    isolatedCompilerOptions
+    fastCompilerOptions,
+    fastTranspileOptions
 } from './constants'
 
 export * from './package-state'

@@ -52,25 +52,27 @@ Package provides the following entry points:
 
 ### `@ts-tools/node/r` (recommended)
 
-- All features.
-- Fully typed experience.
+- Type checking.
 - Throws diagnostics.
 
 ### `@ts-tools/node/warn`
 
-- Same as `@ts-tools/node/r`, but uses `console.warn()` for diagnostics.
+Same as `/r`, but uses `console.warn()` for diagnostics.
 
-### `@ts-tools/node/isolated`
+### `@ts-tools/node/ci-safe-warn`
 
-- Very fast.
+Same as `/warn`, but uses `/r` in CIs.
+
+### `@ts-tools/node/fast`
+
 - No type checking.
 - No **baseUrl** and **paths** support.
-- No `tsconfig.json` loading.
-- Uses `console.warn()` for syntactic diagnostics.
+- No `tsconfig.json` loading. Node 8+ compatible defaults.
+- Uses `console.warn()` for any diagnostics.
 
-### `@ts-tools/node/dev`
+### `@ts-tools/node/ci-safe-fast`
 
-`@ts-tools/node/r` in CI (detected using `is-ci`), `@ts-tools/node/isolated` otherwise. 
+Same as `/fast`, but uses `/r` in CIs.
 
 ## Known limitations
 

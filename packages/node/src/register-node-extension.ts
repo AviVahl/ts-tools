@@ -23,6 +23,7 @@ export function registerNodeExtension({ transpileOptions, onDiagnostics }: IRegi
             onDiagnostics(tsFormatFn(diagnostics, baseHost))
         }
 
+        // search for inline sourcemap, and save it in cache
         const inlineSourceMapIdx = outputText.lastIndexOf(inlineSourceMapPrefix)
         if (inlineSourceMapIdx !== -1) {
             const base64SourceMap = outputText.slice(inlineSourceMapIdx + inlineSourceMapPrefix.length).trimRight()

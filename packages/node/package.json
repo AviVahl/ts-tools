@@ -24,8 +24,9 @@
   "files": [
     "cjs",
     "src/**/*.ts",
-    "dev.js",
-    "isolated.js",
+    "ci-safe-fast.js",
+    "ci-safe-warn.js",
+    "fast.js",
     "r.js",
     "warn.js"
   ],

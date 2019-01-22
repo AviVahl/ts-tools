@@ -7,7 +7,7 @@ const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
 export const tsFormatFn = platformHasColors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
 export const inlineSourceMapPrefix = '//# sourceMappingURL=data:application/json;base64,'
 
-export const forcedCompilerOptions: CompilerOptions = {
+export const defaultCompilerOptions: CompilerOptions = {
     module: ts.ModuleKind.CommonJS,
 
     inlineSourceMap: true,
@@ -27,7 +27,7 @@ export const forcedCompilerOptions: CompilerOptions = {
 
 export const defaultTranspileOptions: Readonly<ITranspilationOptions> = {
     getCompilerOptions(_baseHost, tsconfigOptions) {
-        const compilerOptions: ts.CompilerOptions = { ...tsconfigOptions, ...forcedCompilerOptions }
+        const compilerOptions: ts.CompilerOptions = { ...tsconfigOptions, ...defaultCompilerOptions }
 
         if (compilerOptions.target === undefined || compilerOptions.target < ts.ScriptTarget.ES2017) {
             // we support Node 8+, so force newer syntax even if we found a tsconfig with target: 'es5'
@@ -46,14 +46,14 @@ export const defaultTranspileOptions: Readonly<ITranspilationOptions> = {
     }
 }
 
-export const isolatedCompilerOptions: ts.CompilerOptions = {
+export const fastCompilerOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES2017,
     esModuleInterop: true,
     jsx: ts.JsxEmit.React,
-    ...forcedCompilerOptions
+    ...defaultCompilerOptions
 }
 
-export const isolatedTranspileOptions: Readonly<ITranspilationOptions> = {
+export const fastTranspileOptions: Readonly<ITranspilationOptions> = {
     isolated: true,
-    getCompilerOptions: () => isolatedCompilerOptions
+    getCompilerOptions: () => fastCompilerOptions
 }
