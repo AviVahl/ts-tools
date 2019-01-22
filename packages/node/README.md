@@ -68,7 +68,7 @@ Same as `/warn`, but uses `/r` in CIs.
 - No type checking.
 - No **baseUrl** and **paths** support.
 - No `tsconfig.json` loading. Node 8+ compatible defaults.
-- Uses `console.warn()` for any diagnostics.
+- Uses `console.warn()` for diagnostics.
 
 ### `@ts-tools/node/ci-safe-fast`
 
