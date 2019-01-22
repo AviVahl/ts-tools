@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/node",
-  "version": "0.8.3",
+  "version": "0.9.0",
   "description": "TypeScript support for Node.js.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
@@ -13,7 +13,7 @@
     "test": "mocha -r @ts-tools/node/r \"./test/**/*.unit.ts\" --watch-extensions ts --timeout 10000"
   },
   "dependencies": {
-    "@ts-tools/robotrix": "^0.7.3",
+    "@ts-tools/robotrix": "^0.7.4",
     "@ts-tools/service": "^1.0.3",
     "is-ci": "^2.0.0",
     "source-map-support": "^0.5.10"
