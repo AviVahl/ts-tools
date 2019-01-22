@@ -20,7 +20,7 @@
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.0.11",
     "@types/source-map-support": "^0.4.1",
-    "@types/webpack": "^4.4.23",
+    "@types/webpack": "^4.4.24",
     "chai": "^4.2.0",
     "lerna": "^3.10.6",
     "mocha": "^5.2.0",
