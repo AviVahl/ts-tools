@@ -38,7 +38,7 @@ export interface ITranspilationOptions {
     getCompilerOptions(
         baseHost: IBaseHost,
         tsconfigOptions?: Readonly<ts.CompilerOptions>
-    ): ts.CompilerOptions
+    ): Readonly<ts.CompilerOptions>
 
     /**
      * Transformers to apply during transpilation.
