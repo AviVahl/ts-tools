@@ -52,12 +52,7 @@ export interface ITranspilationOptions {
 }
 
 /**
- * On-demand TypeScript tranpilation service
- * Options can be provided during construction
- *
- * @example
- * new TypeScriptService()
- * new TypeScriptService({ tsconfigFileName: 'tsconfig.test.json' })
+ * On-demand TypeScript tranpilation service.
  */
 export class TypeScriptService {
     // a map holding `tsconfig path` to a `language service instance`
@@ -70,9 +65,10 @@ export class TypeScriptService {
     private directoryToTsConfig = new Map<string, string | undefined>()
 
     /**
-     * Transpile a TypeScript file on the native file system
+     * Transpile a TypeScript file.
      *
-     * @param filePath absolute path of the source file to transpile
+     * @param filePath absolute path of the source file to transpile.
+     * @param transpileOptions transpilation options to use when no already-running language service targets `filePath`.
      */
     public transpileFile(
         filePath: string,
