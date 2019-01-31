@@ -1,55 +1,8 @@
 import ts from 'typescript'
-import { IBaseHost, ICustomFs, ITranspilationOutput, ILanguageServiceInstance } from './types'
+import { IBaseHost, ICustomFs, ITranspilationOutput, ILanguageServiceInstance, ITranspilationOptions } from './types'
 import {
     createBaseHost, createCustomFsBaseHost, createLanguageServiceHost, createCustomFsLanguageServiceHost
 } from './create-host'
-
-export interface ITranspilationOptions {
-    /**
-     * Absolute path to the current working directory.
-     */
-    cwd?: string
-
-    /**
-     * This can be provided so that hosts are built around the custom fs.
-     */
-    getCustomFs?: () => ICustomFs
-
-    /**
-     * TypeScript configuration file name.
-     *
-     * @default 'tsconfig.json'
-     */
-    tsconfigFileName?: string
-
-    /**
-     * Should transpilation be isolated, meaning no `tsconfig.json`
-     * lookup, and no type checking.
-     *
-     * @default false
-     */
-    isolated?: boolean
-
-    /**
-     * Provided callback should return the final resolved compiler options.
-     *
-     * @param tsconfigOptions user's own tsconfig options, if found
-     */
-    getCompilerOptions(
-        baseHost: IBaseHost,
-        tsconfigOptions?: Readonly<ts.CompilerOptions>
-    ): Readonly<ts.CompilerOptions>
-
-    /**
-     * Transformers to apply during transpilation.
-     *
-     * @param tsconfigOptions user's own tsconfig options, if found
-     */
-    getCustomTransformers?(
-        baseHost: IBaseHost,
-        tsconfigOptions?: Readonly<ts.CompilerOptions>
-    ): ts.CustomTransformers | undefined
-}
 
 /**
  * On-demand TypeScript tranpilation service.
