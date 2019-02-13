@@ -1,4 +1,3 @@
-import { dirname, join, normalize } from 'path'
 import ts from 'typescript'
 import { TypeScriptService, ITranspilationOptions } from '@ts-tools/service'
 import { resolvedModulesTransformer } from '@ts-tools/robotrix'
@@ -8,8 +7,6 @@ import { getOptions, getRemainingRequest } from 'loader-utils'
 const { sys } = ts
 const externalSourceMapPrefix = `//# sourceMappingURL=`
 const platformHasColors = !!sys && !!sys.writeOutputIsTTY && sys.writeOutputIsTTY()
-
-const defaultLibsDirectory = dirname(ts.getDefaultLibFilePath({}))
 
 /**
  * Loader options which can be provided via webpack configuration
@@ -109,20 +106,7 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         tsconfigFileName: loaderOptions.tsconfigFileName,
         getCustomTransformers(_baseHost, compilerOptions) {
             return compilerOptions && compilerOptions.baseUrl ? { after: [resolvedModulesTransformer] } : undefined
-        },
-        getCustomFs: () => ({
-            // normalize paths because typescript uses linux-like path representation in Windows
-            // while webpack uses native paths
-            readFileSync: (path, encoding = 'utf8') => this.fs.readFileSync(normalize(path)).toString(encoding),
-            statSync: path => this.fs.statSync(normalize(path)),
-            readdirSync: path => this.fs.readdirSync(normalize(path)),
-            realpathSync: sys && sys.realpath,
-            dirname,
-            join,
-            normalize,
-            defaultLibsDirectory,
-            caseSensitive: !!sys && sys.useCaseSensitiveFileNames
-        })
+        }
     }
 
     // transpile using `this.resourcePath`, ignoring the `source` provided to loader.
