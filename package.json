@@ -30,7 +30,7 @@
     "rimraf": "^2.6.3",
     "tslint": "^5.12.1",
     "typescript": "~3.3.3",
-    "webpack": "^4.29.3"
+    "webpack": "^4.29.4"
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
