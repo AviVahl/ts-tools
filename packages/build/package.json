@@ -19,7 +19,7 @@
     "@ts-tools/service": "^1.0.5",
     "chalk": "^2.4.2",
     "commander": "^2.19.0",
-    "proper-fs": "^1.1.1"
+    "proper-fs": "^1.1.2"
   },
   "files": [
     "cjs",
