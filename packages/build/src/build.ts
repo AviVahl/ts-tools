@@ -50,7 +50,7 @@ export function build(options: IBuildOptions): IOutputFile[] {
     const { formats, outputDirectoryPath, srcDirectoryPath } = options
     const tsConfigPath = path.join(srcDirectoryPath, 'tsconfig.json')
 
-    const baseHost = createBaseHost(process.cwd())
+    const baseHost = createBaseHost()
     const { dirname, fileExists, directoryExists, readFile } = baseHost
 
     if (!directoryExists(srcDirectoryPath)) {
@@ -89,11 +89,15 @@ export function build(options: IBuildOptions): IOutputFile[] {
         }
         const languageServiceHost = createLanguageServiceHost(
             baseHost,
-            fileNames,
-            compilerOptions
+            () => fileNames,
+            () => compilerOptions
         )
         const languageService = ts.createLanguageService(
-            languageServiceHost,
+            {
+                ...languageServiceHost,
+                // no watch, so ensure language service doesn't sync
+                getProjectVersion: () => '0'
+            },
             documentRegistry
         )
         formatCompilers.push({
