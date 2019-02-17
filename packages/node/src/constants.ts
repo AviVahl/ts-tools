@@ -46,14 +46,7 @@ export const defaultTranspileOptions: Readonly<ITranspilationOptions> = {
     }
 }
 
-export const fastCompilerOptions: ts.CompilerOptions = {
-    target: ts.ScriptTarget.ES2017,
-    esModuleInterop: true,
-    jsx: ts.JsxEmit.React,
-    ...defaultCompilerOptions
-}
-
 export const fastTranspileOptions: Readonly<ITranspilationOptions> = {
-    isolated: true,
-    getCompilerOptions: () => fastCompilerOptions
+    typeCheck: false,
+    getCompilerOptions: defaultTranspileOptions.getCompilerOptions
 }

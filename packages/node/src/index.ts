@@ -1,7 +1,6 @@
 export {
     defaultCompilerOptions,
     defaultTranspileOptions,
-    fastCompilerOptions,
     fastTranspileOptions
 } from './constants'
 
