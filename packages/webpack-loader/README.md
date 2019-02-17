@@ -37,6 +37,22 @@ exports.resolve = {
 ```ts
 interface ITypeScriptLoaderOptions {
     /**
+     * Configuration file lookup (when no already loaded config is relevant).
+     * Loader will search for the closest config file to the currently bundled
+     * file, and load it.
+     *
+     * @default true
+     */
+    configLookup?: boolean
+
+    /**
+     * Perform type check, if possible (loaded config is relevant).
+     *
+     * @default true
+     */
+    typeCheck?: boolean
+
+    /**
      * Expose diagnostics as webpack warnings.
      *
      * @default false exposes diagnostics as webpack errors
@@ -61,7 +77,7 @@ interface ITypeScriptLoaderOptions {
      *
      * @default 'tsconfig.json'
      */
-    tsconfigFileName?: string
+    configFileName?: string
 }
 ```
 

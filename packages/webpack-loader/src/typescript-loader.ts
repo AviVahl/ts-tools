@@ -1,7 +1,7 @@
 import ts from 'typescript'
-import { TypeScriptService, ITranspilationOptions } from '@ts-tools/service'
+import webpack from 'webpack'
+import { TypeScriptService, ITranspilationOptions, createBaseHost } from '@ts-tools/service'
 import { resolvedModulesTransformer } from '@ts-tools/robotrix'
-import { loader } from 'webpack'
 import { getOptions, getRemainingRequest } from 'loader-utils'
 
 const { sys } = ts
@@ -13,6 +13,22 @@ const platformHasColors = !!sys && !!sys.writeOutputIsTTY && sys.writeOutputIsTT
  * or a specific request query string
  */
 export interface ITypeScriptLoaderOptions {
+    /**
+     * Configuration file lookup (when no already loaded config is relevant).
+     * Loader will search for the closest config file to the currently bundled
+     * file, and load it.
+     *
+     * @default true
+     */
+    configLookup?: boolean
+
+    /**
+     * Perform type check, if possible (loaded config is relevant).
+     *
+     * @default true
+     */
+    typeCheck?: boolean
+
     /**
      * Expose diagnostics as webpack warnings.
      *
@@ -38,12 +54,12 @@ export interface ITypeScriptLoaderOptions {
      *
      * @default 'tsconfig.json'
      */
-    tsconfigFileName?: string
+    configFileName?: string
 }
 
 export const tsService = new TypeScriptService()
 
-export const typescriptLoader: loader.Loader = function(/* source */) {
+export const typescriptLoader: webpack.loader.Loader = function(/* source */) {
     const loaderOptions: ITypeScriptLoaderOptions = {
         colors: platformHasColors,
         warnOnly: false,
@@ -53,7 +69,11 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
     const tsFormatFn = loaderOptions.colors ? ts.formatDiagnosticsWithColorAndContext : ts.formatDiagnostics
 
     const transpileOptions: ITranspilationOptions = {
-        cwd: this.rootContext,
+        getBaseHost: () => ({
+            ...createBaseHost(),
+            getCurrentDirectory: () => this.rootContext,
+            getProjectVersion: createGetProjectVersion(this._compiler)
+        }),
         getCompilerOptions: (formatHost, tsconfigOptions) => {
             const compilerOptions: ts.CompilerOptions = {
                 ...tsconfigOptions,
@@ -103,10 +123,12 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
 
             return compilerOptions
         },
-        tsconfigFileName: loaderOptions.tsconfigFileName,
+        configFileName: loaderOptions.configFileName,
         getCustomTransformers(_baseHost, compilerOptions) {
             return compilerOptions && compilerOptions.baseUrl ? { after: [resolvedModulesTransformer] } : undefined
-        }
+        },
+        typeCheck: loaderOptions.typeCheck,
+        configLookup: loaderOptions.configLookup
     }
 
     // transpile using `this.resourcePath`, ignoring the `source` provided to loader.
@@ -148,4 +170,18 @@ export const typescriptLoader: loader.Loader = function(/* source */) {
         this.callback(null, outputText)
     }
 
+}
+
+const getProjectVersionCache = new WeakMap<webpack.Compiler, () => string>()
+
+function createGetProjectVersion(compiler: webpack.Compiler): () => string {
+    const existingGetVersion = getProjectVersionCache.get(compiler)
+    if (existingGetVersion) {
+        return existingGetVersion
+    }
+    let projectVersion = 0
+    compiler.hooks.done.tap('@ts-tools/webpack-loader (GetProjectVersion)', () => projectVersion++)
+    const getProjectVersion = () => `${projectVersion}`
+    getProjectVersionCache.set(compiler, getProjectVersion)
+    return getProjectVersion
 }
