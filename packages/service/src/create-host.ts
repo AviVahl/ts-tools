@@ -1,10 +1,21 @@
 import ts, { sys } from 'typescript'
-import { ICustomFs, IBaseHost } from './types'
+import { IBaseHost, ICustomFs } from './types'
 
+const UNIX_EOL = '\n'
 const identity = (val: string) => val
 const toLowerCase = (val: string) => val.toLowerCase()
 
-export function createBaseHost(cwd: string): IBaseHost {
+function defaultGetScriptVersion(filePath: string): string {
+    const stats = sys.getModifiedTime!(filePath)
+    return stats !== undefined ? `${stats.getTime()}` : `${Date.now()}`
+}
+
+function defaultGetScriptSnapshot(filePath: string) {
+    const fileContents = sys.readFile(filePath)
+    return fileContents !== undefined ? ts.ScriptSnapshot.fromString(fileContents) : undefined
+}
+
+export function createBaseHost(): IBaseHost {
     return {
         fileExists: sys.fileExists,
         directoryExists: sys.directoryExists,
@@ -14,15 +25,29 @@ export function createBaseHost(cwd: string): IBaseHost {
         realpath: sys.realpath,
         useCaseSensitiveFileNames: sys.useCaseSensitiveFileNames,
         getCanonicalFileName: sys.useCaseSensitiveFileNames ? identity : toLowerCase,
-        getCurrentDirectory: () => cwd,
+        getCurrentDirectory: sys.getCurrentDirectory,
+        getDefaultLibFileName: ts.getDefaultLibFilePath,
         getNewLine: () => sys.newLine,
         dirname: ts.getDirectoryPath,
-        normalize: ts.sys.resolvePath
+        normalize: sys.resolvePath,
+        getScriptVersion: defaultGetScriptVersion,
+        getScriptSnapshot: defaultGetScriptSnapshot
     }
 }
 
-export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseHost {
-    const { caseSensitive, statSync, readFileSync, readdirSync, join, dirname, normalize, realpathSync } = customFs
+export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
+    const {
+        caseSensitive,
+        statSync,
+        readFileSync,
+        readdirSync,
+        join,
+        dirname,
+        normalize,
+        realpathSync,
+        defaultLibsDirectory,
+        getCurrentDirectory
+    } = fs
 
     function getFileSystemEntries(path: string): { files: string[], directories: string[] } {
         const files: string[] = []
@@ -68,17 +93,33 @@ export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseH
                 return false
             }
         },
-        readFile(path) {
+        readFile(path, encoding = 'utf8') {
             try {
-                return readFileSync(path, 'utf8')
+                return readFileSync(path, encoding)
             } catch {
                 return undefined
             }
         },
         useCaseSensitiveFileNames: caseSensitive,
         getCanonicalFileName: caseSensitive ? identity : toLowerCase,
-        getCurrentDirectory: () => cwd,
-        getNewLine: () => ts.sys ? ts.sys.newLine : '\n',
+        getCurrentDirectory,
+        getNewLine: !!sys ? () => sys.newLine : () => UNIX_EOL,
+        getScriptVersion(filePath) {
+            try {
+                return `${statSync(filePath).mtime.getTime()}`
+            } catch {
+                return `${Date.now()}`
+            }
+        },
+        getScriptSnapshot(filePath) {
+            try {
+                return ts.ScriptSnapshot.fromString(readFileSync(filePath, 'utf8'))
+            } catch {
+                return undefined
+            }
+        },
+        getDefaultLibFileName: options => join(defaultLibsDirectory, ts.getDefaultLibFileName(options)),
+
         realpath: realpathSync,
         dirname,
         normalize
@@ -87,56 +128,18 @@ export function createCustomFsBaseHost(cwd: string, customFs: ICustomFs): IBaseH
 
 export function createLanguageServiceHost(
     baseHost: IBaseHost,
-    fileNames: string[],
-    compilerOptions: ts.CompilerOptions,
-    customTransformers?: ts.CustomTransformers
+    getScriptFileNames: () => string[],
+    getCompilationSettings: () => ts.CompilerOptions,
+    getCustomTransformers?: () => ts.CustomTransformers | undefined
 ): ts.LanguageServiceHost {
-    const targetNewLine = ts.getNewLineCharacter(compilerOptions, baseHost.getNewLine)
+    const { useCaseSensitiveFileNames, getNewLine } = baseHost
 
     return {
         ...baseHost,
-        getCompilationSettings: () => compilerOptions,
-        getScriptFileNames: () => fileNames,
-        getScriptVersion(filePath) {
-            const stats = sys.getModifiedTime!(filePath)
-            return stats ? `${stats.getTime()}` : `${Date.now()}`
-        },
-        getScriptSnapshot(filePath) {
-            const fileContents = sys.readFile(filePath)
-            return fileContents !== undefined ? ts.ScriptSnapshot.fromString(fileContents) : undefined
-        },
-        getDefaultLibFileName: ts.getDefaultLibFilePath,
-        useCaseSensitiveFileNames: () => sys.useCaseSensitiveFileNames,
-        getCustomTransformers: customTransformers ? () => customTransformers : undefined,
-        getNewLine: () => targetNewLine
-    }
-}
-
-export function createCustomFsLanguageServiceHost(
-    baseHost: IBaseHost,
-    fileNames: string[],
-    compilerOptions: ts.CompilerOptions,
-    customFs: ICustomFs,
-    customTransformers?: ts.CustomTransformers,
-): ts.LanguageServiceHost {
-    const { statSync, readFileSync, join, defaultLibsDirectory, caseSensitive } = customFs
-    const targetNewLine = ts.getNewLineCharacter(compilerOptions, baseHost.getNewLine)
-
-    return {
-        ...baseHost,
-        getCompilationSettings: () => compilerOptions,
-        getScriptFileNames: () => fileNames,
-        getScriptVersion(filePath) {
-            const stats = statSync(filePath)
-            return stats ? `${stats.mtime.getTime()}` : `${Date.now()}`
-        },
-        getScriptSnapshot(filePath) {
-            const fileContents = readFileSync(filePath)
-            return fileContents ? ts.ScriptSnapshot.fromString(fileContents) : undefined
-        },
-        getDefaultLibFileName: options => join(defaultLibsDirectory, ts.getDefaultLibFileName(options)),
-        useCaseSensitiveFileNames: () => caseSensitive,
-        getCustomTransformers: customTransformers ? () => customTransformers : undefined,
-        getNewLine: () => targetNewLine
+        getCompilationSettings,
+        getScriptFileNames,
+        getCustomTransformers,
+        useCaseSensitiveFileNames: () => useCaseSensitiveFileNames,
+        getNewLine: () => ts.getNewLineCharacter(getCompilationSettings(), getNewLine)
     }
 }

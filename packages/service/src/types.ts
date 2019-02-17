@@ -2,39 +2,45 @@ import ts from 'typescript'
 
 export interface ITranspilationOptions {
     /**
-     * Absolute path to the current working directory.
-     */
-    cwd?: string
-
-    /**
-     * This can be provided so that hosts are built around the custom fs.
-     */
-    getCustomFs?: () => ICustomFs
-
-    /**
      * TypeScript configuration file name.
      *
      * @default 'tsconfig.json'
      */
-    tsconfigFileName?: string
+    configFileName?: string
 
     /**
-     * Should transpilation be isolated, meaning no `tsconfig.json`
-     * lookup, and no type checking.
+     * Configuration file lookup (when no loaded config is relevant).
+     * Process will search for the closest config file to the currently transpiled
+     * file, and load it.
      *
-     * @default false
+     * @default true
      */
-    isolated?: boolean
+    configLookup?: boolean
+
+    /**
+     * Perform type check, if possible (config is available and targets the file).
+     *
+     * @default true
+     */
+    typeCheck?: boolean
 
     /**
      * Provided callback should return the final resolved compiler options.
      *
-     * @param tsconfigOptions user's own tsconfig options, if found
+     * @param tsconfigOptions user's own tsconfig options, if found.
      */
     getCompilerOptions(
         baseHost: IBaseHost,
         tsconfigOptions?: Readonly<ts.CompilerOptions>
     ): Readonly<ts.CompilerOptions>
+
+    /**
+     * This can be provided so that hosts are built around a custom fs.
+     * See `createCustomBaseHost`.
+     *
+     * @default createBaseHost()
+     */
+    getBaseHost?(): IBaseHost
 
     /**
      * Transformers to apply during transpilation.
@@ -67,7 +73,7 @@ export interface ICustomFs {
      * string representation (using `encoding` to decode the text).
      *
      * Default encoding is 'utf8'.
-     * Throws if file doesn't exist or error.
+     * @throws if file doesn't exist or error.
      */
     readFileSync(path: string, encoding?: string): string
 
@@ -77,7 +83,9 @@ export interface ICustomFs {
     readdirSync(path: string): string[]
 
     /**
-     * Get stats of `path`. Throws if path doesn't exist or error.
+     * Get stats of `path`.
+     *
+     * @throws if path doesn't exist or error.
      */
     statSync(path: string): { mtime: Date, isFile(): boolean, isDirectory(): boolean }
 
@@ -101,6 +109,11 @@ export interface ICustomFs {
      * Join all path segments together and normalize the resulting path.
      */
     join(...pathSegments: string[]): string
+
+    /**
+     * Returns the current working directory path.
+     */
+    getCurrentDirectory(): string
 }
 
 export interface ITranspilationOutput {
@@ -124,10 +137,25 @@ export interface ITranspilationOutput {
 }
 
 /**
+ * Same as `ts.LanguageServiceHost`, but without:
+ * - `useCaseSensitiveFileNames` - conflicts with `ts.ParseConfigHost` (where it's not a function).
+ * - `getCompilerOptions`/`getScriptFileNames` - require parsing of a tsconfig.
+ */
+export type ParitalLanguageService = Pick<ts.LanguageServiceHost,
+    Exclude<keyof ts.LanguageServiceHost, 'useCaseSensitiveFileNames' | 'getCompilationSettings' | 'getScriptFileNames'>
+>
+
+/**
  * Combines all required functionality for parsing config files,
  * formatting diagnostics, and resolving modules.
  */
-export interface IBaseHost extends ts.ParseConfigHost, ts.FormatDiagnosticsHost, ts.ModuleResolutionHost {
+export interface IBaseHost extends
+    ts.ParseConfigHost,
+    ts.FormatDiagnosticsHost,
+    ts.ModuleResolutionHost,
+    ParitalLanguageService {
+    fileExists(path: string): boolean
+    readFile(path: string, encoding?: string): string | undefined
     readDirectory(
         path: string,
         extensions?: ReadonlyArray<string>,
@@ -138,6 +166,7 @@ export interface IBaseHost extends ts.ParseConfigHost, ts.FormatDiagnosticsHost,
     getCurrentDirectory(): string
     directoryExists(directoryPath: string): boolean
     getDirectories(path: string): string[]
+    getNewLine(): string
 
     dirname(path: string): string
     normalize(path: string): string
@@ -146,19 +175,26 @@ export interface IBaseHost extends ts.ParseConfigHost, ts.FormatDiagnosticsHost,
 /**
  * Contains information about managed lanaguage service.
  */
-export interface ILanguageServiceInstance {
+export interface IParsedConfig {
     /**
-     * Instance of the actual typescript language service.
-     * Used to transpile files and get diagnostics.
+     * Absolute path to the config file.
      */
-    languageService: ts.LanguageService
+    configFilePath: string
 
     /**
-     * Absolute file paths returned when parsing the `tsconfig.json`.
-     * Upon transpilation request, this field is used to search for an existing, already instanciated, language service.
-     * All paths are normalized using `baseHost.normalize`.
+     * Compiler options, as specified by the config file.
      */
-    rootFileNames: ReadonlySet<string>
+    compilerOptions: ts.CompilerOptions
+
+    /**
+     * Raw list of file paths returned when parsing the `tsconfig.json`.
+     */
+    rootFileNames: string[]
+
+    /**
+     * A set containing `rootFileNames` normalized using `baseHost.normalize`.
+     */
+    normalizedFileNames: Set<string>
 
     /**
      * The matching `baseHost` for the `lanuageService`. Reference is kept for formatting diagnostics.
