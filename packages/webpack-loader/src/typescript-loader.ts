@@ -72,7 +72,7 @@ export const typescriptLoader: webpack.loader.Loader = function(/* source */) {
         getBaseHost: () => ({
             ...createBaseHost(),
             getCurrentDirectory: () => this.rootContext,
-            getProjectVersion: createGetProjectVersion(this._compiler)
+            getProjectVersion: createGetProjectVersion(getTopParentCompiler(this._compiler))
         }),
         getCompilerOptions: (formatHost, tsconfigOptions) => {
             const compilerOptions: ts.CompilerOptions = {
@@ -184,4 +184,11 @@ function createGetProjectVersion(compiler: webpack.Compiler): () => string {
     const getProjectVersion = () => `${projectVersion}`
     getProjectVersionCache.set(compiler, getProjectVersion)
     return getProjectVersion
+}
+
+function getTopParentCompiler(compiler: any /* webpack.Compiler */) {
+    while (compiler.isChild()) {
+        compiler = compiler.parentCompilation.compiler
+    }
+    return compiler
 }
