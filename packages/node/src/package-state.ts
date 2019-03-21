@@ -1,5 +1,5 @@
-import sourceMapSupport from 'source-map-support'
-import { TypeScriptService } from '@ts-tools/service'
+import sourceMapSupport from 'source-map-support';
+import { TypeScriptService } from '@ts-tools/service';
 
 export const packageState = {
     /**
@@ -16,13 +16,13 @@ export const packageState = {
      * source map cache.
      */
     sourceMaps: new Map<string, string>()
-}
+};
 
 // connects source maps cache to source-map-support
 sourceMapSupport.install({
     environment: 'node',
     retrieveSourceMap(filePath) {
-        const fileSourceMap = packageState.sourceMaps.get(filePath)
-        return fileSourceMap ? { map: Buffer.from(fileSourceMap, 'base64').toString(), url: filePath } : null
+        const fileSourceMap = packageState.sourceMaps.get(filePath);
+        return fileSourceMap ? { map: Buffer.from(fileSourceMap, 'base64').toString(), url: filePath } : null;
     }
-})
+});

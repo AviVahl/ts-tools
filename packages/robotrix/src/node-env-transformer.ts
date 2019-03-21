@@ -1,4 +1,4 @@
-import ts from 'typescript'
+import ts from 'typescript';
 
 /**
  * Create a transformer factory that replaces `process.env.[PARAM]`
@@ -8,7 +8,7 @@ export function createNodeEnvTransformer(
     env: { [key: string]: string | undefined }
 ): ts.TransformerFactory<ts.SourceFile> {
     return context => {
-        return sourceFile => ts.visitEachChild(sourceFile, visitNodeEnv, context)
+        return sourceFile => ts.visitEachChild(sourceFile, visitNodeEnv, context);
 
         function visitNodeEnv(node: ts.Node): ts.Node | ts.Node[] {
             if (
@@ -20,13 +20,13 @@ export function createNodeEnvTransformer(
                 env.hasOwnProperty(node.name.text)
             ) {
                 // do lookup inside the if, so we don't do it twice
-                const valueForParam = env[node.name.text]
+                const valueForParam = env[node.name.text];
                 if (valueForParam !== undefined) {
-                    return ts.createStringLiteral(valueForParam)
+                    return ts.createStringLiteral(valueForParam);
                 }
             }
 
-            return ts.visitEachChild(node, visitNodeEnv, context)
+            return ts.visitEachChild(node, visitNodeEnv, context);
         }
-    }
+    };
 }

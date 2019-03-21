@@ -1,8 +1,8 @@
-import ts from 'typescript'
+import ts from 'typescript';
 
-const SELF = '__self'
-const SOURCE = '__source'
-const JSX_FILENAME = '__jsxFileName'
+const SELF = '__self';
+const SOURCE = '__source';
+const JSX_FILENAME = '__jsxFileName';
 
 /**
  * Transformer that adds meta-data which is used by React for development error messages.
@@ -16,81 +16,81 @@ const JSX_FILENAME = '__jsxFileName'
  */
 export function reactDevTransformer(context: ts.TransformationContext): ts.Transformer<ts.SourceFile> {
     return sourceFile => {
-        const { fileName } = sourceFile // absolute file path
+        const { fileName } = sourceFile; // absolute file path
 
         // we want to add the __jsxFileName const only if it is used in any added attribute
-        let shouldAddFileNameConst = false
+        let shouldAddFileNameConst = false;
 
         // file-wide unique identifier that would point to the fileName string literal
-        const jsxFileNameIdentifier = ts.createFileLevelUniqueName(JSX_FILENAME)
+        const jsxFileNameIdentifier = ts.createFileLevelUniqueName(JSX_FILENAME);
 
         // fist run the visitor, so it will mark whether we need to add fileName const declaration
-        sourceFile = ts.visitEachChild(sourceFile, addJSXMetadata, context)
+        sourceFile = ts.visitEachChild(sourceFile, addJSXMetadata, context);
 
         if (shouldAddFileNameConst) {
-            sourceFile = addFileNameConst(sourceFile, jsxFileNameIdentifier, fileName)
+            sourceFile = addFileNameConst(sourceFile, jsxFileNameIdentifier, fileName);
         }
 
-        return sourceFile
+        return sourceFile;
 
         function addJSXMetadata(node: ts.Node): ts.Node | ts.Node[] {
 
             // we only transform jsx attributes nodes that have parent jsx elements
             if (!ts.isJsxAttributes(node) || !node.parent) {
-                return ts.visitEachChild(node, addJSXMetadata, context)
+                return ts.visitEachChild(node, addJSXMetadata, context);
             }
 
-            const { userDefinedSelf, userDefinedSource } = findUserDefinedAttributes(node)
+            const { userDefinedSelf, userDefinedSource } = findUserDefinedAttributes(node);
 
-            const newAttributes: ts.JsxAttribute[] = []
+            const newAttributes: ts.JsxAttribute[] = [];
 
             if (!userDefinedSelf) {
-                newAttributes.push(createSelfAttribute())
+                newAttributes.push(createSelfAttribute());
             }
 
             if (!userDefinedSource) {
-                shouldAddFileNameConst = true
-                const { line } = ts.getLineAndCharacterOfPosition(sourceFile, node.parent.pos)
-                newAttributes.push(createSourceAttribute(createLocationObject(jsxFileNameIdentifier, line)))
+                shouldAddFileNameConst = true;
+                const { line } = ts.getLineAndCharacterOfPosition(sourceFile, node.parent.pos);
+                newAttributes.push(createSourceAttribute(createLocationObject(jsxFileNameIdentifier, line)));
             }
 
             if (newAttributes.length) {
                 // we actually created new attributes, so append them
-                node = ts.updateJsxAttributes(node, node.properties.concat(newAttributes))
+                node = ts.updateJsxAttributes(node, node.properties.concat(newAttributes));
             }
 
             // if any of the attributes contain JSX elements, we want to transform them as well
-            return ts.visitEachChild(node, addJSXMetadata, context)
+            return ts.visitEachChild(node, addJSXMetadata, context);
         }
-    }
+    };
 }
 
 // iterate over existing properties to check whether user already defined one of the props
 function findUserDefinedAttributes(node: ts.JsxAttributes) {
-    let userDefinedSelf = false
-    let userDefinedSource = false
+    let userDefinedSelf = false;
+    let userDefinedSource = false;
 
     for (const prop of node.properties) {
-        const { name: propName } = prop
+        const { name: propName } = prop;
         if (propName && (ts.isIdentifier(propName) || ts.isStringLiteral(propName))) {
             if (propName.text === SELF) {
-                userDefinedSelf = true
+                userDefinedSelf = true;
             } else if (propName.text === SOURCE) {
-                userDefinedSource = true
+                userDefinedSource = true;
             }
         }
     }
-    return { userDefinedSelf, userDefinedSource }
+    return { userDefinedSelf, userDefinedSource };
 }
 
 // __self={this}
 function createSelfAttribute(): ts.JsxAttribute {
-    return ts.createJsxAttribute(ts.createIdentifier(SELF), ts.createJsxExpression(undefined, ts.createThis()))
+    return ts.createJsxAttribute(ts.createIdentifier(SELF), ts.createJsxExpression(undefined, ts.createThis()));
 }
 
 // __source={ [location-object] }
 function createSourceAttribute(locationObj: ts.ObjectLiteralExpression): ts.JsxAttribute {
-    return ts.createJsxAttribute(ts.createIdentifier(SOURCE), ts.createJsxExpression(undefined, locationObj))
+    return ts.createJsxAttribute(ts.createIdentifier(SOURCE), ts.createJsxExpression(undefined, locationObj));
 }
 
 // { fileName: [path-to-file], lineNumber: [element-line-number] }
@@ -104,7 +104,7 @@ function createLocationObject(jsxFileNameIdentifier: ts.Identifier, line: number
             'lineNumber',
             ts.createNumericLiteral(String(line + 1))
         )
-    ])
+    ]);
 }
 
 // const __jsxFileName = "/path/to/file.ts"
@@ -120,7 +120,7 @@ function addFileNameConst(
             undefined /* type */,
             ts.createStringLiteral(fileName)
         )
-    ]
+    ];
 
     return insertStatementAfterImports(
         sourceFile,
@@ -128,18 +128,18 @@ function addFileNameConst(
             undefined /* modifiers */,
             ts.createVariableDeclarationList(variableDecls, ts.NodeFlags.Const)
         )
-    )
+    );
 }
 
 // insert a new statement above the first non-import statement
 function insertStatementAfterImports(sourceFile: ts.SourceFile, statement: ts.Statement): ts.SourceFile {
-    const {statements } = sourceFile
+    const {statements } = sourceFile;
 
-    const nonImportIdx = statements.findIndex(s => !ts.isImportDeclaration(s))
+    const nonImportIdx = statements.findIndex(s => !ts.isImportDeclaration(s));
 
     const newStatements = nonImportIdx === -1 ?
         [statement, ...statements] :
-        [...statements.slice(0, nonImportIdx), statement, ...statements.slice(nonImportIdx)]
+        [...statements.slice(0, nonImportIdx), statement, ...statements.slice(nonImportIdx)];
 
-    return ts.updateSourceFileNode(sourceFile, newStatements)
+    return ts.updateSourceFileNode(sourceFile, newStatements);
 }

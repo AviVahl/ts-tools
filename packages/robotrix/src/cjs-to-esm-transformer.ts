@@ -1,4 +1,4 @@
-import ts from 'typescript'
+import ts from 'typescript';
 
 /**
  * CommonJS to ESM transformer options
@@ -9,7 +9,7 @@ export interface ICjsToEsmTransformerOptions {
      * transform a `require(request)` call to an import statement,
      * based on its request string.
      */
-    shouldTransform?(request: string): boolean
+    shouldTransform?(request: string): boolean;
 }
 
 /**
@@ -31,7 +31,7 @@ export interface ICjsToEsmTransformerOptions {
 export function createCjsToEsmTransformer(
     options: ICjsToEsmTransformerOptions = {}
 ): ts.TransformerFactory<ts.SourceFile> {
-    return context => sourceFile => transformSourceFile(sourceFile, context, options)
+    return context => sourceFile => transformSourceFile(sourceFile, context, options);
 }
 
 function transformSourceFile(
@@ -39,10 +39,10 @@ function transformSourceFile(
     context: ts.TransformationContext,
     { shouldTransform = () => true }: ICjsToEsmTransformerOptions
 ): ts.SourceFile {
-    let fileUsesCommonJs = false
+    let fileUsesCommonJs = false;
 
-    const newImports: ts.ImportDeclaration[] = []
-    sourceFile = ts.visitEachChild(sourceFile, visitCommonJS, context)
+    const newImports: ts.ImportDeclaration[] = [];
+    sourceFile = ts.visitEachChild(sourceFile, visitCommonJS, context);
 
     if (fileUsesCommonJs) {
         const newStatements = [
@@ -50,12 +50,12 @@ function transformSourceFile(
             createCjsModuleDefinition(),
             ...sourceFile.statements,
             createCjsExportDefault()
-        ]
+        ];
 
-        sourceFile = ts.updateSourceFileNode(sourceFile, newStatements)
+        sourceFile = ts.updateSourceFileNode(sourceFile, newStatements);
     }
 
-    return sourceFile
+    return sourceFile;
 
     function visitCommonJS(node: ts.Node): ts.Node | ts.Node[] | undefined {
         if (
@@ -65,13 +65,13 @@ function transformSourceFile(
             // do no iterate into bodys of functions defining a `require` parameter
             // mocha's bundle uses this pattern. we don't want to transform `require`
             // calls inside such functions
-            return node
+            return node;
         } else if (isCjsExportsAccess(node)) {
-            fileUsesCommonJs = true
+            fileUsesCommonJs = true;
         } else if (isCJsRequireCall(node) && shouldTransform((node.arguments[0] as ts.StringLiteral).text)) {
-            fileUsesCommonJs = true
+            fileUsesCommonJs = true;
 
-            const importIdentifier = createImportIdentifier(node)
+            const importIdentifier = createImportIdentifier(node);
 
             newImports.push(
                 ts.createImportDeclaration(
@@ -80,31 +80,31 @@ function transformSourceFile(
                     ts.createImportClause(importIdentifier, undefined /* namedBindings */),
                     node.arguments[0]
                 )
-            )
+            );
 
             // replace require call with identifier
-            return importIdentifier
+            return importIdentifier;
         }
 
-        return ts.visitEachChild(node, visitCommonJS, context)
+        return ts.visitEachChild(node, visitCommonJS, context);
     }
 }
 
 // export default module.exports
 function createCjsExportDefault() {
-    return ts.createExportDefault(ts.createPropertyAccess(ts.createIdentifier('module'), 'exports'))
+    return ts.createExportDefault(ts.createPropertyAccess(ts.createIdentifier('module'), 'exports'));
 }
 
 // unique identifier generation
 function createImportIdentifier(node: ts.CallExpression) {
-    const { parent } = node
+    const { parent } = node;
     if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
         // var libName = require(...)
         // so use libName
-        return ts.createUniqueName(parent.name.text)
+        return ts.createUniqueName(parent.name.text);
     } else {
         // use _imported_1, _imported_2, etc
-        return ts.createUniqueName('_imported')
+        return ts.createUniqueName('_imported');
     }
 }
 
@@ -117,7 +117,7 @@ function createCjsModuleDefinition() {
             undefined /* type */,
             ts.createObjectLiteral([ts.createShorthandPropertyAssignment('exports')])
         )
-    ], ts.NodeFlags.Let))
+    ], ts.NodeFlags.Let));
 }
 
 // module['exports'], module.exports or exports.<something>
@@ -129,12 +129,12 @@ function isCjsExportsAccess(node: ts.Node): boolean {
         ts.isStringLiteral(node.argumentExpression)
     ) {
         // module['exports']
-        return node.argumentExpression.text === 'exports'
+        return node.argumentExpression.text === 'exports';
     } else if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression)) {
         return (node.expression.text === 'module' && node.name.text === 'exports') || // module.exports
-            (node.expression.text === 'exports') // exports.<something>
+            (node.expression.text === 'exports'); // exports.<something>
     }
-    return false
+    return false;
 }
 
 // require(...) calls with a single string argument
@@ -145,5 +145,5 @@ function isCJsRequireCall(node: ts.Node): node is ts.CallExpression {
         node.expression.text === 'require' &&
         node.arguments.length === 1 &&
         ts.isStringLiteral(node.arguments[0])
-    )
+    );
 }

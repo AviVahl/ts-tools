@@ -1,1 +1,1 @@
-export const someValue = 123
+export const someValue = 123;

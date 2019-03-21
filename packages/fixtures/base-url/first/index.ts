@@ -1,1 +1,1 @@
-export const exportedValue = 'Test PASSED!'
+export const exportedValue = 'Test PASSED!';

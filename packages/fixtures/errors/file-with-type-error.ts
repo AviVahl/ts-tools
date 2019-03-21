@@ -1,1 +1,1 @@
-const onlyString: string = 123
+const onlyString: string = 123;

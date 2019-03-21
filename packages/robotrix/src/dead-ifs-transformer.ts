@@ -1,4 +1,4 @@
-import ts from 'typescript'
+import ts from 'typescript';
 
 /**
  * Detects and removes dead `if` branches.
@@ -7,23 +7,23 @@ import ts from 'typescript'
  */
 export function deadIfsTransformer(context: ts.TransformationContext): ts.Transformer<ts.SourceFile> {
     return sourceFile => {
-        return ts.visitEachChild(sourceFile, visitIfStatements, context)
-    }
+        return ts.visitEachChild(sourceFile, visitIfStatements, context);
+    };
 
     function visitIfStatements(node: ts.Node): ts.Node | ts.Node[] | undefined {
         if (ts.isIfStatement(node)) {
-            const expression = visitIfExpression(node.expression)
+            const expression = visitIfExpression(node.expression);
 
             if (expression.kind === ts.SyntaxKind.TrueKeyword) {
                 // replace expression with `true` and else (if exists) with an empty block
-                node = ts.updateIf(node, expression, node.thenStatement, undefined)
+                node = ts.updateIf(node, expression, node.thenStatement, undefined);
             } else if (expression.kind === ts.SyntaxKind.FalseKeyword) {
                 // replace expression with `false` and then with an empty block
-                node = ts.updateIf(node, expression, ts.createBlock([]), node.elseStatement)
+                node = ts.updateIf(node, expression, ts.createBlock([]), node.elseStatement);
             }
         }
 
-        return ts.visitEachChild(node, visitIfStatements, context)
+        return ts.visitEachChild(node, visitIfStatements, context);
     }
 }
 
@@ -36,20 +36,20 @@ function visitIfExpression(node: ts.Expression): ts.Expression {
         ts.isStringLiteral(node.left) &&
         ts.isStringLiteral(node.right)
     ) {
-        const { kind } = node.operatorToken
+        const { kind } = node.operatorToken;
         if (
             // operator is `==` or `===`
             kind === ts.SyntaxKind.EqualsEqualsEqualsToken ||
             kind === ts.SyntaxKind.EqualsEqualsToken
         ) {
-            return node.left.text === node.right.text ? ts.createTrue() : ts.createFalse()
+            return node.left.text === node.right.text ? ts.createTrue() : ts.createFalse();
         } else if (
             // operator is `!=` or `!==`
             kind === ts.SyntaxKind.ExclamationEqualsEqualsToken ||
             kind === ts.SyntaxKind.ExclamationEqualsToken
         ) {
-            return node.left.text !== node.right.text ? ts.createTrue() : ts.createFalse()
+            return node.left.text !== node.right.text ? ts.createTrue() : ts.createFalse();
         }
     }
-    return node
+    return node;
 }

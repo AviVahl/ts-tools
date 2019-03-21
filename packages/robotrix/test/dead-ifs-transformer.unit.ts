@@ -1,10 +1,10 @@
-import { expect } from 'chai'
-import ts from 'typescript'
-import { deadIfsTransformer } from '../src'
+import { expect } from 'chai';
+import ts from 'typescript';
+import { deadIfsTransformer } from '../src';
 
 describe('DeadIfsTransformer', () => {
-    const transformers: ts.CustomTransformers = { before: [deadIfsTransformer] }
-    const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 }
+    const transformers: ts.CustomTransformers = { before: [deadIfsTransformer] };
+    const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
 
     it('detects if (true) and cancels else branch', () => {
         const code = `
@@ -13,16 +13,16 @@ describe('DeadIfsTransformer', () => {
             } else {
                 shouldBeRemoved
             }
-        `
+        `;
 
-        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
+        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
         expect(outputText).to.matchCode(`
             if (true) {
                 shouldBeKept
             }
-        `)
-    })
+        `);
+    });
 
     it('detects if (false) and cancels then branch', () => {
         const code = `
@@ -30,17 +30,17 @@ describe('DeadIfsTransformer', () => {
                 shouldBeRemoved
             } else {
                 shouldBeKept
-            }`
+            }`;
 
-        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
+        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
         expect(outputText).to.matchCode(`
             if (false) { }
             else {
                 shouldBeKept
             }
-        `)
-    })
+        `);
+    });
 
     it('checks `else if` as well', () => {
         const code = `
@@ -50,17 +50,17 @@ describe('DeadIfsTransformer', () => {
                 shouldBeKept
             } else {
                 shouldAlsoBeRemoved
-            }`
+            }`;
 
-        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
+        const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
         expect(outputText).to.matchCode(`
             if (false) { }
             else if (true) {
                 shouldBeKept
             }
-        `)
-    })
+        `);
+    });
 
     describe('string equality checks', () => {
         it('handles === when strings are equal', () => {
@@ -69,16 +69,16 @@ describe('DeadIfsTransformer', () => {
                     shouldBeKept
                 } else {
                     shouldBeRemoved
-                }`
+                }`;
 
-            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
+            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
             expect(outputText).to.matchCode(`
                 if (true) {
                     shouldBeKept
                 }
-            `)
-        })
+            `);
+        });
 
         it('handles === when actual strings are not equal', () => {
             const code = `
@@ -86,17 +86,17 @@ describe('DeadIfsTransformer', () => {
                     shouldBeRemoved
                 } else {
                     shouldBeKept
-                }`
+                }`;
 
-            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
+            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
             expect(outputText).to.matchCode(`
                 if (false) { }
                 else {
                     shouldBeKept
                 }
-            `)
-        })
+            `);
+        });
 
         it('handles !== when actual strings are equal', () => {
             const code = `
@@ -104,17 +104,17 @@ describe('DeadIfsTransformer', () => {
                     shouldBeRemoved
                 } else {
                     shouldBeKept
-                }`
+                }`;
 
-            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
+            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
             expect(outputText).to.matchCode(`
                 if (false) { }
                 else {
                     shouldBeKept
                 }
-            `)
-        })
+            `);
+        });
 
         it('handles !== when actual strings are not equal', () => {
             const code = `
@@ -123,15 +123,15 @@ describe('DeadIfsTransformer', () => {
                 } else {
                     shouldBeRemoved
                 }
-            `
+            `;
 
-            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers })
+            const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
             expect(outputText).to.matchCode(`
                 if (true) {
                     shouldBeKept
                 }
-            `)
-        })
-    })
-})
+            `);
+        });
+    });
+});

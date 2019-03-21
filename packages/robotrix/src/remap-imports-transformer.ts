@@ -1,7 +1,7 @@
-import ts from 'typescript'
+import ts from 'typescript';
 
 export interface IRemapImportsTransformerOptions {
-    remapTarget(target: string, containingFile: string, sourceFile: ts.SourceFile): string
+    remapTarget(target: string, containingFile: string, sourceFile: ts.SourceFile): string;
 }
 
 /**
@@ -10,7 +10,7 @@ export interface IRemapImportsTransformerOptions {
 export function createRemapImportsTransformer(
     { remapTarget }: IRemapImportsTransformerOptions
 ): ts.TransformerFactory<ts.SourceFile> {
-    return context => sourceFile => remapSourceFileImports(sourceFile, context, remapTarget)
+    return context => sourceFile => remapSourceFileImports(sourceFile, context, remapTarget);
 }
 
 export function remapSourceFileImports(
@@ -18,8 +18,8 @@ export function remapSourceFileImports(
     context: ts.TransformationContext,
     remapTarget: IRemapImportsTransformerOptions['remapTarget']
 ): ts.SourceFile {
-    const { fileName } = sourceFile
-    return ts.visitEachChild(sourceFile, visitStaticImportsExports, context)
+    const { fileName } = sourceFile;
+    return ts.visitEachChild(sourceFile, visitStaticImportsExports, context);
 
     /**
      * Visitor for static imports/re-exports, such as:
@@ -34,8 +34,8 @@ export function remapSourceFileImports(
         if (
             ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)
         ) {
-            const originalTarget = node.moduleSpecifier.text
-            const remappedTarget = remapTarget(originalTarget, fileName, sourceFile)
+            const originalTarget = node.moduleSpecifier.text;
+            const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
             if (originalTarget !== remappedTarget) {
                 return ts.updateImportDeclaration(
                     node,
@@ -43,13 +43,13 @@ export function remapSourceFileImports(
                     node.modifiers,
                     node.importClause,
                     ts.createLiteral(remappedTarget)
-                )
+                );
             }
         } else if (
             ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
         ) {
-            const originalTarget = node.moduleSpecifier.text
-            const remappedTarget = remapTarget(originalTarget, fileName, sourceFile)
+            const originalTarget = node.moduleSpecifier.text;
+            const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
             if (originalTarget !== remappedTarget) {
                 return ts.updateExportDeclaration(
                     node,
@@ -57,13 +57,13 @@ export function remapSourceFileImports(
                     node.modifiers,
                     node.exportClause,
                     ts.createLiteral(remappedTarget)
-                )
+                );
             }
         }
 
         // if not a static import/re-export, might be a dynamic import
         // so run that recursive visitor on `node`
-        return visitDynamicImports(node)
+        return visitDynamicImports(node);
     }
 
     /**
@@ -79,26 +79,26 @@ export function remapSourceFileImports(
             node.arguments.length === 1 &&
             ts.isStringLiteral(node.arguments[0])
         ) {
-            const originalTarget = (node.arguments[0] as ts.StringLiteral).text
-            const remappedTarget = remapTarget(originalTarget, fileName, sourceFile)
+            const originalTarget = (node.arguments[0] as ts.StringLiteral).text;
+            const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
             if (originalTarget !== remappedTarget) {
                 return ts.updateCall(
                     node,
                     node.expression,
                     node.typeArguments,
                     [ts.createLiteral(remappedTarget)]
-                )
+                );
             }
         }
 
-        return ts.visitEachChild(node, visitDynamicImports, context)
+        return ts.visitEachChild(node, visitDynamicImports, context);
     }
 }
 
 function isRequireIdentifier(expression: ts.LeftHandSideExpression): expression is ts.Identifier {
-    return ts.isIdentifier(expression) && expression.text === 'require'
+    return ts.isIdentifier(expression) && expression.text === 'require';
 }
 
 function isDynamicImportKeyword(expression: ts.LeftHandSideExpression) {
-    return expression.kind === ts.SyntaxKind.ImportKeyword
+    return expression.kind === ts.SyntaxKind.ImportKeyword;
 }

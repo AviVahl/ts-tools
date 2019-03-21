@@ -1,18 +1,18 @@
-import ts, { sys } from 'typescript'
-import { IBaseHost, ICustomFs } from './types'
+import ts, { sys } from 'typescript';
+import { IBaseHost, ICustomFs } from './types';
 
-const UNIX_EOL = '\n'
-const identity = (val: string) => val
-const toLowerCase = (val: string) => val.toLowerCase()
+const UNIX_EOL = '\n';
+const identity = (val: string) => val;
+const toLowerCase = (val: string) => val.toLowerCase();
 
 function defaultGetScriptVersion(filePath: string): string {
-    const stats = sys.getModifiedTime!(filePath)
-    return stats !== undefined ? `${stats.getTime()}` : `${Date.now()}`
+    const stats = sys.getModifiedTime!(filePath);
+    return stats !== undefined ? `${stats.getTime()}` : `${Date.now()}`;
 }
 
 function defaultGetScriptSnapshot(filePath: string) {
-    const fileContents = sys.readFile(filePath)
-    return fileContents !== undefined ? ts.ScriptSnapshot.fromString(fileContents) : undefined
+    const fileContents = sys.readFile(filePath);
+    return fileContents !== undefined ? ts.ScriptSnapshot.fromString(fileContents) : undefined;
 }
 
 export function createBaseHost(): IBaseHost {
@@ -32,7 +32,7 @@ export function createBaseHost(): IBaseHost {
         normalize: sys.resolvePath,
         getScriptVersion: defaultGetScriptVersion,
         getScriptSnapshot: defaultGetScriptSnapshot
-    }
+    };
 }
 
 export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
@@ -47,57 +47,57 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
         realpathSync,
         defaultLibsDirectory,
         getCurrentDirectory
-    } = fs
+    } = fs;
 
     function getFileSystemEntries(path: string): { files: string[], directories: string[] } {
-        const files: string[] = []
-        const directories: string[] = []
+        const files: string[] = [];
+        const directories: string[] = [];
 
         try {
-            const dirEntries = readdirSync(path)
+            const dirEntries = readdirSync(path);
             for (const entryName of dirEntries) {
-                const entryStats = statSync(join(path, entryName))
+                const entryStats = statSync(join(path, entryName));
                 if (!entryStats) {
-                    continue
+                    continue;
                 }
                 if (entryStats.isFile()) {
-                    files.push(entryName)
+                    files.push(entryName);
                 } else if (entryStats.isDirectory()) {
-                    directories.push(entryName)
+                    directories.push(entryName);
                 }
             }
         } catch { /* */ }
-        return { files, directories }
+        return { files, directories };
     }
 
     return {
         readDirectory(rootDir, extensions, excludes, includes, depth) {
             return ts.matchFiles(
                 rootDir, extensions, excludes, includes, caseSensitive, rootDir, depth, getFileSystemEntries
-            )
+            );
         },
         getDirectories(path) {
-            return getFileSystemEntries(path).directories
+            return getFileSystemEntries(path).directories;
         },
         fileExists(path) {
             try {
-                return statSync(path).isFile()
+                return statSync(path).isFile();
             } catch {
-                return false
+                return false;
             }
         },
         directoryExists(path) {
             try {
-                return statSync(path).isDirectory()
+                return statSync(path).isDirectory();
             } catch {
-                return false
+                return false;
             }
         },
         readFile(path, encoding = 'utf8') {
             try {
-                return readFileSync(path, encoding)
+                return readFileSync(path, encoding);
             } catch {
-                return undefined
+                return undefined;
             }
         },
         useCaseSensitiveFileNames: caseSensitive,
@@ -106,16 +106,16 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
         getNewLine: !!sys ? () => sys.newLine : () => UNIX_EOL,
         getScriptVersion(filePath) {
             try {
-                return `${statSync(filePath).mtime.getTime()}`
+                return `${statSync(filePath).mtime.getTime()}`;
             } catch {
-                return `${Date.now()}`
+                return `${Date.now()}`;
             }
         },
         getScriptSnapshot(filePath) {
             try {
-                return ts.ScriptSnapshot.fromString(readFileSync(filePath, 'utf8'))
+                return ts.ScriptSnapshot.fromString(readFileSync(filePath, 'utf8'));
             } catch {
-                return undefined
+                return undefined;
             }
         },
         getDefaultLibFileName: options => join(defaultLibsDirectory, ts.getDefaultLibFileName(options)),
@@ -123,7 +123,7 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
         realpath: realpathSync,
         dirname,
         normalize
-    }
+    };
 }
 
 export function createLanguageServiceHost(
@@ -132,7 +132,7 @@ export function createLanguageServiceHost(
     getCompilationSettings: () => ts.CompilerOptions,
     getCustomTransformers?: () => ts.CustomTransformers | undefined
 ): ts.LanguageServiceHost {
-    const { useCaseSensitiveFileNames, getNewLine } = baseHost
+    const { useCaseSensitiveFileNames, getNewLine } = baseHost;
 
     return {
         ...baseHost,
@@ -141,5 +141,5 @@ export function createLanguageServiceHost(
         getCustomTransformers,
         useCaseSensitiveFileNames: () => useCaseSensitiveFileNames,
         getNewLine: () => ts.getNewLineCharacter(getCompilationSettings(), getNewLine)
-    }
+    };
 }

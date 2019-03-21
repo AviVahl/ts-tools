@@ -1,4 +1,4 @@
-import ts from 'typescript'
+import ts from 'typescript';
 
 export interface ITranspilationOptions {
     /**
@@ -6,7 +6,7 @@ export interface ITranspilationOptions {
      *
      * @default 'tsconfig.json'
      */
-    configFileName?: string
+    configFileName?: string;
 
     /**
      * Configuration file lookup (when no loaded config is relevant).
@@ -15,14 +15,14 @@ export interface ITranspilationOptions {
      *
      * @default true
      */
-    configLookup?: boolean
+    configLookup?: boolean;
 
     /**
      * Perform type check, if possible (config is available and targets the file).
      *
      * @default true
      */
-    typeCheck?: boolean
+    typeCheck?: boolean;
 
     /**
      * Provided callback should return the final resolved compiler options.
@@ -32,7 +32,7 @@ export interface ITranspilationOptions {
     getCompilerOptions(
         baseHost: IBaseHost,
         tsconfigOptions?: Readonly<ts.CompilerOptions>
-    ): Readonly<ts.CompilerOptions>
+    ): Readonly<ts.CompilerOptions>;
 
     /**
      * This can be provided so that hosts are built around a custom fs.
@@ -40,7 +40,7 @@ export interface ITranspilationOptions {
      *
      * @default createBaseHost()
      */
-    getBaseHost?(): IBaseHost
+    getBaseHost?(): IBaseHost;
 
     /**
      * Transformers to apply during transpilation.
@@ -50,7 +50,7 @@ export interface ITranspilationOptions {
     getCustomTransformers?(
         baseHost: IBaseHost,
         tsconfigOptions?: Readonly<ts.CompilerOptions>
-    ): ts.CustomTransformers | undefined
+    ): ts.CustomTransformers | undefined;
 }
 
 /**
@@ -60,13 +60,13 @@ export interface ICustomFs {
     /**
      * Whether paths are case-sensitive.
      */
-    caseSensitive: boolean
+    caseSensitive: boolean;
 
     /**
      * Absolute path to the directory where typescript's
      * lib `.d.ts` files reside.
      */
-    defaultLibsDirectory: string
+    defaultLibsDirectory: string;
 
     /**
      * Read contents of the file pointed to by `path` and return its
@@ -75,65 +75,65 @@ export interface ICustomFs {
      * Default encoding is 'utf8'.
      * @throws if file doesn't exist or error.
      */
-    readFileSync(path: string, encoding?: string): string
+    readFileSync(path: string, encoding?: string): string;
 
     /**
      * Get base names of files and directories inside `path`.
      */
-    readdirSync(path: string): string[]
+    readdirSync(path: string): string[];
 
     /**
      * Get stats of `path`.
      *
      * @throws if path doesn't exist or error.
      */
-    statSync(path: string): { mtime: Date, isFile(): boolean, isDirectory(): boolean }
+    statSync(path: string): { mtime: Date, isFile(): boolean, isDirectory(): boolean };
 
     /**
      * Optional. Returns the real path of a provided `path`.
      * Used to resolve the original path of symlinks.
      */
-    realpathSync?(path: string): string
+    realpathSync?(path: string): string;
 
     /**
      * Returns the directory name of a path.
      */
-    dirname(path: string): string
+    dirname(path: string): string;
 
     /**
      * Normalizes the given `path`, resolving `..` and `.` segments.
      */
-    normalize(path: string): string
+    normalize(path: string): string;
 
     /**
      * Join all path segments together and normalize the resulting path.
      */
-    join(...pathSegments: string[]): string
+    join(...pathSegments: string[]): string;
 
     /**
      * Returns the current working directory path.
      */
-    getCurrentDirectory(): string
+    getCurrentDirectory(): string;
 }
 
 export interface ITranspilationOutput {
     /** Absolute file path to the input typescript file */
-    filePath: string
+    filePath: string;
 
     /** transpiled JavaScript code */
-    outputText: string
+    outputText: string;
 
     /** optional, separate source-maps (stringified JSON) */
-    sourceMapText?: string
+    sourceMapText?: string;
 
     /** Transpilation process diagnostics  */
-    diagnostics?: ts.Diagnostic[]
+    diagnostics?: ts.Diagnostic[];
 
     /** Host used during transpilation. Useful for formatting diagnostics.  */
-    baseHost: IBaseHost
+    baseHost: IBaseHost;
 
     /** Resolved module requests, if possible to extract */
-    resolvedModules?: Map<string, ts.ResolvedModuleFull | undefined>
+    resolvedModules?: Map<string, ts.ResolvedModuleFull | undefined>;
 }
 
 /**
@@ -143,7 +143,7 @@ export interface ITranspilationOutput {
  */
 export type ParitalLanguageService = Pick<ts.LanguageServiceHost,
     Exclude<keyof ts.LanguageServiceHost, 'useCaseSensitiveFileNames' | 'getCompilationSettings' | 'getScriptFileNames'>
->
+>;
 
 /**
  * Combines all required functionality for parsing config files,
@@ -154,22 +154,22 @@ export interface IBaseHost extends
     ts.FormatDiagnosticsHost,
     ts.ModuleResolutionHost,
     ParitalLanguageService {
-    fileExists(path: string): boolean
-    readFile(path: string, encoding?: string): string | undefined
+    fileExists(path: string): boolean;
+    readFile(path: string, encoding?: string): string | undefined;
     readDirectory(
         path: string,
         extensions?: ReadonlyArray<string>,
         exclude?: ReadonlyArray<string>,
         include?: ReadonlyArray<string>,
         depth?: number
-    ): string[]
-    getCurrentDirectory(): string
-    directoryExists(directoryPath: string): boolean
-    getDirectories(path: string): string[]
-    getNewLine(): string
+    ): string[];
+    getCurrentDirectory(): string;
+    directoryExists(directoryPath: string): boolean;
+    getDirectories(path: string): string[];
+    getNewLine(): string;
 
-    dirname(path: string): string
-    normalize(path: string): string
+    dirname(path: string): string;
+    normalize(path: string): string;
 }
 
 /**
@@ -179,25 +179,25 @@ export interface IParsedConfig {
     /**
      * Absolute path to the config file.
      */
-    configFilePath: string
+    configFilePath: string;
 
     /**
      * Compiler options, as specified by the config file.
      */
-    compilerOptions: ts.CompilerOptions
+    compilerOptions: ts.CompilerOptions;
 
     /**
      * Raw list of file paths returned when parsing the `tsconfig.json`.
      */
-    rootFileNames: string[]
+    rootFileNames: string[];
 
     /**
      * A set containing `rootFileNames` normalized using `baseHost.normalize`.
      */
-    normalizedFileNames: Set<string>
+    normalizedFileNames: Set<string>;
 
     /**
      * The matching `baseHost` for the `lanuageService`. Reference is kept for formatting diagnostics.
      */
-    baseHost: IBaseHost
+    baseHost: IBaseHost;
 }

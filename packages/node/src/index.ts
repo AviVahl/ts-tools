@@ -2,7 +2,7 @@ export {
     defaultCompilerOptions,
     defaultTranspileOptions,
     fastTranspileOptions
-} from './constants'
+} from './constants';
 
-export * from './package-state'
-export * from './register-node-extension'
+export * from './package-state';
+export * from './register-node-extension';

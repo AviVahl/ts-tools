@@ -1,105 +1,105 @@
-import ts from 'typescript'
-import { expect } from 'chai'
-import { createCjsToEsmTransformer } from '../src'
+import ts from 'typescript';
+import { expect } from 'chai';
+import { createCjsToEsmTransformer } from '../src';
 
-const cjsDef = `let exports = {}, module = { exports }`
-const cjsEsmExport = `export default module.exports`
+const cjsDef = `let exports = {}, module = { exports }`;
+const cjsEsmExport = `export default module.exports`;
 
 describe('CjsToEsmTransformer', () => {
-    const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 }
+    const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
 
     describe('wrapping of exports', () => {
         it('wraps code using module.exports', () => {
-            const transformer = createCjsToEsmTransformer()
-            const code = `module.exports = 123`
+            const transformer = createCjsToEsmTransformer();
+            const code = `module.exports = 123`;
 
             const { outputText } = ts.transpileModule(
                 code,
                 { transformers: { before: [transformer] }, compilerOptions }
-            )
+            );
 
             expect(outputText).to.matchCode(`
                 ${cjsDef}
                 ${code}
                 ${cjsEsmExport}
-            `)
-        })
+            `);
+        });
 
         it(`wraps code using module['exports']`, () => {
-            const transformer = createCjsToEsmTransformer()
-            const code = `module['exports'] = 123`
+            const transformer = createCjsToEsmTransformer();
+            const code = `module['exports'] = 123`;
 
             const { outputText } = ts.transpileModule(code,
                 { transformers: { before: [transformer] }, compilerOptions }
-            )
+            );
 
             expect(outputText).to.matchCode(`
                 ${cjsDef}
                 ${code}
                 ${cjsEsmExport}
-            `)
-        })
+            `);
+        });
 
         it('wraps code using exports.<something>', () => {
-            const transformer = createCjsToEsmTransformer()
-            const code = `exports.do = 123`
+            const transformer = createCjsToEsmTransformer();
+            const code = `exports.do = 123`;
 
             const { outputText } = ts.transpileModule(
                 code,
                 { transformers: { before: [transformer] }, compilerOptions }
-            )
+            );
 
             expect(outputText).to.matchCode(`
                 ${cjsDef}
                 ${code}
                 ${cjsEsmExport}
-            `)
-        })
-    })
+            `);
+        });
+    });
 
     describe('handling require(...) calls', () => {
         it('transforms require calls to default imports and wraps code as cjs', () => {
-            const transformer = createCjsToEsmTransformer()
-            const code = `module.exports = require('some-package')`
+            const transformer = createCjsToEsmTransformer();
+            const code = `module.exports = require('some-package')`;
 
             const { outputText } = ts.transpileModule(
                 code,
                 { transformers: { before: [transformer] }, compilerOptions }
-            )
+            );
 
             expect(outputText).to.matchCode(`
                 import _imported_1 from 'some-package'
                 ${cjsDef}
                 module.exports = _imported_1
                 ${cjsEsmExport}
-            `)
-        })
+            `);
+        });
 
         it('wraps code as cjs even if just require() is used (without exports)', () => {
-            const transformer = createCjsToEsmTransformer()
-            const code = `require('some-package')`
+            const transformer = createCjsToEsmTransformer();
+            const code = `require('some-package')`;
 
             const { outputText } = ts.transpileModule(
                 code,
                 { transformers: { before: [transformer] }, compilerOptions }
-            )
+            );
 
             expect(outputText).to.matchCode(`
                 import _imported_1 from 'some-package'
                 ${cjsDef}
                 _imported_1
                 ${cjsEsmExport}
-            `)
-        })
+            `);
+        });
 
         it('retains package names when variable declaration is detected', () => {
-            const transformer = createCjsToEsmTransformer()
-            const code = `const myPackage = require('some-package'), b = require('b')`
+            const transformer = createCjsToEsmTransformer();
+            const code = `const myPackage = require('some-package'), b = require('b')`;
 
             const { outputText } = ts.transpileModule(
                 code,
                 { transformers: { before: [transformer] }, compilerOptions }
-            )
+            );
 
             expect(outputText).to.matchCode(`
                 import myPackage_1 from 'some-package'
@@ -107,11 +107,11 @@ describe('CjsToEsmTransformer', () => {
                 ${cjsDef}
                 const myPackage = myPackage_1, b = b_1
                 ${cjsEsmExport}
-            `)
-        })
+            `);
+        });
 
         it('does not transform if a require function paramater is detected', () => {
-            const transformer = createCjsToEsmTransformer()
+            const transformer = createCjsToEsmTransformer();
             const code = `
                 function test(require) {
                     require('anything')
@@ -121,30 +121,30 @@ describe('CjsToEsmTransformer', () => {
                         require('lib')
                     }
                 }
-            `
+            `;
 
             const { outputText } = ts.transpileModule(
                 code,
                 { transformers: { before: [transformer] }, compilerOptions }
-            )
+            );
 
-            expect(outputText).to.matchCode(code)
-        })
+            expect(outputText).to.matchCode(code);
+        });
 
         it('does not transform if shouldTransform returns false', () => {
             const transformer = createCjsToEsmTransformer({
                 shouldTransform: lib => lib === 'a'
-            })
+            });
 
             const code = `
                 const a = require('a')
                 const b = require('b')
-            `
+            `;
 
             const { outputText } = ts.transpileModule(
                 code,
                 { transformers: { before: [transformer] }, compilerOptions }
-            )
+            );
 
             expect(outputText).to.matchCode(`
                 import a_1 from 'a'
@@ -152,7 +152,7 @@ describe('CjsToEsmTransformer', () => {
                 const a = a_1
                 const b = require('b')
                 ${cjsEsmExport}
-            `)
-        })
-    })
-})
+            `);
+        });
+    });
+});
