@@ -8,9 +8,6 @@
     "clean": "rimraf ./cjs",
     "build": "yarn build:cjs",
     "build:cjs": "tsc -p src",
-    "lint": "run-p lint:src lint:test",
-    "lint:src": "tslint -p src",
-    "lint:test": "tslint -p test",
     "test": "mocha -r @ts-tools/node/r \"test/**/*.unit.ts\" --watch-extensions ts"
   },
   "peerDependencies": {

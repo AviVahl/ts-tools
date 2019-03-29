@@ -10,9 +10,6 @@
     "build": "run-p build:cjs build:esm",
     "build:cjs": "tsc -p src --outDir cjs --module commonjs",
     "build:esm": "tsc -p src --outDir esm --module esnext",
-    "lint": "run-p lint:src lint:test",
-    "lint:src": "tslint -p src",
-    "lint:test": "tslint -p test",
     "test": "mocha -r @ts-tools/node/r -r test/chai-setup.ts \"test/**/*.unit.ts\" --watch-extensions ts"
   },
   "peerDependencies": {

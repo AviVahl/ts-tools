@@ -8,7 +8,7 @@
     "clean": "lerna run clean --stream --parallel",
     "prebuild": "yarn clean",
     "build": "lerna run build --stream",
-    "lint": "lerna run lint --stream --parallel",
+    "lint": "tslint -p tsconfig.test.json",
     "pretest": "run-p build lint",
     "test": "lerna run test --stream --parallel -- --colors"
   },

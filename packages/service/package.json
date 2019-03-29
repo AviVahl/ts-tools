@@ -9,8 +9,7 @@
     "clean": "rimraf ./cjs ./esm",
     "build": "run-p build:cjs build:esm",
     "build:cjs": "tsc -p src --outDir cjs --module commonjs",
-    "build:esm": "tsc -p src --outDir esm --module esnext",
-    "lint": "tslint -p src"
+    "build:esm": "tsc -p src --outDir esm --module esnext"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"

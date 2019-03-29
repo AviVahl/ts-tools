@@ -9,8 +9,7 @@
   },
   "scripts": {
     "clean": "rimraf ./cjs",
-    "build": "tsc -p src",
-    "lint": "tslint -p src"
+    "build": "tsc -p src"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"
