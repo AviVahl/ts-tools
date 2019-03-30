@@ -29,7 +29,7 @@
     "react-dom": "^16.8.6",
     "rimraf": "^2.6.3",
     "tslint": "^5.14.0",
-    "typescript": "~3.3.4000",
+    "typescript": "~3.4.1",
     "webpack": "^4.29.6"
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
