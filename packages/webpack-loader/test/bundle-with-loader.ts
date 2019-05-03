@@ -24,9 +24,11 @@ export interface IBundleWithLoaderOptions {
 // direct path to loader's source
 const loaderPath = require.resolve('../src/index.ts');
 
-export async function bundleWithLoader(
-    { entry, loaderOptions, context }: IBundleWithLoaderOptions
-): Promise<{ stats: webpack.Stats, statsText: string }> {
+export async function bundleWithLoader({
+    entry,
+    loaderOptions,
+    context
+}: IBundleWithLoaderOptions): Promise<{ stats: webpack.Stats; statsText: string }> {
     // clear loader's cache before bundling.
     // cwd is cached on baseHost, and several tests use same fixture with different cwd
     tsService.clear();
@@ -51,7 +53,7 @@ export async function bundleWithLoader(
     compiler.outputFileSystem = noopOutputFileSystem;
 
     const stats = await new Promise<webpack.Stats>((res, rej) => {
-        compiler.run((e, s) => e ? rej(e) : res(s));
+        compiler.run((e, s) => (e ? rej(e) : res(s)));
     });
 
     return { stats, statsText: stats.toString() };
@@ -59,9 +61,19 @@ export async function bundleWithLoader(
 
 const noopOutputFileSystem: webpack.OutputFileSystem = {
     join,
-    mkdir(_path, callback) { callback(null); },
-    mkdirp(_path, callback) { callback(null); },
-    rmdir(_path, callback) { callback(null); },
-    unlink(_path, callback) { callback(null); },
-    writeFile(_path, _data, callback) { callback(null); }
+    mkdir(_path, callback) {
+        callback(null);
+    },
+    mkdirp(_path, callback) {
+        callback(null);
+    },
+    rmdir(_path, callback) {
+        callback(null);
+    },
+    unlink(_path, callback) {
+        callback(null);
+    },
+    writeFile(_path, _data, callback) {
+        callback(null);
+    }
 };

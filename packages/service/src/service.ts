@@ -114,9 +114,12 @@ export class TypeScriptService {
         this.directoryToTsConfig.clear();
     }
 
-    public parseConfigFile(configFilePath: string, baseHost: IBaseHost): {
-        errors: ts.Diagnostic[],
-        config: IParsedConfig
+    public parseConfigFile(
+        configFilePath: string,
+        baseHost: IBaseHost
+    ): {
+        errors: ts.Diagnostic[];
+        config: IParsedConfig;
     } {
         const { readFile, dirname, normalize } = baseHost;
 
@@ -144,7 +147,7 @@ export class TypeScriptService {
                 baseHost,
                 compilerOptions: options,
                 rootFileNames: fileNames,
-                normalizedFileNames,
+                normalizedFileNames
             };
             this.parsedConfigs.set(configFilePath, parsedConfig);
             return {
@@ -174,10 +177,7 @@ export class TypeScriptService {
         return tsConfigPath;
     }
 
-    public getLanguageService(
-        config: IParsedConfig,
-        transpileOptions: ITranspilationOptions,
-    ): ts.LanguageService {
+    public getLanguageService(config: IParsedConfig, transpileOptions: ITranspilationOptions): ts.LanguageService {
         const { baseHost, configFilePath } = config;
 
         const existingService = this.runningServices.get(configFilePath);
@@ -187,8 +187,8 @@ export class TypeScriptService {
 
         const { getCustomTransformers, getCompilerOptions } = transpileOptions;
 
-        const getResolvedCustomTransformers = getCustomTransformers &&
-            (() => getCustomTransformers(baseHost, config.compilerOptions));
+        const getResolvedCustomTransformers =
+            getCustomTransformers && (() => getCustomTransformers(baseHost, config.compilerOptions));
 
         // use lookup on `config`, as `compilerOptions` might be later updated
         const getCompilationSettings = () => getCompilerOptions(baseHost, config.compilerOptions);
@@ -222,9 +222,7 @@ export class TypeScriptService {
         if (emitSkipped) {
             return {
                 filePath,
-                diagnostics: [
-                    this.createErrorDiagnostic('Emit was skipped')
-                ],
+                diagnostics: [this.createErrorDiagnostic('Emit was skipped')],
                 outputText: '',
                 baseHost
             };
@@ -235,9 +233,7 @@ export class TypeScriptService {
         if (!jsOutputFile) {
             return {
                 filePath,
-                diagnostics: [
-                    this.createErrorDiagnostic('No js output file was found')
-                ],
+                diagnostics: [this.createErrorDiagnostic('No js output file was found')],
                 outputText: '',
                 baseHost
             };
@@ -282,9 +278,7 @@ export class TypeScriptService {
         if (tsCode === undefined) {
             return {
                 filePath,
-                diagnostics: [
-                    this.createErrorDiagnostic(`Unable to read ${filePath}`)
-                ],
+                diagnostics: [this.createErrorDiagnostic(`Unable to read ${filePath}`)],
                 outputText: '',
                 baseHost
             };
@@ -292,10 +286,11 @@ export class TypeScriptService {
         const transformers = getCustomTransformers && getCustomTransformers(baseHost, tsconfigOptions);
         const compilerOptions = getCompilerOptions(baseHost, tsconfigOptions);
 
-        const { outputText, diagnostics, sourceMapText } = ts.transpileModule(
-            tsCode,
-            { compilerOptions, transformers, fileName: filePath }
-        );
+        const { outputText, diagnostics, sourceMapText } = ts.transpileModule(tsCode, {
+            compilerOptions,
+            transformers,
+            fileName: filePath
+        });
 
         return {
             filePath,

@@ -4,9 +4,9 @@ import ts from 'typescript';
  * Create a transformer factory that replaces `process.env.[PARAM]`
  * expressions with string literals, using provided `env`.
  */
-export function createNodeEnvTransformer(
-    env: { [key: string]: string | undefined }
-): ts.TransformerFactory<ts.SourceFile> {
+export function createNodeEnvTransformer(env: {
+    [key: string]: string | undefined;
+}): ts.TransformerFactory<ts.SourceFile> {
     return context => {
         return sourceFile => ts.visitEachChild(sourceFile, visitNodeEnv, context);
 

@@ -110,14 +110,20 @@ function createImportIdentifier(node: ts.CallExpression) {
 
 // let exports = {}, module = { exports }
 function createCjsModuleDefinition() {
-    return ts.createVariableStatement(undefined /* modifiers */, ts.createVariableDeclarationList([
-        ts.createVariableDeclaration('exports', undefined /* type */, ts.createObjectLiteral()),
-        ts.createVariableDeclaration(
-            'module',
-            undefined /* type */,
-            ts.createObjectLiteral([ts.createShorthandPropertyAssignment('exports')])
+    return ts.createVariableStatement(
+        undefined /* modifiers */,
+        ts.createVariableDeclarationList(
+            [
+                ts.createVariableDeclaration('exports', undefined /* type */, ts.createObjectLiteral()),
+                ts.createVariableDeclaration(
+                    'module',
+                    undefined /* type */,
+                    ts.createObjectLiteral([ts.createShorthandPropertyAssignment('exports')])
+                )
+            ],
+            ts.NodeFlags.Let
         )
-    ], ts.NodeFlags.Let));
+    );
 }
 
 // module['exports'], module.exports or exports.<something>
@@ -131,8 +137,10 @@ function isCjsExportsAccess(node: ts.Node): boolean {
         // module['exports']
         return node.argumentExpression.text === 'exports';
     } else if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression)) {
-        return (node.expression.text === 'module' && node.name.text === 'exports') || // module.exports
-            (node.expression.text === 'exports'); // exports.<something>
+        return (
+            (node.expression.text === 'module' && node.name.text === 'exports') || // module.exports
+            node.expression.text === 'exports'
+        ); // exports.<something>
     }
     return false;
 }

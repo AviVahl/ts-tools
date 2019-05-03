@@ -31,5 +31,10 @@ export function codeMatchers(chai: any, util: any) {
 }
 
 function normalizeCode(code: string): string {
-    return code.replace(/\r?\n/g, '\n').split('\n').map(l => l.trim()).join('\n').trim();
+    return code
+        .replace(/\r?\n/g, '\n')
+        .split('\n')
+        .map(l => l.trim())
+        .join('\n')
+        .trim();
 }

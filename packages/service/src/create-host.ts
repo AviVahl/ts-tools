@@ -49,7 +49,7 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
         getCurrentDirectory
     } = fs;
 
-    function getFileSystemEntries(path: string): { files: string[], directories: string[] } {
+    function getFileSystemEntries(path: string): { files: string[]; directories: string[] } {
         const files: string[] = [];
         const directories: string[] = [];
 
@@ -66,14 +66,23 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
                     directories.push(entryName);
                 }
             }
-        } catch { /* */ }
+        } catch {
+            /* */
+        }
         return { files, directories };
     }
 
     return {
         readDirectory(rootDir, extensions, excludes, includes, depth) {
             return ts.matchFiles(
-                rootDir, extensions, excludes, includes, caseSensitive, rootDir, depth, getFileSystemEntries
+                rootDir,
+                extensions,
+                excludes,
+                includes,
+                caseSensitive,
+                rootDir,
+                depth,
+                getFileSystemEntries
             );
         },
         getDirectories(path) {

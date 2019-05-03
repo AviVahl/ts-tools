@@ -31,11 +31,7 @@ export function deadIfsTransformer(context: ts.TransformationContext): ts.Transf
  * Finds string literal comparisons and replaces them with true/false.
  */
 function visitIfExpression(node: ts.Expression): ts.Expression {
-    if (
-        ts.isBinaryExpression(node) &&
-        ts.isStringLiteral(node.left) &&
-        ts.isStringLiteral(node.right)
-    ) {
+    if (ts.isBinaryExpression(node) && ts.isStringLiteral(node.left) && ts.isStringLiteral(node.right)) {
         const { kind } = node.operatorToken;
         if (
             // operator is `==` or `===`

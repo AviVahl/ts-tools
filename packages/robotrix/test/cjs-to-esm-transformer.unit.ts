@@ -13,10 +13,10 @@ describe('CjsToEsmTransformer', () => {
             const transformer = createCjsToEsmTransformer();
             const code = `module.exports = 123`;
 
-            const { outputText } = ts.transpileModule(
-                code,
-                { transformers: { before: [transformer] }, compilerOptions }
-            );
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
 
             expect(outputText).to.matchCode(`
                 ${cjsDef}
@@ -29,9 +29,10 @@ describe('CjsToEsmTransformer', () => {
             const transformer = createCjsToEsmTransformer();
             const code = `module['exports'] = 123`;
 
-            const { outputText } = ts.transpileModule(code,
-                { transformers: { before: [transformer] }, compilerOptions }
-            );
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
 
             expect(outputText).to.matchCode(`
                 ${cjsDef}
@@ -44,10 +45,10 @@ describe('CjsToEsmTransformer', () => {
             const transformer = createCjsToEsmTransformer();
             const code = `exports.do = 123`;
 
-            const { outputText } = ts.transpileModule(
-                code,
-                { transformers: { before: [transformer] }, compilerOptions }
-            );
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
 
             expect(outputText).to.matchCode(`
                 ${cjsDef}
@@ -62,10 +63,10 @@ describe('CjsToEsmTransformer', () => {
             const transformer = createCjsToEsmTransformer();
             const code = `module.exports = require('some-package')`;
 
-            const { outputText } = ts.transpileModule(
-                code,
-                { transformers: { before: [transformer] }, compilerOptions }
-            );
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
 
             expect(outputText).to.matchCode(`
                 import _imported_1 from 'some-package'
@@ -79,10 +80,10 @@ describe('CjsToEsmTransformer', () => {
             const transformer = createCjsToEsmTransformer();
             const code = `require('some-package')`;
 
-            const { outputText } = ts.transpileModule(
-                code,
-                { transformers: { before: [transformer] }, compilerOptions }
-            );
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
 
             expect(outputText).to.matchCode(`
                 import _imported_1 from 'some-package'
@@ -96,10 +97,10 @@ describe('CjsToEsmTransformer', () => {
             const transformer = createCjsToEsmTransformer();
             const code = `const myPackage = require('some-package'), b = require('b')`;
 
-            const { outputText } = ts.transpileModule(
-                code,
-                { transformers: { before: [transformer] }, compilerOptions }
-            );
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
 
             expect(outputText).to.matchCode(`
                 import myPackage_1 from 'some-package'
@@ -123,10 +124,10 @@ describe('CjsToEsmTransformer', () => {
                 }
             `;
 
-            const { outputText } = ts.transpileModule(
-                code,
-                { transformers: { before: [transformer] }, compilerOptions }
-            );
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
 
             expect(outputText).to.matchCode(code);
         });
@@ -141,10 +142,10 @@ describe('CjsToEsmTransformer', () => {
                 const b = require('b')
             `;
 
-            const { outputText } = ts.transpileModule(
-                code,
-                { transformers: { before: [transformer] }, compilerOptions }
-            );
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
 
             expect(outputText).to.matchCode(`
                 import a_1 from 'a'

@@ -1,2 +1,2 @@
-import {exportedValue} from 'first';
+import { exportedValue } from 'first';
 console.log(exportedValue);

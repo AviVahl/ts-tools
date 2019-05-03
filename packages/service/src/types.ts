@@ -87,7 +87,7 @@ export interface ICustomFs {
      *
      * @throws if path doesn't exist or error.
      */
-    statSync(path: string): { mtime: Date, isFile(): boolean, isDirectory(): boolean };
+    statSync(path: string): { mtime: Date; isFile(): boolean; isDirectory(): boolean };
 
     /**
      * Optional. Returns the real path of a provided `path`.
@@ -141,7 +141,8 @@ export interface ITranspilationOutput {
  * - `useCaseSensitiveFileNames` - conflicts with `ts.ParseConfigHost` (where it's not a function).
  * - `getCompilerOptions`/`getScriptFileNames` - require parsing of a tsconfig.
  */
-export type ParitalLanguageService = Pick<ts.LanguageServiceHost,
+export type ParitalLanguageService = Pick<
+    ts.LanguageServiceHost,
     Exclude<keyof ts.LanguageServiceHost, 'useCaseSensitiveFileNames' | 'getCompilationSettings' | 'getScriptFileNames'>
 >;
 
@@ -149,11 +150,11 @@ export type ParitalLanguageService = Pick<ts.LanguageServiceHost,
  * Combines all required functionality for parsing config files,
  * formatting diagnostics, and resolving modules.
  */
-export interface IBaseHost extends
-    ts.ParseConfigHost,
-    ts.FormatDiagnosticsHost,
-    ts.ModuleResolutionHost,
-    ParitalLanguageService {
+export interface IBaseHost
+    extends ts.ParseConfigHost,
+        ts.FormatDiagnosticsHost,
+        ts.ModuleResolutionHost,
+        ParitalLanguageService {
     fileExists(path: string): boolean;
     readFile(path: string, encoding?: string): string | undefined;
     readDirectory(

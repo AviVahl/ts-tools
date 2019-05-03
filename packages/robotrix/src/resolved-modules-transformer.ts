@@ -9,8 +9,10 @@ import { remapSourceFileImports } from './remap-imports-transformer';
  *
  */
 export function resolvedModulesTransformer(context: ts.TransformationContext): ts.Transformer<ts.SourceFile> {
-    return sourceFile => sourceFile.resolvedModules ?
-        remapSourceFileImports(sourceFile, context, remapImportsToResolvedModules) : sourceFile;
+    return sourceFile =>
+        sourceFile.resolvedModules
+            ? remapSourceFileImports(sourceFile, context, remapImportsToResolvedModules)
+            : sourceFile;
 }
 
 function remapImportsToResolvedModules(request: string, _containingFile: string, { resolvedModules }: ts.SourceFile) {

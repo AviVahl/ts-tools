@@ -77,13 +77,10 @@ export const typescriptLoader: webpack.loader.Loader = function(/* source */) {
         getCompilerOptions: (formatHost, tsconfigOptions) => {
             const compilerOptions: ts.CompilerOptions = {
                 ...tsconfigOptions,
-                module: ts.ModuleKind.ESNext, // webpack supports it and we want tree shaking out of the box
+                module: ts.ModuleKind.ESNext // webpack supports it and we want tree shaking out of the box
             };
 
-            if (
-                tsconfigOptions &&
-                (!tsconfigOptions.module || tsconfigOptions.module === ts.ModuleKind.CommonJS)
-            ) {
+            if (tsconfigOptions && (!tsconfigOptions.module || tsconfigOptions.module === ts.ModuleKind.CommonJS)) {
                 if (tsconfigOptions.esModuleInterop) {
                     // allowSyntheticDefaultImports is not implicitly turned on for ts<3.1
                     compilerOptions.allowSyntheticDefaultImports = true;
@@ -169,7 +166,6 @@ export const typescriptLoader: webpack.loader.Loader = function(/* source */) {
     } else {
         this.callback(null, outputText);
     }
-
 };
 
 const getProjectVersionCache = new WeakMap<webpack.Compiler, () => string>();

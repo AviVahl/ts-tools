@@ -63,11 +63,11 @@ export function build(options: IBuildOptions): IOutputFile[] {
     const jsonSourceFile = ts.readJsonConfigFile(tsConfigPath, readFile);
     const configDirectoryPath = dirname(tsConfigPath);
 
-    const {
-        errors,
-        fileNames,
-        options: tsconfigOptions
-    } = ts.parseJsonSourceFileConfigFileContent(jsonSourceFile, baseHost, configDirectoryPath);
+    const { errors, fileNames, options: tsconfigOptions } = ts.parseJsonSourceFileConfigFileContent(
+        jsonSourceFile,
+        baseHost,
+        configDirectoryPath
+    );
 
     if (errors.length) {
         throw ts.formatDiagnosticsWithColorAndContext(errors, baseHost);
@@ -77,7 +77,7 @@ export function build(options: IBuildOptions): IOutputFile[] {
         baseHost.useCaseSensitiveFileNames,
         baseHost.getCurrentDirectory()
     );
-    const formatCompilers: Array<{ folderName: string, languageService: ts.LanguageService }> = [];
+    const formatCompilers: Array<{ folderName: string; languageService: ts.LanguageService }> = [];
 
     for (const { folderName, getCompilerOptions } of formats) {
         const compilerOptions: ts.CompilerOptions = {
@@ -87,11 +87,7 @@ export function build(options: IBuildOptions): IOutputFile[] {
             out: undefined,
             noEmit: false
         };
-        const languageServiceHost = createLanguageServiceHost(
-            baseHost,
-            () => fileNames,
-            () => compilerOptions
-        );
+        const languageServiceHost = createLanguageServiceHost(baseHost, () => fileNames, () => compilerOptions);
         const languageService = ts.createLanguageService(
             {
                 ...languageServiceHost,
@@ -124,12 +120,12 @@ export function build(options: IBuildOptions): IOutputFile[] {
                     const relativeToSrc = path.relative(srcDirectoryPath, outputFilePath);
                     const targetFilePath = path.join(formatOutDir, relativeToSrc);
                     const targetFileDirectoryPath = path.dirname(targetFilePath);
-                    const relativeRequestToSrc = path.relative(
-                        targetFileDirectoryPath,
-                        nativeSrcFilePath
-                    ).replace(/\\/g, '/');
-                    const contents = outputFilePath.endsWith('.map') ?
-                        remapSourceMap(text, relativeRequestToSrc) : text;
+                    const relativeRequestToSrc = path
+                        .relative(targetFileDirectoryPath, nativeSrcFilePath)
+                        .replace(/\\/g, '/');
+                    const contents = outputFilePath.endsWith('.map')
+                        ? remapSourceMap(text, relativeRequestToSrc)
+                        : text;
                     outputFiles.push({
                         filePath: targetFilePath,
                         contents

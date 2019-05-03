@@ -1,4 +1,4 @@
-import {platform} from 'os'; // verify named imports
+import { platform } from 'os'; // verify named imports
 import path from 'path'; // verify interop without config
 
 console.log(`Current platform is: ${platform()}`);

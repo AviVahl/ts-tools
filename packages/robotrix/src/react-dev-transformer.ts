@@ -34,7 +34,6 @@ export function reactDevTransformer(context: ts.TransformationContext): ts.Trans
         return sourceFile;
 
         function addJSXMetadata(node: ts.Node): ts.Node | ts.Node[] {
-
             // we only transform jsx attributes nodes that have parent jsx elements
             if (!ts.isJsxAttributes(node) || !node.parent) {
                 return ts.visitEachChild(node, addJSXMetadata, context);
@@ -100,10 +99,7 @@ function createLocationObject(jsxFileNameIdentifier: ts.Identifier, line: number
             'fileName',
             jsxFileNameIdentifier // use the file-wide identifier for fileName value
         ),
-        ts.createPropertyAssignment(
-            'lineNumber',
-            ts.createNumericLiteral(String(line + 1))
-        )
+        ts.createPropertyAssignment('lineNumber', ts.createNumericLiteral(String(line + 1)))
     ]);
 }
 
@@ -113,13 +109,8 @@ function addFileNameConst(
     jsxFileNameIdentifier: ts.Identifier,
     fileName: string
 ): ts.SourceFile {
-
     const variableDecls = [
-        ts.createVariableDeclaration(
-            jsxFileNameIdentifier,
-            undefined /* type */,
-            ts.createStringLiteral(fileName)
-        )
+        ts.createVariableDeclaration(jsxFileNameIdentifier, undefined /* type */, ts.createStringLiteral(fileName))
     ];
 
     return insertStatementAfterImports(
@@ -133,13 +124,14 @@ function addFileNameConst(
 
 // insert a new statement above the first non-import statement
 function insertStatementAfterImports(sourceFile: ts.SourceFile, statement: ts.Statement): ts.SourceFile {
-    const {statements } = sourceFile;
+    const { statements } = sourceFile;
 
     const nonImportIdx = statements.findIndex(s => !ts.isImportDeclaration(s));
 
-    const newStatements = nonImportIdx === -1 ?
-        [statement, ...statements] :
-        [...statements.slice(0, nonImportIdx), statement, ...statements.slice(nonImportIdx)];
+    const newStatements =
+        nonImportIdx === -1
+            ? [statement, ...statements]
+            : [...statements.slice(0, nonImportIdx), statement, ...statements.slice(nonImportIdx)];
 
     return ts.updateSourceFileNode(sourceFile, newStatements);
 }

@@ -1,9 +1,9 @@
-import ts from 'typescript'
+import ts from 'typescript';
 
 // define this type outside `declare module` to have access to native Map
 // typescript has its own Map interface, which is not iterable using for-const-of
 // actual implementation uses native Map, so this is safe
-type ResolvedModules = Map<string, ts.ResolvedModuleFull | undefined>
+type ResolvedModules = Map<string, ts.ResolvedModuleFull | undefined>;
 
 declare module 'typescript' {
     // needed for custom readDirectory
@@ -16,24 +16,24 @@ declare module 'typescript' {
         currentDirectory: string,
         depth: number | undefined,
         getFileSystemEntries: (path: string) => FileSystemEntries
-    ): string[]
+    ): string[];
 
     // used by matchFiles above
     export interface FileSystemEntries {
-        readonly files: ReadonlyArray<string>
-        readonly directories: ReadonlyArray<string>
+        readonly files: ReadonlyArray<string>;
+        readonly directories: ReadonlyArray<string>;
     }
 
     // needed to resolve newLine, while taking compilerOptions into consideration, for each `LanguageServiceHost`
     export function getNewLineCharacter(
         options: ts.CompilerOptions | ts.PrinterOptions,
         getNewLine?: () => string
-    ): string
+    ): string;
 
     // dirname, typescript version (slashes normalized to posix-style). needed for default baseHost.
-    export function getDirectoryPath(path: string): string
+    export function getDirectoryPath(path: string): string;
 
     export interface SourceFile {
-        resolvedModules?: ResolvedModules
+        resolvedModules?: ResolvedModules;
     }
 }

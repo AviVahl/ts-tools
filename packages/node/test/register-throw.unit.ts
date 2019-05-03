@@ -90,5 +90,4 @@ describe('using node -r @ts-tools/node/r [file]', () => {
             expect(exitCode).to.equal(0);
         });
     });
-
 });

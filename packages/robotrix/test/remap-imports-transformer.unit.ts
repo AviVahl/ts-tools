@@ -6,8 +6,8 @@ describe('RemapImportsTransformer', () => {
     const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
 
     const transformer = createRemapImportsTransformer({
-        remapTarget: target => target === 'A' ? 'B' : target
-     });
+        remapTarget: target => (target === 'A' ? 'B' : target)
+    });
 
     it('remaps static imports', () => {
         const code = `

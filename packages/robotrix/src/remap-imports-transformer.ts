@@ -7,9 +7,9 @@ export interface IRemapImportsTransformerOptions {
 /**
  * Remaps esnext and commonjs imports.
  */
-export function createRemapImportsTransformer(
-    { remapTarget }: IRemapImportsTransformerOptions
-): ts.TransformerFactory<ts.SourceFile> {
+export function createRemapImportsTransformer({
+    remapTarget
+}: IRemapImportsTransformerOptions): ts.TransformerFactory<ts.SourceFile> {
     return context => sourceFile => remapSourceFileImports(sourceFile, context, remapTarget);
 }
 
@@ -31,9 +31,7 @@ export function remapSourceFileImports(
      * export * from 'target'
      */
     function visitStaticImportsExports(node: ts.Node): ts.Node | ts.Node[] {
-        if (
-            ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)
-        ) {
+        if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)) {
             const originalTarget = node.moduleSpecifier.text;
             const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
             if (originalTarget !== remappedTarget) {
@@ -45,9 +43,7 @@ export function remapSourceFileImports(
                     ts.createLiteral(remappedTarget)
                 );
             }
-        } else if (
-            ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
-        ) {
+        } else if (ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
             const originalTarget = node.moduleSpecifier.text;
             const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
             if (originalTarget !== remappedTarget) {
@@ -82,12 +78,7 @@ export function remapSourceFileImports(
             const originalTarget = (node.arguments[0] as ts.StringLiteral).text;
             const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
             if (originalTarget !== remappedTarget) {
-                return ts.updateCall(
-                    node,
-                    node.expression,
-                    node.typeArguments,
-                    [ts.createLiteral(remappedTarget)]
-                );
+                return ts.updateCall(node, node.expression, node.typeArguments, [ts.createLiteral(remappedTarget)]);
             }
         }
 

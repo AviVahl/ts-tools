@@ -43,7 +43,6 @@ describe('using node -r @ts-tools/node/warn [file]', () => {
             expect(output).to.include(`Cannot find name 'describe'`);
             expect(output).to.include('should-error.ts');
         });
-
     });
 
     describe('no tsconfig.json', () => {
@@ -65,5 +64,4 @@ describe('using node -r @ts-tools/node/warn [file]', () => {
             expect(output).to.include(`Current platform is: ${platform()}`);
         });
     });
-
 });
