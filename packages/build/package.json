@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/build",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "CLI for easier building of multi-target TypeScript libraries.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
@@ -15,7 +15,7 @@
     "typescript": ">=2.8.0"
   },
   "dependencies": {
-    "@ts-tools/service": "^2.0.0",
+    "@ts-tools/service": "^2.0.1",
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "proper-fs": "^1.1.2"
