@@ -31,7 +31,13 @@ export function registerNodeExtension({ transpileOptions, onDiagnostics }: IRegi
         } else {
             sourceMaps.delete(filePath);
         }
-
+        if (!packageState.pendingVersionBump) {
+            packageState.pendingVersionBump = true;
+            process.nextTick(() => {
+                packageState.version++;
+                packageState.pendingVersionBump = false;
+            });
+        }
         nodeModule._compile(outputText, filePath);
     }
 

@@ -1,6 +1,7 @@
 import ts, { CompilerOptions } from 'typescript';
-import { ITranspilationOptions } from '@ts-tools/service';
+import { ITranspilationOptions, createBaseHost, IBaseHost } from '@ts-tools/service';
 import { resolvedModulesTransformer } from '@ts-tools/robotrix';
+import { packageState } from './package-state';
 
 const { sys } = ts;
 const platformHasColors = !!sys.writeOutputIsTTY && sys.writeOutputIsTTY();
@@ -25,6 +26,13 @@ export const defaultCompilerOptions: CompilerOptions = {
     declarationMap: false
 };
 
+export const sharedBaseHost: IBaseHost = {
+    ...createBaseHost(),
+    getProjectVersion() {
+        return `${packageState.version}`;
+    }
+};
+
 export const defaultTranspileOptions: Readonly<ITranspilationOptions> = {
     getCompilerOptions(_baseHost, tsconfigOptions) {
         const compilerOptions: ts.CompilerOptions = { ...tsconfigOptions, ...defaultCompilerOptions };
@@ -43,7 +51,8 @@ export const defaultTranspileOptions: Readonly<ITranspilationOptions> = {
     },
     getCustomTransformers(_baseHost, compilerOptions): ts.CustomTransformers | undefined {
         return compilerOptions && compilerOptions.baseUrl ? { after: [resolvedModulesTransformer] } : undefined;
-    }
+    },
+    getBaseHost: () => sharedBaseHost
 };
 
 export const fastTranspileOptions: Readonly<ITranspilationOptions> = {
