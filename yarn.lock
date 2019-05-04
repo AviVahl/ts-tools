@@ -680,9 +680,9 @@
     universal-user-agent "^2.0.1"
 
 "@octokit/rest@^16.16.0":
-  version "16.25.1"
-  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-16.25.1.tgz#60a3171018dbc4feb23d1bf9805a06aad106d53e"
-  integrity sha512-a1Byzjj07OMQNUQDP5Ng/rChaI7aq6TNMY1ZFf8+zCVEEtYzCgcmrFG9BDerFbLPPKGQ5TAeRRFyLujUUN1HIg==
+  version "16.25.2"
+  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-16.25.2.tgz#51fede6d35af5ecc92f1e7feacad89abbcd2b0e8"
+  integrity sha512-aUSzvY33dz6RMLLmT+1aNc2OvvAmDfdXKaOzFEEBNJjsjckNjWkB2hgGa5plnnbuLPCloVldPuAdm+8REZGLcg==
   dependencies:
     "@octokit/request" "3.0.1"
     atob-lite "^2.0.0"
@@ -721,9 +721,9 @@
   integrity sha512-1axi39YdtBI7z957vdqXI4Ac25e7YihYQtJa+Clnxg1zTJEaIRbndt71O3sP4GAMgiAm0pY26/b9BrY4MR/PMw==
 
 "@types/node@*":
-  version "11.13.9"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.13.9.tgz#f80697caca7f7fb2526527a5c5a2743487f05ccc"
-  integrity sha512-NJ4yuEVw5podZbINp3tEqUIImMSAEHaCXRiWCf3KC32l6hIKf0iPJEh2uZdT0fELfRYk310yLmMXqy2leZQUbg==
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.0.tgz#d11813b9c0ff8aaca29f04cbc12817f4c7d656e5"
+  integrity sha512-Jrb/x3HT4PTJp6a4avhmJCDEVrPdqLfl3e8GGMbpkGGdwAV5UGlIs4vVEfsHHfylZVOKZWpOqmqFH8CbfOZ6kg==
 
 "@types/node@8":
   version "8.10.48"
@@ -742,10 +742,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.8.15":
-  version "16.8.15"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.15.tgz#a76515fed5aa3e996603056f54427fec5f2a5122"
-  integrity sha512-dMhzw1rWK+wwJWvPp5Pk12ksSrm/z/C/+lOQbMZ7YfDQYnJ02bc0wtg4EJD9qrFhuxFrf/ywNgwTboucobJqQg==
+"@types/react@*", "@types/react@^16.8.16":
+  version "16.8.16"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.16.tgz#2bf980b4fb29cceeb01b2c139b3e185e57d3e08e"
+  integrity sha512-A0+6kS6zwPtvubOLiCJmZ8li5bm3wKIkoKV0h3RdMDOnCj9cYkUnj3bWbE03/lcICdQmwBmUfoFiHeNhbFiyHQ==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
