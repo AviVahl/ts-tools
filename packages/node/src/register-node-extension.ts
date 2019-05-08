@@ -1,5 +1,5 @@
 import { ITranspilationOptions } from '@ts-tools/service';
-import { inlineSourceMapPrefix, tsFormatFn } from './constants';
+import { inlineSourceMapPrefix, tsFormatFn, sharedBaseHost } from './constants';
 import { packageState } from './package-state';
 
 export interface IRegisterExtensionOptions {
@@ -13,10 +13,20 @@ export function registerNodeExtension({ transpileOptions, onDiagnostics }: IRegi
     }
 
     const { tsService, sourceMaps } = packageState;
-
+    const { readFile } = sharedBaseHost;
     // our require extension transpiles the file to js using the service
     // and then runs the resulting js like any regular js
     function requireExtension(nodeModule: NodeModule, filePath: string): void {
+        if (filePath.endsWith('.d.ts')) {
+            const fileContents = readFile(filePath);
+            nodeModule._compile(
+                `Object.defineProperty(exports, "__esModule", { value: true });\n` +
+                    `exports.default = ${JSON.stringify(fileContents)};`,
+                filePath
+            );
+            return;
+        }
+
         const { diagnostics, outputText, baseHost } = tsService.transpileFile(filePath, transpileOptions);
 
         if (diagnostics && diagnostics.length && onDiagnostics) {

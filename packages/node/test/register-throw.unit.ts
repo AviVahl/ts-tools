@@ -56,9 +56,17 @@ describe('using node -r @ts-tools/node/r [file]', () => {
         it('does not throw on empty files', () => {
             const filePath = join(fixturesRoot, 'default-config', 'empty-file.ts');
 
-            const { exitCode } = runCommand(`node -r @ts-tools/node/r ${filePath}`);
+            const { exitCode, output } = runCommand(`node -r @ts-tools/node/r ${filePath}`);
 
-            expect(exitCode).to.equal(0);
+            expect(exitCode, output).to.equal(0);
+        });
+
+        it('exports file contents when requiring a .d.ts file directly', () => {
+            const filePath = join(fixturesRoot, 'dts-require', 'index.ts');
+
+            const { exitCode, output } = runCommand(`node -r @ts-tools/node/r ${filePath}`);
+
+            expect(exitCode, output).to.equal(0);
         });
     });
 

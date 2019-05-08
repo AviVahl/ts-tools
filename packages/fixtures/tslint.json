@@ -3,6 +3,7 @@
     "rules": {
         "no-console": false,
         "no-empty": false,
-        "semicolon": false
+        "semicolon": false,
+        "no-var-requires": false
     }
 }
