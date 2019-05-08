@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/node",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "TypeScript support for Node.js.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
