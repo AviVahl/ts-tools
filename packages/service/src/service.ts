@@ -88,8 +88,8 @@ export class TypeScriptService {
         if (typeCheck) {
             const { normalizedFileNames } = config;
             const languageService = this.getLanguageService(config, transpileOptions);
-
-            if (normalizedFileNames.has(filePath)) {
+            const { getCanonicalFileName } = baseHost;
+            if (normalizedFileNames.has(getCanonicalFileName(filePath))) {
                 // service includes our file, so use it to transpile
                 return this.transpileUsingLanguageService(filePath, languageService, baseHost);
             }
