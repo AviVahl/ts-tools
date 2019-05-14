@@ -40,16 +40,20 @@ export class TypeScriptService {
 
         // search for an already-loaded config that targets `filePath`
         for (const existingConfig of this.parsedConfigs.values()) {
-            const { baseHost: existingBaseHost, normalizedFileNames, compilerOptions } = existingConfig;
-            if (normalizedFileNames.has(existingBaseHost.getCanonicalFileName(filePath))) {
+            if (existingConfig.normalizedFileNames.has(filePath)) {
                 if (typeCheck) {
                     return this.transpileUsingLanguageService(
                         filePath,
                         this.getLanguageService(existingConfig, transpileOptions),
-                        existingBaseHost
+                        existingConfig.baseHost
                     );
                 } else {
-                    return this.transpileIsolated(filePath, compilerOptions, existingBaseHost, transpileOptions);
+                    return this.transpileIsolated(
+                        filePath,
+                        existingConfig.compilerOptions,
+                        existingConfig.baseHost,
+                        transpileOptions
+                    );
                 }
             }
         }
@@ -117,7 +121,7 @@ export class TypeScriptService {
         errors: ts.Diagnostic[];
         config: IParsedConfig;
     } {
-        const { readFile, dirname, normalize, getCanonicalFileName } = baseHost;
+        const { readFile, dirname, normalize } = baseHost;
 
         // read and parse config
         const jsonSourceFile = ts.readJsonConfigFile(configFilePath, readFile);
@@ -128,7 +132,7 @@ export class TypeScriptService {
             baseHost,
             configDirectoryPath
         );
-        const normalizedFileNames = new Set(fileNames.map(normalize).map(getCanonicalFileName));
+        const normalizedFileNames = new Set(fileNames.map(normalize));
 
         const existingConfig = this.parsedConfigs.get(configFilePath);
 
