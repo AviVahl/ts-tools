@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/webpack-loader",
-  "version": "0.8.11",
+  "version": "0.8.12",
   "description": "TypeScript loader for webpack.",
   "main": "cjs/index.js",
   "types": "cjs/index.d.ts",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@ts-tools/robotrix": "^0.7.5",
-    "@ts-tools/service": "^2.0.3",
+    "@ts-tools/service": "^2.0.4",
     "loader-utils": "^1.2.3"
   },
   "files": [
