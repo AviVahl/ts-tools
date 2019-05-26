@@ -44,7 +44,7 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
         join,
         dirname,
         normalize,
-        realpathSync,
+        realpathSync = identity,
         defaultLibsDirectory,
         getCurrentDirectory
     } = fs;
@@ -82,7 +82,8 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
                 caseSensitive,
                 rootDir,
                 depth,
-                getFileSystemEntries
+                getFileSystemEntries,
+                realpathSync
             );
         },
         getDirectories(path) {

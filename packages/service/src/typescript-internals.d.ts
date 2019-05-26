@@ -15,7 +15,8 @@ declare module 'typescript' {
         useCaseSensitiveFileNames: boolean,
         currentDirectory: string,
         depth: number | undefined,
-        getFileSystemEntries: (path: string) => FileSystemEntries
+        getFileSystemEntries: (path: string) => FileSystemEntries,
+        realpath: (path: string) => string
     ): string[];
 
     // used by matchFiles above
