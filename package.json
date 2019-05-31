@@ -29,7 +29,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "rimraf": "^2.6.3",
-    "tslint": "^5.16.0",
+    "tslint": "^5.17.0",
     "typescript": "~3.5.1",
     "webpack": "^4.32.2"
   },
