@@ -1,1 +1,1 @@
-require('./cjs/register-warn')
+require('./cjs/register-warn');

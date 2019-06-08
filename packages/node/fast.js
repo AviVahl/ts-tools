@@ -1,1 +1,1 @@
-require('./cjs/register-fast')
+require('./cjs/register-fast');
