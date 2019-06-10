@@ -39,6 +39,11 @@ function transformSourceFile(
     context: ts.TransformationContext,
     { shouldTransform = () => true }: ICjsToEsmTransformerOptions
 ): ts.SourceFile {
+    if (sourceFile.statements.some(node => ts.isImportDeclaration(node) || ts.isExportDeclaration(node))) {
+        // file has esm, so avoid cjs conversion.
+        return sourceFile;
+    }
+
     let fileUsesCommonJs = false;
 
     const newImports: ts.ImportDeclaration[] = [];
@@ -62,11 +67,14 @@ function transformSourceFile(
             ts.isFunctionLike(node) &&
             node.parameters.some(({ name }) => ts.isIdentifier(name) && name.text === 'require')
         ) {
-            // do no iterate into bodys of functions defining a `require` parameter
-            // mocha's bundle uses this pattern. we don't want to transform `require`
-            // calls inside such functions
+            // do no iterate into bodies of functions defining a `require` parameter.
+            // mocha's bundle uses this pattern. avoid transforming `require` calls inside such functions.
             return node;
-        } else if (isCjsExportsAccess(node)) {
+        } else if (ts.isTryStatement(node)) {
+            // heuristic for conditionally required libs (inside try/catch).
+            // typescript bundle uses this pattern to require `source-map-support`.
+            return node;
+        } else if (isModuleExportsElementAccess(node) || isExportsPropertyAccess(node) || isTypeOfExports(node)) {
             fileUsesCommonJs = true;
         } else if (isCJsRequireCall(node) && shouldTransform((node.arguments[0] as ts.StringLiteral).text)) {
             fileUsesCommonJs = true;
@@ -126,32 +134,28 @@ function createCjsModuleDefinition() {
     );
 }
 
-// module['exports'], module.exports or exports.<something>
-function isCjsExportsAccess(node: ts.Node): boolean {
-    if (
-        ts.isElementAccessExpression(node) &&
-        ts.isIdentifier(node.expression) &&
-        node.expression.text === 'module' &&
-        ts.isStringLiteral(node.argumentExpression)
-    ) {
-        // module['exports']
-        return node.argumentExpression.text === 'exports';
-    } else if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression)) {
-        return (
-            (node.expression.text === 'module' && node.name.text === 'exports') || // module.exports
-            node.expression.text === 'exports'
-        ); // exports.<something>
-    }
-    return false;
-}
-
 // require(...) calls with a single string argument
-function isCJsRequireCall(node: ts.Node): node is ts.CallExpression {
-    return (
-        ts.isCallExpression(node) &&
-        ts.isIdentifier(node.expression) &&
-        node.expression.text === 'require' &&
-        node.arguments.length === 1 &&
-        ts.isStringLiteral(node.arguments[0])
-    );
-}
+const isCJsRequireCall = (node: ts.Node): node is ts.CallExpression =>
+    ts.isCallExpression(node) &&
+    ts.isIdentifier(node.expression) &&
+    node.expression.text === 'require' &&
+    node.arguments.length === 1 &&
+    ts.isStringLiteral(node.arguments[0]);
+
+// module['exports']
+const isModuleExportsElementAccess = (node: ts.Node): node is ts.ElementAccessExpression =>
+    ts.isElementAccessExpression(node) &&
+    ts.isIdentifier(node.expression) &&
+    node.expression.text === 'module' &&
+    ts.isStringLiteral(node.argumentExpression) &&
+    node.argumentExpression.text === 'exports';
+
+// module.exports OR exports.<something>
+const isExportsPropertyAccess = (node: ts.Node): node is ts.PropertyAccessExpression =>
+    ts.isPropertyAccessExpression(node) &&
+    ts.isIdentifier(node.expression) &&
+    ((node.expression.text === 'module' && node.name.text === 'exports') || node.expression.text === 'exports');
+
+// typeof exports
+const isTypeOfExports = (node: ts.Node): node is ts.TypeOfExpression =>
+    ts.isTypeOfExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === 'exports';

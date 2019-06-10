@@ -56,6 +56,22 @@ describe('CjsToEsmTransformer', () => {
                 ${cjsEsmExport}
             `);
         });
+
+        it('wraps code using typeof exports', () => {
+            const transformer = createCjsToEsmTransformer();
+            const code = `typeof exports`;
+
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
+
+            expect(outputText).to.matchCode(`
+                ${cjsDef}
+                ${code}
+                ${cjsEsmExport}
+            `);
+        });
     });
 
     describe('handling require(...) calls', () => {
@@ -111,7 +127,7 @@ describe('CjsToEsmTransformer', () => {
             `);
         });
 
-        it('does not transform if a require function paramater is detected', () => {
+        it('does not transform if a require function parameter is detected', () => {
             const transformer = createCjsToEsmTransformer();
             const code = `
                 function test(require) {
@@ -122,6 +138,37 @@ describe('CjsToEsmTransformer', () => {
                         require('lib')
                     }
                 }
+            `;
+
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
+
+            expect(outputText).to.matchCode(code);
+        });
+
+        it('does not transform require(...) calls inside a try block', () => {
+            const transformer = createCjsToEsmTransformer();
+            const code = `
+                try {
+                    require('anything')
+                } catch {}
+            `;
+
+            const { outputText } = ts.transpileModule(code, {
+                transformers: { before: [transformer] },
+                compilerOptions
+            });
+
+            expect(outputText).to.matchCode(code);
+        });
+
+        it('does not transform require(...) if esm is detected', () => {
+            const transformer = createCjsToEsmTransformer();
+            const code = `
+                import { someSymbol } from 'somewhere'
+                require('anything')
             `;
 
             const { outputText } = ts.transpileModule(code, {
