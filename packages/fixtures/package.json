@@ -16,7 +16,7 @@
     "lit-html": "^1.1.0",
     "lodash": "^4.17.11",
     "marked": "^0.6.2",
-    "mathjs": "^6.0.1",
+    "mathjs": "^6.0.2",
     "mobx": "^5.10.1",
     "mobx-react": "^6.0.3",
     "mocha": "^6.1.4",
@@ -26,13 +26,13 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-icons": "^3.7.0",
-    "react-redux": "^7.0.3",
+    "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
     "redux": "^4.0.1",
     "rxjs": "^6.5.2",
     "sanitize.css": "^10.0.0",
     "sinon": "^7.3.2",
     "styled-components": "^4.3.1",
-    "typescript": "~3.5.1"
+    "typescript": "~3.5.2"
   }
 }
