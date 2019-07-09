@@ -28,11 +28,11 @@
     "react-icons": "^3.7.0",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
-    "redux": "^4.0.1",
+    "redux": "^4.0.2",
     "rxjs": "^6.5.2",
     "sanitize.css": "^10.0.0",
     "sinon": "^7.3.2",
     "styled-components": "^4.3.2",
-    "typescript": "~3.5.2"
+    "typescript": "~3.5.3"
   }
 }
