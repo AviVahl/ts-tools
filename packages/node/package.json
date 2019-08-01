@@ -13,7 +13,7 @@
     "@ts-tools/robotrix": "^0.7.5",
     "@ts-tools/service": "^2.0.4",
     "is-ci": "^2.0.0",
-    "source-map-support": "^0.5.12"
+    "source-map-support": "^0.5.13"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"
