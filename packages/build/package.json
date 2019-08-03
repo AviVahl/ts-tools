@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/build",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "CLI for easier building of multi-target TypeScript libraries.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
