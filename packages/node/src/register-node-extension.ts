@@ -8,7 +8,7 @@ export interface IRegisterExtensionOptions {
 }
 
 export function registerNodeExtension({ transpileOptions, onDiagnostics }: IRegisterExtensionOptions): void {
-    if (packageState.registered) {
+    if (require.extensions['.ts'] || require.extensions['.tsx']) {
         return; // avoid double registeration
     }
 
@@ -53,6 +53,4 @@ export function registerNodeExtension({ transpileOptions, onDiagnostics }: IRegi
 
     // register our extension for the two default supported extensions
     require.extensions['.ts'] = require.extensions['.tsx'] = requireExtension;
-
-    packageState.registered = true;
 }

@@ -3,11 +3,6 @@ import { TypeScriptService } from '@ts-tools/service';
 
 export const packageState = {
     /**
-     * is the node extension currently registered.
-     */
-    registered: false,
-
-    /**
      * service used by the extension to transpile files.
      */
     tsService: new TypeScriptService(),
