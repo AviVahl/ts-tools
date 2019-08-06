@@ -8,7 +8,7 @@
     "clean": "rimraf ./cjs",
     "build": "yarn build:cjs",
     "build:cjs": "tsc -p src",
-    "test": "mocha -r @ts-tools/node/r \"test/**/*.unit.ts\" --watch-extensions ts"
+    "test": "mocha \"test/**/*.unit.ts\""
   },
   "peerDependencies": {
     "typescript": ">=2.8.0",

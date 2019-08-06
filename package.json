@@ -10,7 +10,7 @@
     "build": "lerna run build --stream",
     "lint": "tslint -p tsconfig.test.json",
     "pretest": "run-p build lint",
-    "test": "lerna run test --stream --parallel -- --colors"
+    "test": "lerna run test --stream --parallel"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",

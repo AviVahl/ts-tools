@@ -10,7 +10,7 @@
     "build": "run-p build:cjs build:esm",
     "build:cjs": "tsc -p src --outDir cjs --module commonjs",
     "build:esm": "tsc -p src --outDir esm --module esnext",
-    "test": "mocha -r @ts-tools/node/r -r test/chai-setup.ts \"test/**/*.unit.ts\" --watch-extensions ts"
+    "test": "mocha -r @ts-tools/node/r -r test/chai-setup.ts \"test/**/*.unit.ts\""
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"

@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rimraf ./cjs",
     "build": "tsc -p src",
-    "test": "mocha -r @ts-tools/node/r \"./test/**/*.unit.ts\" --watch-extensions ts --timeout 10000"
+    "test": "mocha \"./test/**/*.unit.ts\" --timeout 10000"
   },
   "dependencies": {
     "@ts-tools/robotrix": "^0.7.6",
