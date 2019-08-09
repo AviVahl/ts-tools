@@ -167,12 +167,16 @@ export class TypeScriptService {
     public findConfigFile(
         baseDirectory: string,
         fileExists: IBaseHost['fileExists'],
-        configFileName?: string
+        configFileName: string | ((directoryPath: string) => string) = 'tsconfig.json'
     ): string | undefined {
         if (this.directoryToTsConfig.has(baseDirectory)) {
             return this.directoryToTsConfig.get(baseDirectory);
         }
-        const tsConfigPath = ts.findConfigFile(baseDirectory, fileExists, configFileName);
+        const tsConfigPath = ts.findConfigFile(
+            baseDirectory,
+            fileExists,
+            typeof configFileName === 'function' ? configFileName(baseDirectory) : configFileName
+        );
         this.directoryToTsConfig.set(baseDirectory, tsConfigPath);
         return tsConfigPath;
     }

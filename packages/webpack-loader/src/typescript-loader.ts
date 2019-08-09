@@ -50,11 +50,12 @@ export interface ITypeScriptLoaderOptions {
     compilerOptions?: object;
 
     /**
-     * Configuration file name to look for.
+     * TypeScript configuration file name. Used when looking up configurations.
+     * Passing in a function allows customizing the config per directory.
      *
      * @default 'tsconfig.json'
      */
-    configFileName?: string;
+    configFileName?: string | ((directoryPath: string) => string);
 }
 
 export const tsService = new TypeScriptService();

@@ -2,11 +2,12 @@ import ts from 'typescript';
 
 export interface ITranspilationOptions {
     /**
-     * TypeScript configuration file name.
+     * TypeScript configuration file name. Used when looking up configurations.
+     * Passing in a function allows customizing the config per directory.
      *
      * @default 'tsconfig.json'
      */
-    configFileName?: string;
+    configFileName?: string | ((directoryPath: string) => string);
 
     /**
      * Configuration file lookup (when no loaded config is relevant).
