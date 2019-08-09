@@ -1039,10 +1039,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.9.0":
-  version "16.9.0"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.0.tgz#27434f16d889a335eb4626d1f1e67eda54039e5b"
-  integrity sha512-eOct1hyZI9YZf/eqNlYu7jxA9qyTw1EGXruAJhHhBDBpc00W0C1vwlnh+hkOf7UFZkNK+UxnFBpwAZe3d7XJhQ==
+"@types/react@*", "@types/react@^16.9.1":
+  version "16.9.1"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.1.tgz#862c83b4c9d5cd116e42fd9a4f3694843cd2c051"
+  integrity sha512-jGM2x8F7m7/r+81N/BOaUKVwbC5Cdw6ExlWEUpr77XPwVeNvAppnPEnMMLMfxRDYL8FPEX8MHjwtD2NQMJ0yyQ==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -4379,10 +4379,10 @@ mobx-react-lite@1.4.0:
   resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-1.4.0.tgz#193beb5fdddf17ae61542f65ff951d84db402351"
   integrity sha512-5xCuus+QITQpzKOjAOIQ/YxNhOl/En+PlNJF+5QU4Qxn9gnNMJBbweAdEW3HnuVQbfqDYEUnkGs5hmkIIStehg==
 
-mobx-react@^6.1.2:
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-6.1.2.tgz#ed705566edca4baf1c6d87c3eff3dcd17ba09573"
-  integrity sha512-cJJ3Xy9zaX2ucNdXt9gQuzBqL+ZavxxXLQxHKwztYc0fdxEIHXQYHtHr0kh2pSOdEoEJ3kfY8GeUKpOoGmskOg==
+mobx-react@^6.1.3:
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-6.1.3.tgz#ad07880ea60cdcdb2a7e2a0d54e01379710cf00a"
+  integrity sha512-eT/jO9dYIoB1AlZwI2VC3iX0gPOeOIqZsiwg7tDJV1B7Z69h+TZZL3dgOE0UeS2zoHhGeKbP+K+OLeLMnnkGnA==
   dependencies:
     mobx-react-lite "1.4.0"
 
