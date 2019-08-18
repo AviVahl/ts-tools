@@ -1066,10 +1066,10 @@
   dependencies:
     source-map "^0.6.1"
 
-"@types/webpack@*", "@types/webpack@^4.32.1":
-  version "4.32.1"
-  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.32.1.tgz#6e95010e806f808abd6551c112097ac09035aacf"
-  integrity sha512-9n38CBx9uga1FEAdTipnt0EkbKpsCJFh7xJb1LE65FFb/A6OOLFX022vYsGC1IyVCZ/GroNg9u/RMmlDxGcLIw==
+"@types/webpack@*", "@types/webpack@^4.32.2":
+  version "4.32.2"
+  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.32.2.tgz#e0f1ce77b2f13fe5d9cfd3fcf4b99aee3f92ac51"
+  integrity sha512-KZyRrE2XxE/buUNKFhSxqCqLQ+QMCe/AX/edeQtnFuSCucxPkb8cVgmPecGdOIgoL1Z7KgCgrwVg0BMJbZr5aw==
   dependencies:
     "@types/anymatch" "*"
     "@types/node" "*"
@@ -3695,7 +3695,7 @@ is-utf8@^0.2.0:
   resolved "https://registry.yarnpkg.com/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
   integrity sha1-Sw2hRCEE0bM2NA6AeX6GXPOffXI=
 
-is-what@^3.2.4:
+is-what@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/is-what/-/is-what-3.3.1.tgz#79502181f40226e2d8c09226999db90ef7c1bcbe"
   integrity sha512-seFn10yAXy+yJlTRO+8VfiafC+0QJanGLMPTBWLrJm/QPauuchy0UXh8B6H5o9VA8BAzk0iYievt6mNp6gfaqA==
@@ -4120,10 +4120,10 @@ marked@^0.7.0:
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.7.0.tgz#b64201f051d271b1edc10a04d1ae9b74bb8e5c0e"
   integrity sha512-c+yYdCZJQrsRjTPhUx7VKkApw9bwDkNbHUKo1ovgcfDjb2kc8rLuRbIFyXL5WOEUwzSSKo3IXpph2K6DqB/KZg==
 
-mathjs@^6.0.4:
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.0.4.tgz#8b26137f2acccd133bc239cbf9526aad7408822d"
-  integrity sha512-mhgAkRrSqUJl/LAeEi70zJ28RcA7l8yJ7YGsZg+UJkupuvep+JQX0cxs5BBNLDqaklnKT25dLgT8fF5a5pzhEA==
+mathjs@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.1.0.tgz#1b544743ce36c5e868f28007e69954f1751b7b3e"
+  integrity sha512-rYxlGCTyCQ8dTLT4kGZZE88cOO3mrri1ObiJwUTLBIfABqk5G/LxGCDbTgEIzRUga194HvS8eHKQUKdoEGKsJA==
   dependencies:
     complex.js "2.0.11"
     decimal.js "10.2.0"
@@ -4202,11 +4202,11 @@ meow@^4.0.0:
     trim-newlines "^2.0.0"
 
 merge-anything@^2.2.4:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/merge-anything/-/merge-anything-2.4.0.tgz#86959caf02bb8969d1ae5e1b652862bc5fe54e44"
-  integrity sha512-MhJcPOEcDUIbwU0LnEfx5S9s9dfQ/KPu4g2UA5T5G1LRKS0XmpDvJ9+UUfTkfhge+nA1gStE4tJAvx6lXLs+rg==
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/merge-anything/-/merge-anything-2.4.1.tgz#e9bccaec1e49ec6cb5f77ca78c5770d1a35315e6"
+  integrity sha512-dYOIAl9GFCJNctSIHWOj9OJtarCjsD16P8ObCl6oxrujAG+kOvlwJuOD9/O9iYZ9aTi1RGpGTG9q9etIvuUikQ==
   dependencies:
-    is-what "^3.2.4"
+    is-what "^3.3.1"
 
 merge2@^1.2.3:
   version "1.2.4"
@@ -4878,9 +4878,9 @@ p-limit@^1.1.0:
     p-try "^1.0.0"
 
 p-limit@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.2.0.tgz#417c9941e6027a9abcba5092dd2904e255b5fbc2"
-  integrity sha512-pZbTJpoUsCzV48Mc9Nh51VbwO0X9cuPFE8gYwx9BTCt9SF8/b7Zljd2fVgOxhIF/HDTKgpVzs+GPhyKfjLLFRQ==
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.2.1.tgz#aa07a788cc3151c939b5131f63570f0dd2009537"
+  integrity sha512-85Tk+90UCVWvbDavCLKPOLC9vvY8OwEX/RtKF+/1OADJMVlFfEHOiMTPVyxg7mk/dKa+ipdHm0OUkTvCpMTuwg==
   dependencies:
     p-try "^2.0.0"
 
