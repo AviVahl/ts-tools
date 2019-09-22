@@ -54,8 +54,7 @@ Usage with [Visual Studio Code](https://github.com/Microsoft/vscode):
 
 ## Similar projects
 
-[ts-node](https://github.com/TypeStrong/ts-node) - a much more complete solution. It includes a `ts-node` cli/repl, and require hook registration. It does not support multiple tsconfigs out of the box, afaik. 
-
+[ts-node](https://github.com/TypeStrong/ts-node) - a much more complete solution. It includes a `ts-node` cli/repl, and require hook registration.
 
 ## License
 
