@@ -1,1 +1,1 @@
-require('./cjs/register-throw');
+require('./cjs/register');

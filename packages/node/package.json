@@ -9,23 +9,17 @@
     "build": "tsc -p src",
     "test": "mocha \"./test/**/*.unit.ts\" --timeout 10000"
   },
-  "dependencies": {
-    "@ts-tools/robotrix": "^0.7.7",
-    "@ts-tools/service": "^2.0.5",
-    "is-ci": "^2.0.0",
-    "source-map-support": "^0.5.13"
-  },
   "peerDependencies": {
     "typescript": ">=2.8.0"
   },
+  "dependencies": {
+    "source-map-support": "^0.5.13"
+  },
   "files": [
     "cjs",
-    "src/**/*.ts",
-    "ci-safe-fast.js",
-    "ci-safe-warn.js",
-    "fast.js",
+    "src",
     "r.js",
-    "warn.js"
+    "!src/tsconfig.json"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
