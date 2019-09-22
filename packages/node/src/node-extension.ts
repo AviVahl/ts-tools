@@ -67,7 +67,11 @@ export const createNodeExtension = ({
     const shouldCache = cache && typeof cacheDirectoryPath === 'string';
 
     if (shouldCache) {
-        ensureDirectorySync(cacheDirectoryPath!);
+        try {
+            ensureDirectorySync(cacheDirectoryPath!);
+        } catch {
+            /**/
+        }
         sourceMapSupport.install({
             environment: 'node',
             retrieveSourceMap(filePath) {
