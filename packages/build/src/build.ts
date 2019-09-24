@@ -54,7 +54,7 @@ export interface IBuildOptions {
 
 export function build({ formats, outputDirectoryPath, srcDirectoryPath, configName }: IBuildOptions): IOutputFile[] {
     const baseHost = createBaseHost();
-    const { fileExists, dirname, directoryExists, readFile, getCanonicalFileName } = baseHost;
+    const { fileExists, directoryExists, readFile, getCanonicalFileName } = baseHost;
 
     if (!directoryExists(srcDirectoryPath)) {
         throw chalk.red(`Cannot find directory ${srcDirectoryPath}`);
@@ -72,13 +72,13 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
     const { errors, fileNames, options: tsconfigOptions } = ts.parseJsonSourceFileConfigFileContent(
         jsonSourceFile,
         baseHost,
-        dirname(tsConfigPath)
+        path.dirname(tsConfigPath)
     );
 
     const canonicalSrcPath = getCanonicalFileName(srcDirectoryPath);
-    const filesInSrcDirectory: string[] = fileNames.filter(filePath =>
-        getCanonicalFileName(filePath).startsWith(canonicalSrcPath)
-    );
+    const filesInSrcDirectory: string[] = fileNames
+        .map(path.normalize)
+        .filter(filePath => getCanonicalFileName(filePath).startsWith(canonicalSrcPath));
 
     if (errors.length) {
         throw ts.formatDiagnosticsWithColorAndContext(errors, baseHost);
@@ -120,8 +120,6 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
     for (const { folderName, languageService } of formatCompilers) {
         const formatOutDir = path.join(outputDirectoryPath, folderName);
         for (const srcFilePath of filesInSrcDirectory) {
-            const nativeSrcFilePath = path.normalize(srcFilePath);
-
             arrayAssign(syntacticDiagnostics, languageService.getSyntacticDiagnostics(srcFilePath));
             arrayAssign(semanticDiagnostics, languageService.getSemanticDiagnostics(srcFilePath));
 
@@ -132,7 +130,7 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
                     const targetFilePath = path.join(formatOutDir, relativeToSrc);
                     const targetFileDirectoryPath = path.dirname(targetFilePath);
                     const relativeRequestToSrc = path
-                        .relative(targetFileDirectoryPath, nativeSrcFilePath)
+                        .relative(targetFileDirectoryPath, srcFilePath)
                         .replace(/\\/g, '/');
                     const contents = outputFilePath.endsWith('.map')
                         ? remapSourceMap(text, relativeRequestToSrc)
