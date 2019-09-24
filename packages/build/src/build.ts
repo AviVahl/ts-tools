@@ -76,9 +76,9 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
     );
 
     const canonicalSrcPath = getCanonicalFileName(srcDirectoryPath);
-    const filesInSrcDirectory: string[] = fileNames
-        .map(path.normalize)
-        .filter(filePath => getCanonicalFileName(filePath).startsWith(canonicalSrcPath));
+    const filesInSrcDirectory = fileNames
+        .map(filePath => ({ filePath, normalizedPath: path.normalize(filePath) }))
+        .filter(({ normalizedPath }) => getCanonicalFileName(normalizedPath).startsWith(canonicalSrcPath));
 
     if (errors.length) {
         throw ts.formatDiagnosticsWithColorAndContext(errors, baseHost);
@@ -119,18 +119,18 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
 
     for (const { folderName, languageService } of formatCompilers) {
         const formatOutDir = path.join(outputDirectoryPath, folderName);
-        for (const srcFilePath of filesInSrcDirectory) {
-            arrayAssign(syntacticDiagnostics, languageService.getSyntacticDiagnostics(srcFilePath));
-            arrayAssign(semanticDiagnostics, languageService.getSemanticDiagnostics(srcFilePath));
+        for (const { filePath, normalizedPath } of filesInSrcDirectory) {
+            arrayAssign(syntacticDiagnostics, languageService.getSyntacticDiagnostics(filePath));
+            arrayAssign(semanticDiagnostics, languageService.getSemanticDiagnostics(filePath));
 
-            const { emitSkipped, outputFiles: compilationOutput } = languageService.getEmitOutput(srcFilePath);
+            const { emitSkipped, outputFiles: compilationOutput } = languageService.getEmitOutput(filePath);
             if (!emitSkipped) {
                 for (const { name: outputFilePath, text } of compilationOutput) {
                     const relativeToSrc = path.relative(srcDirectoryPath, outputFilePath);
                     const targetFilePath = path.join(formatOutDir, relativeToSrc);
                     const targetFileDirectoryPath = path.dirname(targetFilePath);
                     const relativeRequestToSrc = path
-                        .relative(targetFileDirectoryPath, srcFilePath)
+                        .relative(targetFileDirectoryPath, normalizedPath)
                         .replace(/\\/g, '/');
                     const contents = outputFilePath.endsWith('.map')
                         ? remapSourceMap(text, relativeRequestToSrc)
