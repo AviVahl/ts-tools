@@ -14,11 +14,12 @@ program
     .description('Build multi-target TypeScript libraries.')
     .usage('<src folder>')
     .option('--out-dir <output folder>', 'output directory', '.')
+    .option('--config-name <config file name>', 'tsconfig file name', 'tsconfig.json')
     .option('--cjs', 'compile a "cjs" folder containing commonjs module target')
     .option('--esm', 'compile an "esm" folder containing esnext module target')
     .parse(process.argv);
 
-const { args, cjs, esm, outDir } = program;
+const { args, cjs, esm, outDir, configName } = program;
 
 if (args.length !== 1) {
     printErrorAndExit(chalk.red(`A single src folder has to be provided`));
@@ -55,7 +56,7 @@ if (esm) {
 }
 
 try {
-    const targetFiles = build({ srcDirectoryPath, outputDirectoryPath, formats });
+    const targetFiles = build({ srcDirectoryPath, outputDirectoryPath, formats, configName });
     console.log(`Done transpiling. Writing ${targetFiles.length} files...`);
     for (const { filePath, contents: content } of targetFiles) {
         ensureDirectorySync(path.dirname(filePath));

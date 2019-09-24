@@ -44,29 +44,40 @@ export interface IBuildOptions {
      * Formats to build.
      */
     formats: IBuildFormat[];
+
+    /**
+     * Config file name.
+     * @default "tsconfig.json"
+     */
+    configName?: string;
 }
 
-export function build(options: IBuildOptions): IOutputFile[] {
-    const { formats, outputDirectoryPath, srcDirectoryPath } = options;
-    const tsConfigPath = path.join(srcDirectoryPath, 'tsconfig.json');
-
+export function build({ formats, outputDirectoryPath, srcDirectoryPath, configName }: IBuildOptions): IOutputFile[] {
     const baseHost = createBaseHost();
-    const { dirname, fileExists, directoryExists, readFile } = baseHost;
+    const { fileExists, dirname, directoryExists, readFile, getCanonicalFileName } = baseHost;
 
     if (!directoryExists(srcDirectoryPath)) {
         throw chalk.red(`Cannot find directory ${srcDirectoryPath}`);
-    } else if (!fileExists(tsConfigPath)) {
-        throw chalk.red(`Cannot find ${tsConfigPath}`);
+    }
+
+    const tsConfigPath = ts.findConfigFile(srcDirectoryPath, fileExists, configName);
+
+    if (!tsConfigPath) {
+        throw chalk.red(`Cannot find a ${configName} file for ${srcDirectoryPath}`);
     }
 
     // read and parse config
     const jsonSourceFile = ts.readJsonConfigFile(tsConfigPath, readFile);
-    const configDirectoryPath = dirname(tsConfigPath);
 
     const { errors, fileNames, options: tsconfigOptions } = ts.parseJsonSourceFileConfigFileContent(
         jsonSourceFile,
         baseHost,
-        configDirectoryPath
+        dirname(tsConfigPath)
+    );
+
+    const canonicalSrcPath = getCanonicalFileName(srcDirectoryPath);
+    const filesInSrcDirectory: string[] = fileNames.filter(filePath =>
+        getCanonicalFileName(filePath).startsWith(canonicalSrcPath)
     );
 
     if (errors.length) {
@@ -108,7 +119,7 @@ export function build(options: IBuildOptions): IOutputFile[] {
 
     for (const { folderName, languageService } of formatCompilers) {
         const formatOutDir = path.join(outputDirectoryPath, folderName);
-        for (const srcFilePath of fileNames) {
+        for (const srcFilePath of filesInSrcDirectory) {
             const nativeSrcFilePath = path.normalize(srcFilePath);
 
             arrayAssign(syntacticDiagnostics, languageService.getSyntacticDiagnostics(srcFilePath));
