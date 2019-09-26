@@ -31,6 +31,8 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
     inlineSourceMap: true
 };
 
+export type NodeExtension = (module: NodeModule, filePath: string) => unknown;
+
 export interface ICreateNodeExtensionOptions {
     /**
      * Compiler options to use when transpiling.
@@ -109,7 +111,6 @@ interface ICompilerModule extends NodeModule {
     _compile(code: string, filePath: string): void;
 }
 
-export type NodeExtension = (module: NodeModule, filePath: string) => unknown;
 export type TransformFn = (filePath: string) => string;
 
 export function createTransformerExtension(transform: TransformFn): NodeExtension {
