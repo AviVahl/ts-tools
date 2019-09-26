@@ -31,7 +31,7 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
     inlineSourceMap: true
 };
 
-export interface ICreateCachingNodeExtensionOptions {
+export interface ICreateNodeExtensionOptions {
     /**
      * Compiler options to use when transpiling.
      *
@@ -52,7 +52,10 @@ export interface ICreateCachingNodeExtensionOptions {
     installSourceMapSupport?: boolean;
 }
 
-export const createNodeExtension = (options: ICreateCachingNodeExtensionOptions = {}): NodeExtension => {
+/**
+ * Creates a cachine TypeScript node extension.
+ */
+export const createNodeExtension = (options: ICreateNodeExtensionOptions = {}): NodeExtension => {
     const {
         compilerOptions = defaultCompilerOptions,
         cacheDirectoryPath = findCacheDirectory(process.cwd()),
