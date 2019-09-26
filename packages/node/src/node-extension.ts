@@ -114,7 +114,7 @@ interface ICompilerModule extends NodeModule {
 export type TransformFn = (filePath: string) => string;
 
 export function createTransformerExtension(transform: TransformFn): NodeExtension {
-    return (nodeModule, filePath) => {
+    return function nodeExtension(nodeModule, filePath) {
         (nodeModule as ICompilerModule)._compile(transform(filePath), filePath);
     };
 }
