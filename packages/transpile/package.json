@@ -1,30 +1,24 @@
 {
-  "name": "@ts-tools/node",
+  "name": "@ts-tools/transpile",
   "version": "0.11.0",
-  "description": "TypeScript support for Node.js.",
+  "description": "TypeScript transpilation helpers.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
   "scripts": {
     "clean": "rimraf ./cjs",
-    "build": "tsc -p src",
-    "test": "mocha \"./test/**/*.unit.ts\" --timeout 10000"
+    "build": "tsc -p src"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"
   },
-  "dependencies": {
-    "@ts-tools/transpile": "^0.11.0",
-    "source-map-support": "^0.5.13"
-  },
   "files": [
     "cjs",
     "src",
-    "r.js",
     "!src/tsconfig.json"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
-  "repository": "https://github.com/AviVahl/ts-tools/tree/master/packages/node",
+  "repository": "https://github.com/AviVahl/ts-tools/tree/master/packages/transpile",
   "homepage": "https://github.com/AviVahl/ts-tools",
   "publishConfig": {
     "access": "public"
