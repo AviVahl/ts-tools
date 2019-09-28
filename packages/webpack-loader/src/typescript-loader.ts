@@ -25,6 +25,7 @@ const [cachedFindConfigFile] = createCachedFn(
 const [cachedLoadConfigFile] = createCachedFn(loadConfigFile, identity);
 const [cachedFindCacheDirectory] = createCachedFn(findCacheDirectory, identity);
 const ensuredDirectories = new Set<string>();
+
 /**
  * Loader options which can be provided via webpack configuration
  * or a specific request query string
