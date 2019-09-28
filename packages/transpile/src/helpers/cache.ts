@@ -23,3 +23,20 @@ export function calcSha1(data: string) {
         .update(data)
         .digest('hex');
 }
+
+export function createCachedFn<FN extends (...args: any[]) => any>(
+    fn: FN,
+    argsToCacheKey: (...args: Parameters<FN>) => string
+): [FN, Map<string, ReturnType<FN>>] {
+    const cache = new Map<string, ReturnType<FN>>();
+    const cachedFn = (...args: Parameters<FN>) => {
+        const cacheKey = argsToCacheKey(...args);
+        if (cache.has(cacheKey)) {
+            return cache.get(cacheKey);
+        }
+        const item = fn(...args);
+        cache.set(cacheKey, item);
+        return item;
+    };
+    return [cachedFn as FN, cache];
+}

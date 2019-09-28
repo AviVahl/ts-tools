@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { statSync, readFileSync, writeFileSync, existsSync } from 'fs';
 import ts from 'typescript';
-import { filePathToCacheFileName } from './helpers';
+import { filePathToCacheFileName, filterAffectsEmit, areEmitCompatible } from './helpers';
 
 const tsVersion = ts.version;
 
@@ -12,12 +12,17 @@ export interface ITranspileCachedOptions extends ts.TranspileOptions {
 }
 
 export function transpileCached(options: ITranspileCachedOptions): ts.TranspileOutput {
-    const { fileName: filePath, cacheDirectoryPath, fileContents } = options;
+    const { fileName: filePath, cacheDirectoryPath, fileContents, compilerOptions = {} } = options;
     const mtime = statSync(filePath).mtime.getTime();
     const cacheFilePath = join(cacheDirectoryPath, filePathToCacheFileName(filePath));
     const cachedOutput = readCacheFileSync(cacheFilePath);
 
-    if (cachedOutput && cachedOutput.mtime === mtime) {
+    if (
+        cachedOutput &&
+        cachedOutput.mtime === mtime &&
+        cachedOutput.tsVersion === tsVersion &&
+        areEmitCompatible(cachedOutput, compilerOptions)
+    ) {
         return cachedOutput;
     }
 
@@ -31,13 +36,14 @@ export function transpileCached(options: ITranspileCachedOptions): ts.TranspileO
         mtime,
         tsVersion,
         outputText: transpiledOutput.outputText,
-        sourceMapText: transpiledOutput.sourceMapText
+        sourceMapText: transpiledOutput.sourceMapText,
+        ...filterAffectsEmit(compilerOptions)
     });
 
     return transpiledOutput;
 }
 
-export interface ICachedTranspileOutput {
+export interface ICachedTranspileOutput extends ts.CompilerOptions {
     filePath: string;
     outputText: string;
     sourceMapText?: string;

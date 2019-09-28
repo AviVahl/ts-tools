@@ -1,23 +1,10 @@
 import webpack from 'webpack';
-import { join } from 'path';
-import { ITypeScriptLoaderOptions, tsService } from '../src';
+import { join, dirname } from 'path';
+import { ITypeScriptLoaderOptions } from '../src';
 
 export interface IBundleWithLoaderOptions {
-    /**
-     * Entry path to bundle
-     */
     entry: string;
-
-    /**
-     * Options to provide our loader with
-     *
-     * @default {colors:false}
-     */
-    loaderOptions?: ITypeScriptLoaderOptions;
-
-    /**
-     * Directory path that serves as bundling base path
-     */
+    options?: ITypeScriptLoaderOptions;
     context?: string;
 }
 
@@ -26,13 +13,9 @@ const loaderPath = require.resolve('../src/index.ts');
 
 export async function bundleWithLoader({
     entry,
-    loaderOptions,
-    context
+    options,
+    context = dirname(entry)
 }: IBundleWithLoaderOptions): Promise<{ stats: webpack.Stats; statsText: string }> {
-    // clear loader's cache before bundling.
-    // cwd is cached on baseHost, and several tests use same fixture with different cwd
-    tsService.clear();
-
     const compiler = webpack({
         entry,
         context,
@@ -43,7 +26,7 @@ export async function bundleWithLoader({
                 {
                     test: /\.tsx?$/,
                     loader: loaderPath,
-                    options: { colors: false, ...loaderOptions }
+                    options
                 }
             ]
         }
