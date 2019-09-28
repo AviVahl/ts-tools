@@ -76,7 +76,6 @@ export interface ITypeScriptLoaderOptions {
 export const typescriptLoader: webpack.loader.Loader = function(source) {
     const fileContents = source.toString();
     const { resourcePath, rootContext, sourceMap } = this;
-    // console.time('transpile ' + resourcePath);
     const {
         configFileName,
         configLookup = true,
@@ -179,6 +178,4 @@ export const typescriptLoader: webpack.loader.Loader = function(source) {
     } else {
         this.callback(null, outputText);
     }
-
-    // console.timeEnd('transpile ' + resourcePath);
 };
