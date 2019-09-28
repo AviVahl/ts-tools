@@ -15,8 +15,7 @@
     "webpack": ">=4"
   },
   "dependencies": {
-    "@ts-tools/robotrix": "^0.7.7",
-    "@ts-tools/service": "^2.0.5",
+    "@ts-tools/transpile": "^0.11.0",
     "loader-utils": "^1.2.3"
   },
   "files": [

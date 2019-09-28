@@ -4,10 +4,10 @@
 [TypeScript](https://www.typescriptlang.org/) loader for [webpack](https://webpack.js.org/).
 
 Features:
-- Full syntactic and semantic **type checking**.
-- Loads configuration from the closest `tsconfig.json`, with support for **multiple configurations** inside a project.
+- Fast! Uses `ts.transpileModule`. Leaves type checking to other flows.
+- Uses persistent disk caching (`node_modules/.cache/ts-<moodule>-<target>`). Second run will not re-transpile a file if not changed.
+- Loads configuration from the closest `tsconfig.json`.
 - Automated source map configuration based on current `devtool` configuration.
-- Built-in support for **baseUrl** and **paths** by using a custom transformer that remaps imports.
 
 ## Getting started
 
@@ -37,47 +37,45 @@ exports.resolve = {
 ```ts
 interface ITypeScriptLoaderOptions {
     /**
-     * Configuration file lookup (when no already loaded config is relevant).
-     * Loader will search for the closest config file to the currently bundled
-     * file, and load it.
-     *
-     * @default true
-     */
-    configLookup?: boolean
-
-    /**
-     * Perform type check, if possible (loaded config is relevant).
-     *
-     * @default true
-     */
-    typeCheck?: boolean
-
-    /**
-     * Expose diagnostics as webpack warnings.
-     *
-     * @default false exposes diagnostics as webpack errors
-     */
-    warnOnly?: boolean
-
-    /**
-     * Use colors when formatting diagnostics.
-     *
-     * @default true (if current platform supports it)
-     */
-    colors?: boolean
-
-    /**
      * Keys to override in the `compilerOptions` section of the
      * `tsconfig.json` file.
      */
-    compilerOptions?: object
+    compilerOptions?: object;
 
     /**
-     * Configuration file name to look for.
+     * Turn persistent caching on/off.
+     *
+     *  @default true
+     */
+    cache?: boolean;
+
+    /**
+     * Absolute path of an existing directory to use for persistent cache.
+     *
+     * @default uses `find-cache-dir` to search for caching path.
+     */
+    cacheDirectoryPath?: string;
+
+    /**
+     * Path to `tsconfig.json` file.
+     * Specifying it will skip config lookup
+     */
+    configFilePath?: string;
+
+    /**
+     * Name of config file to search for when looking up config.
      *
      * @default 'tsconfig.json'
      */
-    configFileName?: string
+    configFileName?: string;
+
+    /**
+     * Should loader search for config.
+     * Loader will search for the closest tsconfig file to the root context, and load it.
+     *
+     * @default true
+     */
+    configLookup?: boolean;
 }
 ```
 
@@ -99,15 +97,6 @@ exports.module = {
     ]
 }
 ```
-
-## Known limitations
-
-- The following `compilerOptions` are not supported:
-  - `allowJs` and `checkJs` (might work, but untested).
-  - `composite` projects.
-- Declarations (and their maps) are forced *off* when bundling.
-- `"module": "esnext"` is forced by default, as `webpack` understands it best (allows tree shaking and dynamic chunks). This may cause issues for projects using `import A = require('a')` syntax. Can be resolved by turning on `allowSyntheticDefaultImports` and `esModuleInterop` (in `tsconfig`) and using `import A from 'a'`. Webpack ensures CommonJS modules are always exposed as a default export, so this works properly.
-- Source changes by preceding loaders are ignored, as this loader reads sources directly from webpack's input file system.
 
 ## Similar projects
 

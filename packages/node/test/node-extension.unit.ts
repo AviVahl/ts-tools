@@ -1,15 +1,14 @@
 import { expect } from 'chai';
-import { join, dirname, sep } from 'path';
+import { join, sep } from 'path';
 import { platform } from 'os';
 import { spawnSync } from 'child_process';
+import { fixturesRoot, noTsconfigFixture } from '@ts-tools/fixtures';
 
 export function runCommand(command: string): { output: string; exitCode: number } {
     const [execName, ...args] = command.split(' ');
     const { output, status: exitCode } = spawnSync(execName, args);
     return { output: output.join('\n'), exitCode: exitCode || 0 };
 }
-
-const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
 
 describe('using node -r @ts-tools/node/r [file]', () => {
     it('allows using imports (with default interop)', () => {
@@ -40,7 +39,7 @@ describe('using node -r @ts-tools/node/r [file]', () => {
     });
 
     it('handles tsx as react by default', () => {
-        const filePath = join(fixturesRoot, 'react.tsx');
+        const filePath = join(noTsconfigFixture, 'react.tsx');
 
         const { exitCode, output } = runCommand(`node -r @ts-tools/node/r ${filePath}`);
 
