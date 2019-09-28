@@ -9,7 +9,7 @@ Several packages to assist [TypeScript](https://www.typescriptlang.org/) develop
 
 - **[@ts-tools/webpack-loader](https://github.com/AviVahl/ts-tools/tree/master/packages/webpack-loader)** - TypeScript loader for webpack.
 
-- **[@ts-tools/service](https://github.com/AviVahl/ts-tools/tree/master/packages/service)** - An on-demand TypeScript transpilation service.
+- **[@ts-tools/transpile](https://github.com/AviVahl/ts-tools/tree/master/packages/transpile)** - TypeScript transpilation helpers.
 
 - **[@ts-tools/robotrix](https://github.com/AviVahl/ts-tools/tree/master/packages/robotrix)** - Useful TypeScript transpilation transformers.
 
