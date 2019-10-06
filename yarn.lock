@@ -4134,10 +4134,10 @@ marked@^0.7.0:
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.7.0.tgz#b64201f051d271b1edc10a04d1ae9b74bb8e5c0e"
   integrity sha512-c+yYdCZJQrsRjTPhUx7VKkApw9bwDkNbHUKo1ovgcfDjb2kc8rLuRbIFyXL5WOEUwzSSKo3IXpph2K6DqB/KZg==
 
-mathjs@^6.2.2:
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.2.2.tgz#353012b40e155521a2bbf78d0aac750d4289eb9b"
-  integrity sha512-l0qw0meh1rcGaFMh248wx6NE5RVWA2bleq+5xF44XAaPMHcou+cKq/0ASBnTDsp0zNAbUYm7tGkDEe6QHbzU8g==
+mathjs@^6.2.3:
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.2.3.tgz#af0c799ba377c1564bee74ae88bc1a7d1a96fd6c"
+  integrity sha512-IEYTyz8tu7nslF4j2TtDs7C+9Emi2/iJTYXjc5WLoIKTJOLLtjp3Aglys0ZbV9KSiaJhpfGPLXm8Z5d7vEGN3w==
   dependencies:
     complex.js "2.0.11"
     decimal.js "10.2.0"
@@ -6323,9 +6323,9 @@ terser-webpack-plugin@^1.4.1:
     worker-farm "^1.7.0"
 
 terser@^4.1.2:
-  version "4.3.7"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-4.3.7.tgz#9dafb4a6730868608c9c7af96d44182f4107b29f"
-  integrity sha512-rJFxzWIzJdgiOwYIPJHu6L3hDegEYJj2cHuKcngMraUfhMXGDEbok9Tqjw7yxzrU4IagvG74uTEKdiqeG6T7bg==
+  version "4.3.8"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-4.3.8.tgz#707f05f3f4c1c70c840e626addfdb1c158a17136"
+  integrity sha512-otmIRlRVmLChAWsnSFNO0Bfk6YySuBp6G9qrHiJwlLDd4mxe2ta4sjI7TzIR+W1nBMjilzrMcPOz9pSusgx3hQ==
   dependencies:
     commander "^2.20.0"
     source-map "~0.6.1"
