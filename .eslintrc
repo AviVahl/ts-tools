@@ -9,20 +9,9 @@
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "plugin:react/recommended",
         "prettier",
-        "prettier/@typescript-eslint",
-        "prettier/react"
+        "prettier/@typescript-eslint"
     ],
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
-    },
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
@@ -37,8 +26,7 @@
         "@typescript-eslint/interface-name-prefix": "off",
         "@typescript-eslint/no-floating-promises": "error",
         "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/unbound-method": "off",
-        "react/prop-types": "off"
+        "@typescript-eslint/unbound-method": "off"
     },
     "overrides": [
         {

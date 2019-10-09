@@ -26,7 +26,6 @@
     "chai": "^4.2.0",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
-    "eslint-plugin-react": "^7.16.0",
     "lerna": "^3.16.5",
     "mocha": "^6.2.1",
     "prettier": "^1.18.2",
