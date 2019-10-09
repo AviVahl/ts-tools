@@ -24,6 +24,7 @@ export function calcSha1(data: string) {
         .digest('hex');
 }
 
+// eslint-disable-next-line
 export function createCachedFn<FN extends (...args: any[]) => any>(
     fn: FN,
     argsToCacheKey: (...args: Parameters<FN>) => string

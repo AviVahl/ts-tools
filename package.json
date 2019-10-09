@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "lerna run clean --stream --parallel",
     "build": "lerna run build --stream",
-    "lint": "tslint -p tsconfig.json",
+    "lint": "eslint . --ext .js,.ts,.tsx -f codeframe",
     "pretest": "yarn build && yarn lint",
     "test": "lerna run test --stream --parallel"
   },
@@ -21,14 +21,18 @@
     "@types/react-dom": "^16.9.1",
     "@types/source-map-support": "^0.5.0",
     "@types/webpack": "^4.39.2",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
     "chai": "^4.2.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-react": "^7.16.0",
     "lerna": "^3.16.5",
     "mocha": "^6.2.1",
     "prettier": "^1.18.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "rimraf": "^3.0.0",
-    "tslint": "^5.20.0",
     "typescript": "~3.6.3",
     "webpack": "^4.41.0"
   },

@@ -1,5 +1,7 @@
 import ts from 'typescript';
 
+const { hasOwnProperty } = Object.prototype;
+
 /**
  * Create a transformer factory that replaces `process.env.[PARAM]`
  * expressions with string literals, using provided `env`.
@@ -17,7 +19,7 @@ export function createNodeEnvTransformer(env: {
                 node.expression.name.text === 'env' &&
                 ts.isIdentifier(node.expression.expression) &&
                 node.expression.expression.text === 'process' &&
-                env.hasOwnProperty(node.name.text)
+                hasOwnProperty.call(env, node.name.text)
             ) {
                 // do lookup inside the if, so we don't do it twice
                 const valueForParam = env[node.name.text];

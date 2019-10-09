@@ -6,7 +6,7 @@ const identity = (val: string) => val;
 const toLowerCase = (val: string) => val.toLowerCase();
 
 function defaultGetScriptVersion(filePath: string): string {
-    const stats = sys.getModifiedTime!(filePath);
+    const stats = sys.getModifiedTime ? sys.getModifiedTime(filePath) : undefined;
     return stats !== undefined ? `${stats.getTime()}` : `${Date.now()}`;
 }
 
@@ -113,7 +113,7 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
         useCaseSensitiveFileNames: caseSensitive,
         getCanonicalFileName: caseSensitive ? identity : toLowerCase,
         getCurrentDirectory,
-        getNewLine: !!sys ? () => sys.newLine : () => UNIX_EOL,
+        getNewLine: sys ? () => sys.newLine : () => UNIX_EOL,
         getScriptVersion(filePath) {
             try {
                 return `${statSync(filePath).mtime.getTime()}`;

@@ -1,4 +1,3 @@
-// tslint:disable:no-console no-var-requires
 import ts from 'typescript';
 import path from 'path';
 import { writeFileSync, ensureDirectorySync } from 'proper-fs';
@@ -6,6 +5,7 @@ import chalk from 'chalk';
 import program from 'commander';
 import { build, IBuildFormat } from './build';
 
+// eslint-disable-next-line
 const { version } = require('../package.json');
 process.on('unhandledRejection', printErrorAndExit);
 

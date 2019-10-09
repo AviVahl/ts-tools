@@ -1,0 +1,5 @@
+cjs
+esm
+umd
+dist
+/packages/fixtures
