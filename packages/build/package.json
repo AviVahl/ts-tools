@@ -10,7 +10,7 @@
   "scripts": {
     "clean": "rimraf ./cjs",
     "prebuild": "yarn clean",
-    "build": "tsc -p src"
+    "build": "tsc -p tsconfig.build.json"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"
@@ -23,7 +23,7 @@
   },
   "files": [
     "cjs",
-    "src/**/*.ts",
+    "src",
     "cli.js"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",

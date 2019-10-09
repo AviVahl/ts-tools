@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rimraf ./cjs",
     "prebuild": "yarn clean",
-    "build": "tsc -p src",
+    "build": "tsc -p tsconfig.build.json",
     "test": "mocha \"./test/**/*.unit.ts\""
   },
   "peerDependencies": {
@@ -20,8 +20,7 @@
   "files": [
     "cjs",
     "src",
-    "r.js",
-    "!src/tsconfig.json"
+    "r.js"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",

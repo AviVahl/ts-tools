@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "lerna run clean --stream --parallel",
     "build": "lerna run build --stream",
-    "lint": "tslint -p tsconfig.test.json",
+    "lint": "tslint -p tsconfig.json",
     "pretest": "yarn build && yarn lint",
     "test": "lerna run test --stream --parallel"
   },

@@ -12,10 +12,15 @@ describe('webpack loader', () => {
         expect(stats.hasWarnings(), statsText).to.equal(false);
     });
 
-    describe('with no tsconfig.json', () => {
+    describe('when tsconfig is not found', () => {
         it('allows bundling .ts files', async () => {
             const entry = join(noTsconfigFixture, 'file-with-types.ts');
-            const { stats, statsText } = await bundleWithLoader({ entry });
+            const { stats, statsText } = await bundleWithLoader({
+                entry,
+                options: {
+                    configFileName: 'tsconfig-non-existing.json'
+                }
+            });
 
             expect(stats.hasErrors(), statsText).to.equal(false);
             expect(stats.hasWarnings(), statsText).to.equal(false);
@@ -23,7 +28,12 @@ describe('webpack loader', () => {
 
         it(`allows bundling .tsx files (assumes "jsx": "react" by default)`, async () => {
             const entry = join(noTsconfigFixture, 'react.tsx');
-            const { stats, statsText } = await bundleWithLoader({ entry });
+            const { stats, statsText } = await bundleWithLoader({
+                entry,
+                options: {
+                    configFileName: 'tsconfig-non-existing.json'
+                }
+            });
 
             expect(stats.hasErrors(), statsText).to.equal(false);
             expect(stats.hasWarnings(), statsText).to.equal(false);

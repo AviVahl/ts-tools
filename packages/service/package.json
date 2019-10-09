@@ -9,8 +9,8 @@
     "clean": "rimraf ./cjs ./esm",
     "prebuild": "yarn clean",
     "build": "yarn build:cjs && yarn build:esm",
-    "build:cjs": "tsc -p src --outDir cjs --module commonjs",
-    "build:esm": "tsc -p src --outDir esm --module esnext"
+    "build:cjs": "tsc -p tsconfig.build.json --outDir cjs --module commonjs",
+    "build:esm": "tsc -p tsconfig.build.json --outDir esm --module esnext"
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"
@@ -18,7 +18,7 @@
   "files": [
     "cjs",
     "esm",
-    "src/**/*.ts"
+    "src"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
