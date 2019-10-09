@@ -153,7 +153,7 @@ describe('CjsToEsmTransformer', () => {
             const code = `
                 try {
                     require('anything')
-                } catch {}
+                } catch(e) {}
             `;
 
             const { outputText } = ts.transpileModule(code, {
@@ -169,6 +169,7 @@ describe('CjsToEsmTransformer', () => {
             const code = `
                 import { someSymbol } from 'somewhere'
                 require('anything')
+                console.log(someSymbol)
             `;
 
             const { outputText } = ts.transpileModule(code, {

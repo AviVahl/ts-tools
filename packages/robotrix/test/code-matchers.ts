@@ -1,14 +1,9 @@
-import ts from 'typescript';
+import prettier from 'prettier';
 
-const compilerOptions: ts.CompilerOptions = {
-    target: ts.ScriptTarget.ES2017,
-    jsx: ts.JsxEmit.Preserve
-};
-
-export function codeMatchers(chai: any, util: any) {
-    chai.Assertion.addMethod('matchCode', function(this: any, expectedCode: string): void {
-        const { flag, eql, inspect } = util;
-        let actualCode = flag(this, 'object');
+export const codeMatchers: Chai.ChaiPlugin = (chai, util) => {
+    chai.Assertion.addMethod('matchCode', function(expectedCode: string): void {
+        const { flag, inspect } = util;
+        let actualCode: string = flag(this, 'object');
 
         if (typeof actualCode !== 'string') {
             throw new Error(`Actual code is not a string: ${inspect(actualCode)}`);
@@ -16,25 +11,15 @@ export function codeMatchers(chai: any, util: any) {
             throw new Error(`Expected code is not a string: ${inspect(expectedCode)}`);
         }
 
-        actualCode = normalizeCode(actualCode);
-        expectedCode = ts.transpileModule(expectedCode, { compilerOptions }).outputText;
-        expectedCode = normalizeCode(expectedCode);
+        actualCode = prettier.format(actualCode, { parser: 'typescript' });
+        expectedCode = prettier.format(expectedCode, { parser: 'typescript' });
 
         this.assert(
-            eql(actualCode, expectedCode),
+            actualCode === expectedCode,
             `Expected code to match`,
             `Expected code to not match`,
             expectedCode,
             actualCode
         );
     });
-}
-
-function normalizeCode(code: string): string {
-    return code
-        .replace(/\r?\n/g, '\n')
-        .split('\n')
-        .map(l => l.trim())
-        .join('\n')
-        .trim();
-}
+};
