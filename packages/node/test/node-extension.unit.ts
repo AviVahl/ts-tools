@@ -10,7 +10,9 @@ export function runCommand(command: string): { output: string; exitCode: number 
     return { output: output.join('\n'), exitCode: exitCode || 0 };
 }
 
-describe('using node -r @ts-tools/node/r [file]', () => {
+describe('using node -r @ts-tools/node/r [file]', function() {
+    this.timeout(5000);
+
     it('allows using imports (with default interop)', () => {
         const filePath = join(fixturesRoot, 'imports.ts');
 
