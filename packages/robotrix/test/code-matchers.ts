@@ -11,8 +11,8 @@ export const codeMatchers: Chai.ChaiPlugin = (chai, util) => {
             throw new Error(`Expected code is not a string: ${inspect(expectedCode)}`);
         }
 
-        actualCode = prettier.format(actualCode, { parser: 'typescript' });
-        expectedCode = prettier.format(expectedCode, { parser: 'typescript' });
+        actualCode = prettier.format(actualCode, { parser: 'typescript', endOfLine: 'lf' });
+        expectedCode = prettier.format(expectedCode, { parser: 'typescript', endOfLine: 'lf' });
 
         this.assert(
             actualCode === expectedCode,
