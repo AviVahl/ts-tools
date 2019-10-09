@@ -9,6 +9,7 @@
   },
   "scripts": {
     "clean": "rimraf ./cjs",
+    "prebuild": "yarn clean",
     "build": "tsc -p src"
   },
   "peerDependencies": {

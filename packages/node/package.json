@@ -6,8 +6,9 @@
   "types": "./cjs/index.d.ts",
   "scripts": {
     "clean": "rimraf ./cjs",
+    "prebuild": "yarn clean",
     "build": "tsc -p src",
-    "test": "mocha \"./test/**/*.unit.ts\" --timeout 10000"
+    "test": "mocha \"./test/**/*.unit.ts\""
   },
   "peerDependencies": {
     "typescript": ">=2.8.0"

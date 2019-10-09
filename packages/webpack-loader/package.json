@@ -6,6 +6,7 @@
   "types": "cjs/index.d.ts",
   "scripts": {
     "clean": "rimraf ./cjs",
+    "prebuild": "yarn clean",
     "build": "yarn build:cjs",
     "build:cjs": "tsc -p src",
     "test": "mocha \"test/**/*.unit.ts\""
