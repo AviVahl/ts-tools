@@ -7,7 +7,7 @@ This package installs a [require extension](https://nodejs.org/dist/latest-v12.x
 
 Features:
 - Fast! Uses `ts.transpileModule`. Leaves type checking to other flows.
-- Uses persistent disk caching (`node_modules/.cache/ts-<moodule>-<target>`). Second run will not re-transpile a file if not changed.
+- Uses persistent disk caching (`./node_modules/.cache/ts-<module>-<target>`). Second run will not re-transpile a file if not changed.
 - Built-in support for **source-maps**, powered by [source-map-support](https://github.com/evanw/node-source-map-support).
 - Node 8+ **friendly** default compiler options.
 
