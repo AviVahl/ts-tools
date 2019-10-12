@@ -6,7 +6,7 @@ import {
     readJsonConfigFile,
     parseJsonSourceFileConfigFileContent,
     sys,
-    Diagnostic
+    ParsedCommandLine
 } from 'typescript';
 
 const { readFile, newLine } = sys;
@@ -55,12 +55,7 @@ export function filterAffectsEmit(compilerOptions: CompilerOptions): CompilerOpt
     return filteredOptions;
 }
 
-export function loadConfigFile(
-    filePath: string
-): {
-    options: CompilerOptions;
-    errors: Diagnostic[];
-} {
+export function loadConfigFile(filePath: string): ParsedCommandLine {
     const jsonSourceFile = readJsonConfigFile(filePath, readFile);
     return parseJsonSourceFileConfigFileContent(jsonSourceFile, sys, dirname(filePath));
 }
