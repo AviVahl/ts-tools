@@ -15,7 +15,7 @@ jobs:
     - name: Use Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
-        version: ${{ matrix.node_version }}
+        node_version: ${{ matrix.node_version }}
     - run: npm i -g yarn
     - run: yarn
     - run: yarn test
