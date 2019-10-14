@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/node",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "TypeScript support for Node.js.",
   "main": "./cjs/index.js",
   "types": "./cjs/index.d.ts",
@@ -14,7 +14,7 @@
     "typescript": ">=2.8.0"
   },
   "dependencies": {
-    "@ts-tools/transpile": "^1.0.0",
+    "@ts-tools/transpile": "^2.0.0",
     "source-map-support": "^0.5.13"
   },
   "files": [
