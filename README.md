@@ -1,5 +1,5 @@
 # TypeScript Tools for Node.js
-[![Build Status](https://travis-ci.com/AviVahl/ts-tools.svg?branch=master)](https://travis-ci.com/AviVahl/ts-tools)
+[![Build Status](https://github.com/AviVahl/ts-tools/workflows/CI/badge.svg)](https://github.com/AviVahl/ts-tools/actions)
 
 Several packages to assist [TypeScript](https://www.typescriptlang.org/) developers working with [Node.js](https://nodejs.org/en/).
 
