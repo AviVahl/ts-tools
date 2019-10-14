@@ -11,7 +11,7 @@ import {
     ensureDirectorySync,
     filePathToCacheFileName,
     extractInlineSourceMap,
-    loadConfigFile,
+    readAndParseConfigFile,
     getCanonicalPath,
     getNewLine
 } from '@ts-tools/transpile';
@@ -114,7 +114,7 @@ export function createNodeExtension({
     const compilerOptions: ts.CompilerOptions = {};
 
     if (typeof configFilePath === 'string') {
-        const { options, errors } = loadConfigFile(configFilePath);
+        const { options, errors } = readAndParseConfigFile(configFilePath);
         if (errors.length) {
             throw new Error(ts.formatDiagnostics(errors, formatDiagnosticsHost));
         }

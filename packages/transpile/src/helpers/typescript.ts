@@ -55,7 +55,7 @@ export function filterAffectsEmit(compilerOptions: CompilerOptions): CompilerOpt
     return filteredOptions;
 }
 
-export function loadConfigFile(filePath: string): ParsedCommandLine {
+export function readAndParseConfigFile(filePath: string): ParsedCommandLine {
     const jsonSourceFile = readJsonConfigFile(filePath, readFile);
     return parseJsonSourceFileConfigFileContent(jsonSourceFile, sys, dirname(filePath));
 }

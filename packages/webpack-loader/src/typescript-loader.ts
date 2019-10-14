@@ -5,7 +5,7 @@ import webpack from 'webpack';
 import { getOptions, getRemainingRequest } from 'loader-utils';
 import {
     externalSourceMapPrefix,
-    loadConfigFile,
+    readAndParseConfigFile,
     getCanonicalPath,
     getNewLine,
     transpileCached,
@@ -22,7 +22,7 @@ const [cachedFindConfigFile] = createCachedFn(
     ts.findConfigFile,
     (searchPath, _, configName) => searchPath + delimiter + configName
 );
-const [cachedLoadConfigFile] = createCachedFn(loadConfigFile, identity);
+const [cachedReadAndParseConfigFile] = createCachedFn(readAndParseConfigFile, identity);
 const [cachedFindCacheDirectory] = createCachedFn(findCacheDirectory, identity);
 const ensuredDirectories = new Set<string>();
 
@@ -98,7 +98,7 @@ export const typescriptLoader: webpack.loader.Loader = function(source) {
     const compilerOptions: ts.CompilerOptions = {};
 
     if (typeof configFilePath === 'string') {
-        const { options, errors } = cachedLoadConfigFile(configFilePath);
+        const { options, errors } = cachedReadAndParseConfigFile(configFilePath);
         if (errors.length) {
             this.emitError(new Error(ts.formatDiagnostics(errors, formatDiagnosticsHost)));
         }
