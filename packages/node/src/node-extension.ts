@@ -194,7 +194,7 @@ export function createTransformerExtension(transform: TransformFn): NodeExtensio
 
 // for older TypeScript versions without es2019/2020
 const ES2019 = ts.ScriptTarget.ES2019 || ts.ScriptTarget.ES2018 || ts.ScriptTarget.ES2017;
-const ES2020 = ts.ScriptTarget.ES2019 || ES2019;
+const ES2020 = ts.ScriptTarget.ES2020 || ES2019;
 
 export function nodeVersionToScriptTarget(major: number): ts.ScriptTarget {
     if (major >= 12) {
