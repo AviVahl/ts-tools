@@ -3,3 +3,4 @@ esm
 umd
 dist
 /packages/fixtures
+node_modules
