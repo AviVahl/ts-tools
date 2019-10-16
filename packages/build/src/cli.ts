@@ -1,6 +1,7 @@
+import { dirname, resolve } from 'path';
+import { writeFileSync, statSync, mkdirSync } from 'fs';
+
 import ts from 'typescript';
-import path from 'path';
-import { writeFileSync, ensureDirectorySync } from 'proper-fs';
 import chalk from 'chalk';
 import program from 'commander';
 import { build, IBuildFormat } from './build';
@@ -28,8 +29,8 @@ if (args.length !== 1) {
 }
 
 const [srcDirName] = args;
-const srcDirectoryPath = path.resolve(srcDirName);
-const outputDirectoryPath = path.resolve(outDir);
+const srcDirectoryPath = resolve(srcDirName);
+const outputDirectoryPath = resolve(outDir);
 
 const formats: IBuildFormat[] = [];
 if (cjs) {
@@ -58,9 +59,9 @@ if (esm) {
 try {
     const targetFiles = build({ srcDirectoryPath, outputDirectoryPath, formats, configName });
     console.log(`Done transpiling. Writing ${targetFiles.length} files...`);
-    for (const { filePath, contents: content } of targetFiles) {
-        ensureDirectorySync(path.dirname(filePath));
-        writeFileSync(filePath, content);
+    for (const { name, text } of targetFiles) {
+        ensureDirectorySync(dirname(name));
+        writeFileSync(name, text);
     }
 } catch (e) {
     printErrorAndExit(e);
@@ -69,4 +70,26 @@ try {
 function printErrorAndExit(message: unknown) {
     console.error(message);
     process.exit(1);
+}
+
+function ensureDirectorySync(directoryPath: string): void {
+    try {
+        if (statSync(directoryPath).isDirectory()) {
+            return;
+        }
+    } catch {
+        /**/
+    }
+    try {
+        mkdirSync(directoryPath);
+    } catch (e) {
+        if (e.code !== 'EEXIST') {
+            const parentPath = dirname(directoryPath);
+            if (parentPath === directoryPath) {
+                throw e;
+            }
+            ensureDirectorySync(parentPath);
+            mkdirSync(directoryPath);
+        }
+    }
 }

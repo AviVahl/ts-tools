@@ -1,19 +1,9 @@
-import path from 'path';
+import { dirname, normalize, join, relative } from 'path';
 import chalk from 'chalk';
-import { createBaseHost, createLanguageServiceHost } from '@ts-tools/service';
 import ts from 'typescript';
+import { getCanonicalPath, getNewLine, readAndParseConfigFile } from '@ts-tools/transpile';
 
-export interface IOutputFile {
-    /**
-     * Expected absolute path of file
-     */
-    filePath: string;
-
-    /**
-     * Generated contents of file.
-     */
-    contents: string;
-}
+const { directoryExists, fileExists, getCurrentDirectory } = ts.sys;
 
 export interface IBuildFormat {
     /**
@@ -52,10 +42,7 @@ export interface IBuildOptions {
     configName?: string;
 }
 
-export function build({ formats, outputDirectoryPath, srcDirectoryPath, configName }: IBuildOptions): IOutputFile[] {
-    const baseHost = createBaseHost();
-    const { fileExists, directoryExists, readFile, getCanonicalFileName } = baseHost;
-
+export function build({ formats, outputDirectoryPath, srcDirectoryPath, configName }: IBuildOptions): ts.OutputFile[] {
     if (!directoryExists(srcDirectoryPath)) {
         throw chalk.red(`Cannot find directory ${srcDirectoryPath}`);
     }
@@ -66,29 +53,24 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
         throw chalk.red(`Cannot find a ${configName} file for ${srcDirectoryPath}`);
     }
 
-    // read and parse config
-    const jsonSourceFile = ts.readJsonConfigFile(tsConfigPath, readFile);
-
-    const { errors, fileNames, options: tsconfigOptions } = ts.parseJsonSourceFileConfigFileContent(
-        jsonSourceFile,
-        baseHost,
-        path.dirname(tsConfigPath)
-    );
-
-    const canonicalSrcPath = getCanonicalFileName(srcDirectoryPath);
-    const filesInSrcDirectory = fileNames
-        .map(filePath => ({ filePath, normalizedPath: path.normalize(filePath) }))
-        .filter(({ normalizedPath }) => getCanonicalFileName(normalizedPath).startsWith(canonicalSrcPath));
+    const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
+        getCurrentDirectory,
+        getCanonicalFileName: getCanonicalPath,
+        getNewLine: getNewLine
+    };
+    
+    const { errors, fileNames, options: tsconfigOptions } = readAndParseConfigFile(tsConfigPath);
 
     if (errors.length) {
-        throw ts.formatDiagnosticsWithColorAndContext(errors, baseHost);
+        throw ts.formatDiagnosticsWithColorAndContext(errors, formatDiagnosticsHost);
     }
 
-    const documentRegistry = ts.createDocumentRegistry(
-        baseHost.useCaseSensitiveFileNames,
-        baseHost.getCurrentDirectory()
-    );
-    const formatCompilers: Array<{ folderName: string; languageService: ts.LanguageService }> = [];
+    const canonicalSrcPath = getCanonicalPath(srcDirectoryPath);
+    const filesInSrcDirectory = fileNames
+        .map(filePath => ({ filePath, normalizedPath: normalize(filePath) }))
+        .filter(({ normalizedPath }) => getCanonicalPath(normalizedPath).startsWith(canonicalSrcPath));
+
+    const programs: Array<{ folderName: string; program: ts.Program }> = [];
 
     for (const { folderName, getCompilerOptions } of formats) {
         const compilerOptions: ts.CompilerOptions = {
@@ -98,64 +80,59 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
             out: undefined,
             noEmit: false
         };
-        const languageServiceHost = createLanguageServiceHost(baseHost, () => fileNames, () => compilerOptions);
-        const languageService = ts.createLanguageService(
-            {
-                ...languageServiceHost,
-                // no watch, so ensure language service doesn't sync
-                getProjectVersion: () => '0'
-            },
-            documentRegistry
-        );
-        formatCompilers.push({
+
+        programs.push({
             folderName,
-            languageService
+            program: ts.createProgram({
+                rootNames: fileNames,
+                options: compilerOptions
+            })
         });
     }
 
-    const syntacticDiagnostics: ts.Diagnostic[] = [];
-    const semanticDiagnostics: ts.Diagnostic[] = [];
-    const outputFiles: IOutputFile[] = [];
+    const outputFiles: ts.OutputFile[] = [];
 
-    for (const { folderName, languageService } of formatCompilers) {
-        const formatOutDir = path.join(outputDirectoryPath, folderName);
+    for (const { folderName, program } of programs) {
+        const optionsDiagnostics = program.getOptionsDiagnostics();
+        if (optionsDiagnostics.length) {
+            throw ts.formatDiagnosticsWithColorAndContext(optionsDiagnostics, formatDiagnosticsHost);
+        }
+        const globalDiagnostics = program.getGlobalDiagnostics();
+        if (globalDiagnostics.length) {
+            throw ts.formatDiagnosticsWithColorAndContext(globalDiagnostics, formatDiagnosticsHost);
+        }
+        const syntacticDiagnostics = program.getSyntacticDiagnostics();
+        if (syntacticDiagnostics.length) {
+            throw ts.formatDiagnosticsWithColorAndContext(syntacticDiagnostics, formatDiagnosticsHost);
+        }
+        const semanticDiagnostics = program.getSemanticDiagnostics();
+        if (semanticDiagnostics.length) {
+            throw ts.formatDiagnosticsWithColorAndContext(semanticDiagnostics, formatDiagnosticsHost);
+        }
+
+        const formatOutDir = join(outputDirectoryPath, folderName);
         for (const { filePath, normalizedPath } of filesInSrcDirectory) {
-            arrayAssign(syntacticDiagnostics, languageService.getSyntacticDiagnostics(filePath));
-            arrayAssign(semanticDiagnostics, languageService.getSemanticDiagnostics(filePath));
-
-            const { emitSkipped, outputFiles: compilationOutput } = languageService.getEmitOutput(filePath);
+            const { emitSkipped, outputFiles: compilationOutput } = getFileEmitOutput(program, filePath);
             if (!emitSkipped) {
-                for (const { name: outputFilePath, text } of compilationOutput) {
-                    const relativeToSrc = path.relative(srcDirectoryPath, outputFilePath);
-                    const targetFilePath = path.join(formatOutDir, relativeToSrc);
-                    const targetFileDirectoryPath = path.dirname(targetFilePath);
-                    const relativeRequestToSrc = path
-                        .relative(targetFileDirectoryPath, normalizedPath)
-                        .replace(/\\/g, '/');
+                for (const { name: outputFilePath, text, writeByteOrderMark } of compilationOutput) {
+                    const relativeToSrc = relative(srcDirectoryPath, outputFilePath);
+                    const targetFilePath = join(formatOutDir, relativeToSrc);
+                    const targetFileDirectoryPath = dirname(targetFilePath);
+                    const relativeRequestToSrc = relative(targetFileDirectoryPath, normalizedPath).replace(/\\/g, '/');
                     const contents = outputFilePath.endsWith('.map')
                         ? remapSourceMap(text, relativeRequestToSrc)
                         : text;
                     outputFiles.push({
-                        filePath: targetFilePath,
-                        contents
+                        name: targetFilePath,
+                        text: contents,
+                        writeByteOrderMark
                     });
                 }
             }
         }
-        if (syntacticDiagnostics.length) {
-            throw ts.formatDiagnosticsWithColorAndContext(syntacticDiagnostics, baseHost);
-        } else if (semanticDiagnostics.length) {
-            throw ts.formatDiagnosticsWithColorAndContext(semanticDiagnostics, baseHost);
-        }
     }
 
     return outputFiles;
-}
-
-function arrayAssign<T>(targetArr: T[], sourceArr: T[]): void {
-    for (const item of sourceArr) {
-        targetArr.push(item);
-    }
 }
 
 function remapSourceMap(originalSourceMap: string, mappedSrcRequest: string): string {
@@ -168,4 +145,14 @@ function remapSourceMap(originalSourceMap: string, mappedSrcRequest: string): st
     } catch {
         return originalSourceMap;
     }
+}
+
+function getFileEmitOutput(program: ts.Program, filePath: string): ts.EmitOutput {
+    const outputFiles: ts.OutputFile[] = [];
+    const sourcefile = program.getSourceFile(filePath);
+    const emitResult = program.emit(sourcefile, (name, text, writeByteOrderMark) =>
+        outputFiles.push({ name, text, writeByteOrderMark })
+    );
+
+    return { outputFiles: outputFiles, emitSkipped: emitResult.emitSkipped };
 }
