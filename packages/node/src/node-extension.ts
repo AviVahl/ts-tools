@@ -131,6 +131,7 @@ export function createNodeExtension({
     compilerOptions.inlineSourceMap = true;
     compilerOptions.sourceMap = compilerOptions.inlineSources = undefined;
     compilerOptions.mapRoot = compilerOptions.sourceRoot = undefined;
+    compilerOptions.outDir = compilerOptions.outFile = undefined;
 
     if (autoScriptTarget) {
         const [nodeMajor] = process.versions.node.split('.'); // '12.0.0' => '12'
