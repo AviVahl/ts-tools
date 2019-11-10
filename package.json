@@ -9,7 +9,8 @@
     "build": "lerna run build --stream",
     "lint": "eslint . --ext .js,.ts,.tsx -f codeframe",
     "pretest": "yarn build && yarn lint",
-    "test": "lerna run test --stream --parallel"
+    "test": "lerna run test --stream --parallel",
+    "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write"
   },
   "devDependencies": {
     "@types/chai": "^4.2.4",

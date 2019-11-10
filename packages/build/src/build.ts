@@ -58,7 +58,7 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
         getCanonicalFileName: getCanonicalPath,
         getNewLine: getNewLine
     };
-    
+
     const { errors, fileNames, options: tsconfigOptions } = readAndParseConfigFile(tsConfigPath);
 
     if (errors.length) {
