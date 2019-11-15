@@ -1,35 +1,42 @@
 # @ts-tools/webpack-loader
+
 [![npm version](https://img.shields.io/npm/v/@ts-tools/webpack-loader.svg)](https://www.npmjs.com/package/@ts-tools/webpack-loader)
 
 [TypeScript](https://www.typescriptlang.org/) loader for [webpack](https://webpack.js.org/).
 
 Features:
-- Fast! Uses `ts.transpileModule`. Leaves type checking to other flows.
-- Uses persistent disk caching (`node_modules/.cache/ts-<moodule>-<target>`). Second run will not re-transpile a file if not changed.
-- Loads configuration from the closest `tsconfig.json`.
-- Automated source map configuration based on current `devtool` configuration.
+
+-   Fast! Uses `ts.transpileModule`. Leaves type checking to other flows.
+-   Uses persistent disk caching (`node_modules/.cache/ts-<moodule>-<target>`). Second run will not re-transpile a file if not changed.
+-   Loads configuration from the closest `tsconfig.json`.
+-   Automated source map configuration based on current `devtool` configuration.
 
 ## Getting started
 
 Install the library as a dev dependency in an existing TypeScript project:
+
 ```
 yarn add @ts-tools/webpack-loader --dev
 ```
 
 And adjust your webpack configuration to include:
-```ts
-exports.module = {
-    rules: [
-        {
-            test: /\.tsx?$/,
-            loader: '@ts-tools/webpack-loader'
-        }
-    ]
-}
 
-exports.resolve = {
-    extensions: ['.ts', '.tsx', '.mjs', '.js', '.json']
-}
+```ts
+module.exports = {
+    // ...
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                loader: '@ts-tools/webpack-loader'
+            }
+        ]
+    },
+    resolve: {
+        extensions: ['.ts', '.tsx', '.mjs', '.js', '.json']
+    }
+    // ...
+};
 ```
 
 ## Options
@@ -80,28 +87,31 @@ interface ITypeScriptLoaderOptions {
 ```
 
 Options can be provided via the webpack configuration:
+
 ```ts
-exports.module = {
-    rules: [
-        {
-            test: /\.tsx?$/,
-            loader: '@ts-tools/webpack-loader',
-            options: {
-                colors: false,
-                warnOnly: true,
-                compilerOptions: {
-                    target: 'es5'
+module.exports = {
+    // ...
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                loader: '@ts-tools/webpack-loader',
+                options: {
+                    compilerOptions: {
+                        target: 'es5'
+                    }
                 }
             }
-        }
-    ]
-}
+        ]
+    }
+    // ...
+};
 ```
 
 ## Similar projects
 
-- [ts-loader](https://github.com/TypeStrong/ts-loader)
-- [awesome-typescript-loader](https://github.com/s-panferov/awesome-typescript-loader)
+-   [ts-loader](https://github.com/TypeStrong/ts-loader)
+-   [awesome-typescript-loader](https://github.com/s-panferov/awesome-typescript-loader)
 
 ## License
 
