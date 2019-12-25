@@ -27,10 +27,10 @@
     "react-icons": "^3.8.0",
     "react-redux": "^7.1.3",
     "react-router-dom": "^5.1.2",
-    "redux": "^4.0.4",
+    "redux": "^4.0.5",
     "rxjs": "^6.5.3",
     "sanitize.css": "^11.0.0",
-    "sinon": "^7.5.0",
+    "sinon": "^8.0.1",
     "styled-components": "^4.4.1",
     "typescript": "~3.7.4"
   }
