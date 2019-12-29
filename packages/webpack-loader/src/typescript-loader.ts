@@ -71,6 +71,14 @@ export interface ITypeScriptLoaderOptions {
      * @default true
      */
     configLookup?: boolean;
+
+
+    /**
+     * Use these transformers when transpiling a module
+     * 
+     * @default {}
+     */
+    transformers?: ts.CustomTransformers
 }
 
 export const typescriptLoader: webpack.loader.Loader = function(source) {
@@ -81,8 +89,9 @@ export const typescriptLoader: webpack.loader.Loader = function(source) {
         configLookup = true,
         configFilePath = configLookup ? cachedFindConfigFile(rootContext, fileExists, configFileName) : undefined,
         compilerOptions: overrideOptions,
-        cache = true,
-        cacheDirectoryPath = cache ? cachedFindCacheDirectory(rootContext) : undefined
+        cache = true,        
+        cacheDirectoryPath = cache ? cachedFindCacheDirectory(rootContext) : undefined,
+        transformers
     }: ITypeScriptLoaderOptions = {
         ...getOptions(this) // webpack's recommended method to parse loader options
     };
@@ -149,6 +158,7 @@ export const typescriptLoader: webpack.loader.Loader = function(source) {
     const transpileOptions = {
         fileName: resourcePath,
         compilerOptions,
+        transformers,
         reportDiagnostics: true
     };
 

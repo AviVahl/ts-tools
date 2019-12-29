@@ -2,6 +2,7 @@ import { join } from 'path';
 import { expect } from 'chai';
 import { fixturesRoot } from '@ts-tools/fixtures';
 import { bundleWithLoader } from './bundle-with-loader';
+import ts from 'typescript';
 
 describe('webpack loader', () => {
     describe('when tsconfig.json is found', () => {
@@ -34,6 +35,32 @@ describe('webpack loader', () => {
 
             expect(stats.hasErrors(), statsText).to.equal(false);
             expect(stats.hasWarnings(), statsText).to.equal(false);
+        });
+
+        it(`allows ts.transformers to be used`, async () => {
+            let transpileCtx!: ts.TransformationContext;
+            const entry = join(fixturesRoot, 'transformed.ts');
+            const { stats, statsText } = await bundleWithLoader({
+                entry,
+                options: {
+                    compilerOptions: {
+                        jsx: 'preserve'
+                    },
+                    cache: false,
+                    transformers: {
+                        before: [
+                            ctx => node => {
+                                transpileCtx = ctx;
+                                return node;
+                            }
+                        ]
+                    }
+                }
+            });
+
+            expect(stats.hasErrors(), statsText).to.equal(false);
+            expect(stats.hasWarnings(), statsText).to.equal(false);
+            expect(transpileCtx?.getCompilerOptions()).not.to.be.undefined;
         });
     });
 
