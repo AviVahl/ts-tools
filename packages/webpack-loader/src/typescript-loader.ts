@@ -78,7 +78,7 @@ export interface ITypeScriptLoaderOptions {
      * 
      * @default {}
      */
-    transformers?: ts.CustomTransformers
+    transformers?: ts.CustomTransformers;
 }
 
 export const typescriptLoader: webpack.loader.Loader = function(source) {
