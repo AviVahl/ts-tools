@@ -1,5 +1,5 @@
-import webpack from 'webpack';
 import { join, dirname } from 'path';
+import webpack from 'webpack';
 import { ITypeScriptLoaderOptions } from '../src';
 
 export interface IBundleWithLoaderOptions {

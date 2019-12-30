@@ -39,7 +39,7 @@ export interface ITypeScriptLoaderOptions {
     /**
      * Turn persistent caching on/off.
      *
-     *  @default true unless `transformers` is set
+     *  @default true unless `transformers` is provided.
      */
     cache?: boolean;
 
@@ -71,10 +71,9 @@ export interface ITypeScriptLoaderOptions {
      */
     configLookup?: boolean;
 
-
     /**
-     * Use these transformers when transpiling a module
-     * 
+     * Custom transformers to use when transpiling a module.
+     *
      * @default undefined
      */
     transformers?: ts.CustomTransformers;
@@ -83,18 +82,18 @@ export interface ITypeScriptLoaderOptions {
 export const typescriptLoader: webpack.loader.Loader = function(source) {
     const fileContents = source.toString();
     const { resourcePath, rootContext, sourceMap } = this;
-    const options = {
+    const options: ITypeScriptLoaderOptions = {
         ...getOptions(this) // webpack's recommended method to parse loader options
     };
     const {
         configFileName,
         configLookup = true,
         configFilePath = configLookup ? cachedFindConfigFile(rootContext, fileExists, configFileName) : undefined,
-        compilerOptions: overrideOptions,
-        cache = !options.transformers,        
+        transformers,
+        cache = !transformers,
         cacheDirectoryPath = cache ? cachedFindCacheDirectory(rootContext) : undefined,
-        transformers
-    }: ITypeScriptLoaderOptions = options;
+        compilerOptions: overrideOptions
+    } = options;
 
     const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
         getCurrentDirectory: () => rootContext,

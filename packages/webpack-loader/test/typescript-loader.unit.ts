@@ -1,5 +1,5 @@
-import ts from 'typescript';
 import { join } from 'path';
+import ts from 'typescript';
 import { expect } from 'chai';
 import { fixturesRoot } from '@ts-tools/fixtures';
 import { bundleWithLoader } from './bundle-with-loader';
@@ -38,7 +38,7 @@ describe('webpack loader', () => {
         });
 
         it(`allows specifying transformers`, async () => {
-            let transpileCtx: ts.TransformationContext|undefined;
+            let transpileCtx: ts.TransformationContext | undefined;
             const entry = join(fixturesRoot, 'transformed.ts');
             const { stats, statsText } = await bundleWithLoader({
                 entry,
@@ -57,7 +57,7 @@ describe('webpack loader', () => {
 
             expect(stats.hasErrors(), statsText).to.equal(false);
             expect(stats.hasWarnings(), statsText).to.equal(false);
-            expect(transpileCtx?.getCompilerOptions()).not.to.equal(undefined);
+            expect(transpileCtx?.getCompilerOptions()).to.not.equal(undefined);
         });
     });
 
