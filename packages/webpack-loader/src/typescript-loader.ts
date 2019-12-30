@@ -1,5 +1,4 @@
 import { delimiter, join } from 'path';
-
 import ts from 'typescript';
 import webpack from 'webpack';
 import { getOptions, getRemainingRequest } from 'loader-utils';
@@ -40,7 +39,7 @@ export interface ITypeScriptLoaderOptions {
     /**
      * Turn persistent caching on/off.
      *
-     *  @default true
+     *  @default true unless `transformers` is set
      */
     cache?: boolean;
 
@@ -71,21 +70,31 @@ export interface ITypeScriptLoaderOptions {
      * @default true
      */
     configLookup?: boolean;
+
+
+    /**
+     * Use these transformers when transpiling a module
+     * 
+     * @default undefined
+     */
+    transformers?: ts.CustomTransformers;
 }
 
 export const typescriptLoader: webpack.loader.Loader = function(source) {
     const fileContents = source.toString();
     const { resourcePath, rootContext, sourceMap } = this;
+    const options = {
+        ...getOptions(this) // webpack's recommended method to parse loader options
+    };
     const {
         configFileName,
         configLookup = true,
         configFilePath = configLookup ? cachedFindConfigFile(rootContext, fileExists, configFileName) : undefined,
         compilerOptions: overrideOptions,
-        cache = true,
-        cacheDirectoryPath = cache ? cachedFindCacheDirectory(rootContext) : undefined
-    }: ITypeScriptLoaderOptions = {
-        ...getOptions(this) // webpack's recommended method to parse loader options
-    };
+        cache = !options.transformers,        
+        cacheDirectoryPath = cache ? cachedFindCacheDirectory(rootContext) : undefined,
+        transformers
+    }: ITypeScriptLoaderOptions = options;
 
     const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
         getCurrentDirectory: () => rootContext,
@@ -149,6 +158,7 @@ export const typescriptLoader: webpack.loader.Loader = function(source) {
     const transpileOptions = {
         fileName: resourcePath,
         compilerOptions,
+        transformers,
         reportDiagnostics: true
     };
 
