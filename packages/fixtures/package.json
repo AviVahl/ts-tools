@@ -16,7 +16,7 @@
     "lit-html": "^1.1.2",
     "lodash": "^4.17.15",
     "marked": "^0.8.0",
-    "mathjs": "^6.2.5",
+    "mathjs": "^6.3.0",
     "mobx": "^5.15.1",
     "mobx-react": "^6.1.4",
     "moment": "^2.24.0",
@@ -30,7 +30,7 @@
     "redux": "^4.0.5",
     "rxjs": "^6.5.4",
     "sanitize.css": "^11.0.0",
-    "sinon": "^8.0.1",
+    "sinon": "^8.0.2",
     "styled-components": "^4.4.1",
     "typescript": "~3.7.4"
   }
