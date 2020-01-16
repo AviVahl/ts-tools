@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .js,.ts,.tsx -f codeframe",
     "pretest": "yarn build && yarn lint",
     "test": "lerna run test --stream --parallel",
-    "prettify": "npx prettier \"packages/**/*.{js,ts,tsx}\" --write"
+    "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write"
   },
   "devDependencies": {
     "@types/chai": "^4.2.7",
