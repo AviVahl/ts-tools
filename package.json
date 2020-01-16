@@ -29,10 +29,11 @@
     "eslint-config-prettier": "^6.9.0",
     "lerna": "^3.20.2",
     "mocha": "^7.0.0",
+    "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "rimraf": "^3.0.0",
-    "typescript": "~3.7.4",
+    "typescript": "~3.7.5",
     "webpack": "^4.41.5"
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
