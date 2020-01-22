@@ -193,15 +193,10 @@ export function createTransformerExtension(transform: TransformFn): NodeExtensio
     };
 }
 
-// for older TypeScript versions without es2019/2020
-const ES2019 = ts.ScriptTarget.ES2019 || ts.ScriptTarget.ES2018 || ts.ScriptTarget.ES2017;
-const ES2020 = ts.ScriptTarget.ES2020 || ES2019;
-
 export function nodeVersionToScriptTarget(major: number): ts.ScriptTarget {
-    if (major >= 12) {
-        return ES2020;
-    } else if (major >= 10) {
-        return ES2019;
+    if (major >= 10) {
+        // for older TypeScript versions without es2019
+        return ts.ScriptTarget.ES2019 || ts.ScriptTarget.ES2018;
     } else {
         return ts.ScriptTarget.ES2017;
     }
