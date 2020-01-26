@@ -17,7 +17,7 @@
     "lodash": "^4.17.15",
     "marked": "^0.8.0",
     "mathjs": "^6.5.0",
-    "mobx": "^5.15.2",
+    "mobx": "^5.15.3",
     "mobx-react": "^6.1.5",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
