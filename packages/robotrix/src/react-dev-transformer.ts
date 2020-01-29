@@ -49,8 +49,10 @@ export function reactDevTransformer(context: ts.TransformationContext): ts.Trans
 
             if (!userDefinedSource) {
                 shouldAddFileNameConst = true;
-                const { line } = ts.getLineAndCharacterOfPosition(sourceFile, node.parent.pos);
-                newAttributes.push(createSourceAttribute(createLocationObject(jsxFileNameIdentifier, line)));
+                const pos = node.parent.pos;
+                const end = node.parent.end;
+                const { line } = ts.getLineAndCharacterOfPosition(sourceFile, pos);
+                newAttributes.push(createSourceAttribute(createLocationObject(jsxFileNameIdentifier, line, pos, end)));
             }
 
             if (newAttributes.length) {
@@ -93,13 +95,15 @@ function createSourceAttribute(locationObj: ts.ObjectLiteralExpression): ts.JsxA
 }
 
 // { fileName: [path-to-file], lineNumber: [element-line-number] }
-function createLocationObject(jsxFileNameIdentifier: ts.Identifier, line: number) {
+function createLocationObject(jsxFileNameIdentifier: ts.Identifier, line: number, pos: number, end: number) {
     return ts.createObjectLiteral([
         ts.createPropertyAssignment(
             'fileName',
             jsxFileNameIdentifier // use the file-wide identifier for fileName value
         ),
-        ts.createPropertyAssignment('lineNumber', ts.createNumericLiteral(String(line + 1)))
+        ts.createPropertyAssignment('lineNumber', ts.createNumericLiteral(String(line + 1))),
+        ts.createPropertyAssignment('pos', ts.createNumericLiteral(String(pos))),
+        ts.createPropertyAssignment('end', ts.createNumericLiteral(String(end)))
     ]);
 }
 
