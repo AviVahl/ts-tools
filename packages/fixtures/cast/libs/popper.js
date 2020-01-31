@@ -1,3 +1,3 @@
-import popper from 'popper.js';
+import { createPopper } from '@popperjs/core';
 
-document.body.innerHTML = `typeof popper === ${typeof popper}`;
+document.body.innerHTML = `typeof createPopper === ${typeof createPopper}`;
