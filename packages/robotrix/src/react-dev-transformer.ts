@@ -49,8 +49,9 @@ export function reactDevTransformer(context: ts.TransformationContext): ts.Trans
 
             if (!userDefinedSource) {
                 shouldAddFileNameConst = true;
-                const pos = node.parent.pos;
-                const end = node.parent.end;
+                const parentJsx = ts.isJsxSelfClosingElement(node.parent) ? node.parent : node.parent.parent;
+                const pos = parentJsx.pos;
+                const end = parentJsx.end;
                 const { line } = ts.getLineAndCharacterOfPosition(sourceFile, pos);
                 newAttributes.push(createSourceAttribute(createLocationObject(jsxFileNameIdentifier, line, pos, end)));
             }

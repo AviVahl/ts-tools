@@ -19,7 +19,7 @@ describe('ReactDevTransformer', () => {
 
         expect(outputText).to.matchCode(`
             ${jsxFileNameDef}
-            (<div __self={this} __source={{ fileName: __jsxFileName, lineNumber: 2, pos: 14, end: 19 }}>
+            (<div __self={this} __source={{ fileName: __jsxFileName, lineNumber: 2, pos: 14, end: 63 }}>
                 <span __self={this} __source={{ fileName: __jsxFileName, lineNumber: 3, pos: 36, end: 44 }} />
             </div>)
         `);
