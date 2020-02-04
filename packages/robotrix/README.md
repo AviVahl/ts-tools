@@ -31,7 +31,7 @@ Adds meta-data which is used by `React` for development error messages.
 
 It adds the following attributes to all JSX elements:
 - `__self={this}`
-- `__source={{ fileName: __jsxFileName, lineNumber: [jsx line number] }}`
+- `__source={{ fileName: __jsxFileName, lineNumber: [jsx line number], pos: [jsx node position], end: [jsx node end] }}`
 
 if `__source` was added, the following declaration is prepended to source file: `const __jsxFileName = [absolute file path]`
 
