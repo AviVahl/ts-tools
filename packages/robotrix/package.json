@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/robotrix",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Useful TypeScript transpilation transformers.",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
