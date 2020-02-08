@@ -11,7 +11,7 @@ jobs:
         node_version: [13, 12, 10, 8]
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
       with:
@@ -19,5 +19,3 @@ jobs:
     - run: npm i -g yarn@1
     - run: yarn
     - run: yarn test
-      env:
-        CI: true
