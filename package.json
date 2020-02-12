@@ -13,7 +13,7 @@
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.8",
+    "@types/chai": "^4.2.9",
     "@types/loader-utils": "^1.1.3",
     "@types/mocha": "^7.0.1",
     "@types/node": "8",
@@ -21,9 +21,9 @@
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
     "@types/source-map-support": "^0.5.1",
-    "@types/webpack": "^4.41.5",
-    "@typescript-eslint/eslint-plugin": "^2.19.0",
-    "@typescript-eslint/parser": "^2.19.0",
+    "@types/webpack": "^4.41.6",
+    "@typescript-eslint/eslint-plugin": "^2.19.2",
+    "@typescript-eslint/parser": "^2.19.2",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
@@ -32,9 +32,9 @@
     "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "rimraf": "^3.0.1",
+    "rimraf": "^3.0.2",
     "typescript": "~3.7.5",
-    "webpack": "^4.41.5"
+    "webpack": "^4.41.6"
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
