@@ -33,6 +33,6 @@
     "sanitize.css": "^11.0.0",
     "sinon": "^9.0.0",
     "styled-components": "^5.0.1",
-    "typescript": "~3.7.5"
+    "typescript": "~3.8.2"
   }
 }

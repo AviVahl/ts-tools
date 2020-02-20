@@ -52,7 +52,8 @@ export function remapSourceFileImports(
                     node.decorators,
                     node.modifiers,
                     node.exportClause,
-                    ts.createLiteral(remappedTarget)
+                    ts.createLiteral(remappedTarget),
+                    node.isTypeOnly
                 );
             }
         }
