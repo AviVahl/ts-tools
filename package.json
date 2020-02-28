@@ -33,7 +33,7 @@
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "rimraf": "^3.0.2",
-    "typescript": "~3.8.2",
+    "typescript": "~3.8.3",
     "webpack": "^4.41.6"
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
