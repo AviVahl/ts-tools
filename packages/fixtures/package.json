@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@babel/parser": "^7.9.2",
+    "@babel/parser": "^7.9.4",
     "@popperjs/core": "^2.1.1",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
@@ -16,7 +16,7 @@
     "jquery": "^3.4.1",
     "lit-html": "^1.2.1",
     "lodash": "^4.17.15",
-    "marked": "^0.8.1",
+    "marked": "^0.8.2",
     "mathjs": "^6.6.1",
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.8",
