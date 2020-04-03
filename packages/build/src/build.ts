@@ -56,7 +56,7 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
     const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
         getCurrentDirectory,
         getCanonicalFileName: getCanonicalPath,
-        getNewLine: getNewLine
+        getNewLine: getNewLine,
     };
 
     const { errors, fileNames, options: tsconfigOptions } = readAndParseConfigFile(tsConfigPath);
@@ -67,7 +67,7 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
 
     const canonicalSrcPath = getCanonicalPath(srcDirectoryPath);
     const filesInSrcDirectory = fileNames
-        .map(filePath => ({ filePath, normalizedPath: normalize(filePath) }))
+        .map((filePath) => ({ filePath, normalizedPath: normalize(filePath) }))
         .filter(({ normalizedPath }) => getCanonicalPath(normalizedPath).startsWith(canonicalSrcPath));
 
     const programs: Array<{ folderName: string; program: ts.Program }> = [];
@@ -78,15 +78,15 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
             outDir: undefined,
             outFile: undefined,
             out: undefined,
-            noEmit: false
+            noEmit: false,
         };
 
         programs.push({
             folderName,
             program: ts.createProgram({
                 rootNames: fileNames,
-                options: compilerOptions
-            })
+                options: compilerOptions,
+            }),
         });
     }
 
@@ -125,7 +125,7 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
                     outputFiles.push({
                         name: targetFilePath,
                         text: contents,
-                        writeByteOrderMark
+                        writeByteOrderMark,
                     });
                 }
             }

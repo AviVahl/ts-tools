@@ -31,7 +31,7 @@ export interface ICjsToEsmTransformerOptions {
 export function createCjsToEsmTransformer(
     options: ICjsToEsmTransformerOptions = {}
 ): ts.TransformerFactory<ts.SourceFile> {
-    return context => sourceFile => transformSourceFile(sourceFile, context, options);
+    return (context) => (sourceFile) => transformSourceFile(sourceFile, context, options);
 }
 
 function transformSourceFile(
@@ -39,7 +39,7 @@ function transformSourceFile(
     context: ts.TransformationContext,
     { shouldTransform = () => true }: ICjsToEsmTransformerOptions
 ): ts.SourceFile {
-    if (sourceFile.statements.some(node => ts.isImportDeclaration(node) || ts.isExportDeclaration(node))) {
+    if (sourceFile.statements.some((node) => ts.isImportDeclaration(node) || ts.isExportDeclaration(node))) {
         // file has esm, so avoid cjs conversion.
         return sourceFile;
     }
@@ -54,7 +54,7 @@ function transformSourceFile(
             ...newImports,
             createCjsModuleDefinition(),
             ...sourceFile.statements,
-            createCjsExportDefault()
+            createCjsExportDefault(),
         ];
 
         sourceFile = ts.updateSourceFileNode(sourceFile, newStatements);
@@ -127,7 +127,7 @@ function createCjsModuleDefinition() {
                     'module',
                     undefined /* type */,
                     ts.createObjectLiteral([ts.createShorthandPropertyAssignment('exports')])
-                )
+                ),
             ],
             ts.NodeFlags.Let
         )

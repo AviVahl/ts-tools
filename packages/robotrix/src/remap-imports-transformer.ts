@@ -8,9 +8,9 @@ export interface IRemapImportsTransformerOptions {
  * Remaps esnext and commonjs imports.
  */
 export function createRemapImportsTransformer({
-    remapTarget
+    remapTarget,
 }: IRemapImportsTransformerOptions): ts.TransformerFactory<ts.SourceFile> {
-    return context => sourceFile => remapSourceFileImports(sourceFile, context, remapTarget);
+    return (context) => (sourceFile) => remapSourceFileImports(sourceFile, context, remapTarget);
 }
 
 export function remapSourceFileImports(

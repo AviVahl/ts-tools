@@ -28,9 +28,9 @@ describe('webpack loader', () => {
                 entry,
                 options: {
                     compilerOptions: {
-                        jsx: 'react'
-                    }
-                }
+                        jsx: 'react',
+                    },
+                },
             });
 
             expect(stats.hasErrors(), statsText).to.equal(false);
@@ -46,13 +46,13 @@ describe('webpack loader', () => {
                     cache: false,
                     transformers: {
                         before: [
-                            ctx => node => {
+                            (ctx) => (node) => {
                                 transpileCtx = ctx;
                                 return node;
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             });
 
             expect(stats.hasErrors(), statsText).to.equal(false);
@@ -67,8 +67,8 @@ describe('webpack loader', () => {
             const { stats, statsText } = await bundleWithLoader({
                 entry,
                 options: {
-                    configFileName: 'tsconfig.non-existing.json'
-                }
+                    configFileName: 'tsconfig.non-existing.json',
+                },
             });
 
             expect(stats.hasErrors(), statsText).to.equal(false);
@@ -80,8 +80,8 @@ describe('webpack loader', () => {
             const { stats, statsText } = await bundleWithLoader({
                 entry,
                 options: {
-                    configFileName: 'tsconfig.non-existing.json'
-                }
+                    configFileName: 'tsconfig.non-existing.json',
+                },
             });
 
             expect(stats.hasErrors(), statsText).to.equal(false);
@@ -94,7 +94,7 @@ describe('webpack loader', () => {
             const entry = join(fixturesRoot, 'react.tsx');
             const { stats, statsText } = await bundleWithLoader({
                 entry,
-                options: { configFileName: 'tsconfig.tsc-init.json' }
+                options: { configFileName: 'tsconfig.tsc-init.json' },
             });
 
             expect(stats.hasErrors(), statsText).to.equal(true);

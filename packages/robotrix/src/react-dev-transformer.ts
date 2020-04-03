@@ -15,7 +15,7 @@ const JSX_FILENAME = '__jsxFileName';
  *   const __jsxFileName = [absolute file path]
  */
 export function reactDevTransformer(context: ts.TransformationContext): ts.Transformer<ts.SourceFile> {
-    return sourceFile => {
+    return (sourceFile) => {
         const { fileName } = sourceFile; // absolute file path
 
         // we want to add the __jsxFileName const only if it is used in any added attribute
@@ -104,7 +104,7 @@ function createLocationObject(jsxFileNameIdentifier: ts.Identifier, line: number
         ),
         ts.createPropertyAssignment('lineNumber', ts.createNumericLiteral(String(line + 1))),
         ts.createPropertyAssignment('pos', ts.createNumericLiteral(String(pos))),
-        ts.createPropertyAssignment('end', ts.createNumericLiteral(String(end)))
+        ts.createPropertyAssignment('end', ts.createNumericLiteral(String(end))),
     ]);
 }
 
@@ -115,7 +115,7 @@ function addFileNameConst(
     fileName: string
 ): ts.SourceFile {
     const variableDecls = [
-        ts.createVariableDeclaration(jsxFileNameIdentifier, undefined /* type */, ts.createStringLiteral(fileName))
+        ts.createVariableDeclaration(jsxFileNameIdentifier, undefined /* type */, ts.createStringLiteral(fileName)),
     ];
 
     return insertStatementAfterImports(
@@ -131,7 +131,7 @@ function addFileNameConst(
 function insertStatementAfterImports(sourceFile: ts.SourceFile, statement: ts.Statement): ts.SourceFile {
     const { statements } = sourceFile;
 
-    const nonImportIdx = statements.findIndex(s => !ts.isImportDeclaration(s));
+    const nonImportIdx = statements.findIndex((s) => !ts.isImportDeclaration(s));
 
     const newStatements =
         nonImportIdx === -1

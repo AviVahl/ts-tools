@@ -2,7 +2,9 @@ import { sys } from 'typescript';
 import { existsSync, mkdirSync, statSync } from 'fs';
 import { dirname, join, resolve } from 'path';
 
-export const getCanonicalPath: (path: string) => string = sys.useCaseSensitiveFileNames ? v => v : v => v.toLowerCase();
+export const getCanonicalPath: (path: string) => string = sys.useCaseSensitiveFileNames
+    ? (v) => v
+    : (v) => v.toLowerCase();
 
 export function ensureDirectorySync(directoryPath: string): void {
     if (existsSync(directoryPath)) {

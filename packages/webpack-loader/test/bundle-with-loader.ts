@@ -14,7 +14,7 @@ const loaderPath = require.resolve('../src/index.ts');
 export async function bundleWithLoader({
     entry,
     options,
-    context = dirname(entry)
+    context = dirname(entry),
 }: IBundleWithLoaderOptions): Promise<{ stats: webpack.Stats; statsText: string }> {
     const compiler = webpack({
         entry,
@@ -26,10 +26,10 @@ export async function bundleWithLoader({
                 {
                     test: /\.tsx?$/,
                     loader: loaderPath,
-                    options
-                }
-            ]
-        }
+                    options,
+                },
+            ],
+        },
     });
 
     // so test output isn't saved on local hard drive
@@ -58,5 +58,5 @@ const noopOutputFileSystem: webpack.OutputFileSystem = {
     },
     writeFile(_path, _data, callback) {
         callback(null);
-    }
+    },
 };

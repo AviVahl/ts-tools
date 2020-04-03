@@ -9,7 +9,7 @@ import { remapSourceFileImports } from './remap-imports-transformer';
  *
  */
 export function resolvedModulesTransformer(context: ts.TransformationContext): ts.Transformer<ts.SourceFile> {
-    return sourceFile =>
+    return (sourceFile) =>
         sourceFile.resolvedModules
             ? remapSourceFileImports(sourceFile, context, remapImportsToResolvedModules)
             : sourceFile;

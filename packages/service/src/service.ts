@@ -35,7 +35,7 @@ export class TypeScriptService {
             getBaseHost = createBaseHost,
             configFileName,
             typeCheck = true,
-            configLookup = true
+            configLookup = true,
         } = transpileOptions;
 
         // search for an already-loaded config that targets `filePath`
@@ -85,7 +85,7 @@ export class TypeScriptService {
                 baseHost,
                 diagnostics: errors,
                 filePath,
-                outputText: ''
+                outputText: '',
             };
         }
 
@@ -147,12 +147,12 @@ export class TypeScriptService {
                 baseHost,
                 compilerOptions: options,
                 rootFileNames: fileNames,
-                normalizedFileNames
+                normalizedFileNames,
             };
             this.parsedConfigs.set(configFilePath, parsedConfig);
             return {
                 errors,
-                config: parsedConfig
+                config: parsedConfig,
             };
         }
     }
@@ -228,7 +228,7 @@ export class TypeScriptService {
                 filePath,
                 diagnostics: [this.createErrorDiagnostic('Emit was skipped')],
                 outputText: '',
-                baseHost
+                baseHost,
             };
         }
 
@@ -239,11 +239,11 @@ export class TypeScriptService {
                 filePath,
                 diagnostics: [this.createErrorDiagnostic('No js output file was found')],
                 outputText: '',
-                baseHost
+                baseHost,
             };
         }
 
-        const [sourceMapOutputFile] = outputFiles.filter(outputFile => outputFile.name.endsWith('.js.map'));
+        const [sourceMapOutputFile] = outputFiles.filter((outputFile) => outputFile.name.endsWith('.js.map'));
 
         const sourceMapText = sourceMapOutputFile && sourceMapOutputFile.text;
 
@@ -268,7 +268,7 @@ export class TypeScriptService {
             outputText: jsOutputFile.text,
             sourceMapText,
             baseHost,
-            resolvedModules: sourceFile && sourceFile.resolvedModules
+            resolvedModules: sourceFile && sourceFile.resolvedModules,
         };
     }
 
@@ -284,7 +284,7 @@ export class TypeScriptService {
                 filePath,
                 diagnostics: [this.createErrorDiagnostic(`Unable to read ${filePath}`)],
                 outputText: '',
-                baseHost
+                baseHost,
             };
         }
         const transformers = getCustomTransformers && getCustomTransformers(baseHost, tsconfigOptions);
@@ -293,7 +293,7 @@ export class TypeScriptService {
         const { outputText, diagnostics, sourceMapText } = ts.transpileModule(tsCode, {
             compilerOptions,
             transformers,
-            fileName: filePath
+            fileName: filePath,
         });
 
         return {
@@ -301,7 +301,7 @@ export class TypeScriptService {
             outputText,
             sourceMapText,
             diagnostics,
-            baseHost
+            baseHost,
         };
     }
 
@@ -323,7 +323,7 @@ export class TypeScriptService {
             code: ts.DiagnosticCategory.Error,
             file: undefined,
             start: 0,
-            length: undefined
+            length: undefined,
         };
     }
 }

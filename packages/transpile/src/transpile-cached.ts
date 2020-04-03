@@ -37,7 +37,7 @@ export function transpileCached(options: ITranspileCachedOptions): ts.TranspileO
         tsVersion,
         outputText: transpiledOutput.outputText,
         sourceMapText: transpiledOutput.sourceMapText,
-        ...filterAffectsEmit(compilerOptions)
+        ...filterAffectsEmit(compilerOptions),
     });
 
     return transpiledOutput;

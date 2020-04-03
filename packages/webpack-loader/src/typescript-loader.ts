@@ -11,7 +11,7 @@ import {
     findCacheDirectory,
     ensureDirectorySync,
     compilerOptionsToCacheName,
-    createCachedFn
+    createCachedFn,
 } from '@ts-tools/transpile';
 
 const { fileExists } = ts.sys;
@@ -79,11 +79,11 @@ export interface ITypeScriptLoaderOptions {
     transformers?: ts.CustomTransformers;
 }
 
-export const typescriptLoader: webpack.loader.Loader = function(source) {
+export const typescriptLoader: webpack.loader.Loader = function (source) {
     const fileContents = source.toString();
     const { resourcePath, rootContext, sourceMap } = this;
     const options: ITypeScriptLoaderOptions = {
-        ...getOptions(this) // webpack's recommended method to parse loader options
+        ...getOptions(this), // webpack's recommended method to parse loader options
     };
     const {
         configFileName,
@@ -92,13 +92,13 @@ export const typescriptLoader: webpack.loader.Loader = function(source) {
         transformers,
         cache = !transformers,
         cacheDirectoryPath = cache ? cachedFindCacheDirectory(rootContext) : undefined,
-        compilerOptions: overrideOptions
+        compilerOptions: overrideOptions,
     } = options;
 
     const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
         getCurrentDirectory: () => rootContext,
         getCanonicalFileName: getCanonicalPath,
-        getNewLine
+        getNewLine,
     };
 
     // compiler options
@@ -158,7 +158,7 @@ export const typescriptLoader: webpack.loader.Loader = function(source) {
         fileName: resourcePath,
         compilerOptions,
         transformers,
-        reportDiagnostics: true
+        reportDiagnostics: true,
     };
 
     // transpile
@@ -166,7 +166,7 @@ export const typescriptLoader: webpack.loader.Loader = function(source) {
         ? transpileCached({
               ...transpileOptions,
               cacheDirectoryPath: optionsScopedCachePath,
-              fileContents
+              fileContents,
           })
         : ts.transpileModule(fileContents, transpileOptions);
 

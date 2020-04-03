@@ -9,8 +9,8 @@ const { hasOwnProperty } = Object.prototype;
 export function createNodeEnvTransformer(env: {
     [key: string]: string | undefined;
 }): ts.TransformerFactory<ts.SourceFile> {
-    return context => {
-        return sourceFile => ts.visitEachChild(sourceFile, visitNodeEnv, context);
+    return (context) => {
+        return (sourceFile) => ts.visitEachChild(sourceFile, visitNodeEnv, context);
 
         function visitNodeEnv(node: ts.Node): ts.Node | ts.Node[] {
             if (

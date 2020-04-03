@@ -31,7 +31,7 @@ export function createBaseHost(): IBaseHost {
         dirname: ts.getDirectoryPath,
         normalize: sys.resolvePath,
         getScriptVersion: defaultGetScriptVersion,
-        getScriptSnapshot: defaultGetScriptSnapshot
+        getScriptSnapshot: defaultGetScriptSnapshot,
     };
 }
 
@@ -46,7 +46,7 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
         normalize,
         realpathSync = identity,
         defaultLibsDirectory,
-        getCurrentDirectory
+        getCurrentDirectory,
     } = fs;
 
     function getFileSystemEntries(path: string): { files: string[]; directories: string[] } {
@@ -128,11 +128,11 @@ export function createCustomBaseHost(fs: ICustomFs): IBaseHost {
                 return undefined;
             }
         },
-        getDefaultLibFileName: options => join(defaultLibsDirectory, ts.getDefaultLibFileName(options)),
+        getDefaultLibFileName: (options) => join(defaultLibsDirectory, ts.getDefaultLibFileName(options)),
 
         realpath: realpathSync,
         dirname,
-        normalize
+        normalize,
     };
 }
 
@@ -150,6 +150,6 @@ export function createLanguageServiceHost(
         getScriptFileNames,
         getCustomTransformers,
         useCaseSensitiveFileNames: () => useCaseSensitiveFileNames,
-        getNewLine: () => ts.getNewLineCharacter(getCompilationSettings(), getNewLine)
+        getNewLine: () => ts.getNewLineCharacter(getCompilationSettings(), getNewLine),
     };
 }

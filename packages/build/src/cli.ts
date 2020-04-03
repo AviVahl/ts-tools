@@ -39,9 +39,9 @@ if (cjs) {
         getCompilerOptions(tsconfigOptions) {
             return {
                 ...tsconfigOptions,
-                module: ts.ModuleKind.CommonJS
+                module: ts.ModuleKind.CommonJS,
             };
-        }
+        },
     });
 }
 if (esm) {
@@ -50,9 +50,9 @@ if (esm) {
         getCompilerOptions(tsconfigOptions) {
             return {
                 ...tsconfigOptions,
-                module: ts.ModuleKind.ESNext
+                module: ts.ModuleKind.ESNext,
             };
-        }
+        },
     });
 }
 

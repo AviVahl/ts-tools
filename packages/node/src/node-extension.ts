@@ -13,7 +13,7 @@ import {
     extractInlineSourceMap,
     readAndParseConfigFile,
     getCanonicalPath,
-    getNewLine
+    getNewLine,
 } from '@ts-tools/transpile';
 
 const { fileExists } = ts.sys;
@@ -30,7 +30,7 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
     esModuleInterop: true,
 
     // Transpile jsx to React calls (opinionated).
-    jsx: ts.JsxEmit.React
+    jsx: ts.JsxEmit.React,
 };
 
 export type NodeExtension = (module: NodeModule, filePath: string) => unknown;
@@ -103,12 +103,12 @@ export function createNodeExtension({
     compilerOptions: noConfigOptions = defaultCompilerOptions,
     cacheDirectoryPath = findCacheDirectory(contextPath),
     installSourceMapSupport = !process.execArgv.includes('--enable-source-maps'),
-    autoScriptTarget = true
+    autoScriptTarget = true,
 }: ICreateNodeExtensionOptions = {}): NodeExtension {
     const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
         getCurrentDirectory: () => contextPath,
         getCanonicalFileName: getCanonicalPath,
-        getNewLine
+        getNewLine,
     };
 
     const compilerOptions: ts.CompilerOptions = {};
@@ -141,7 +141,7 @@ export function createNodeExtension({
     if (typeof cacheDirectoryPath !== 'string') {
         // couldn't find a cache directory, so fall back to a non-caching implementation
         return createTransformerExtension(
-            filePath =>
+            (filePath) =>
                 ts.transpileModule(readFileSync(filePath, 'utf8'), { fileName: filePath, compilerOptions }).outputText
         );
     }
@@ -167,16 +167,16 @@ export function createNodeExtension({
                     }
                 }
                 return null;
-            }
+            },
         });
     }
 
     return createTransformerExtension(
-        filePath =>
+        (filePath) =>
             transpileCached({
                 cacheDirectoryPath: optionsScopedCachePath,
                 fileName: filePath,
-                compilerOptions
+                compilerOptions,
             }).outputText
     );
 }

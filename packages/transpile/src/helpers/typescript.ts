@@ -6,7 +6,7 @@ import {
     readJsonConfigFile,
     parseJsonSourceFileConfigFileContent,
     sys,
-    ParsedCommandLine
+    ParsedCommandLine,
 } from 'typescript';
 
 const { readFile, newLine } = sys;
@@ -28,7 +28,7 @@ export const affectsEmit = new Set([
     'newLine',
     'stripInternal',
     'noEmitHelpers',
-    'preserveConstEnums'
+    'preserveConstEnums',
 ]);
 
 export function areEmitCompatible(oldOptions: CompilerOptions, options: CompilerOptions): boolean {

@@ -6,7 +6,7 @@ import ts from 'typescript';
  * It detects `true`, `false`, and basic string equality comparison.
  */
 export function deadIfsTransformer(context: ts.TransformationContext): ts.Transformer<ts.SourceFile> {
-    return sourceFile => {
+    return (sourceFile) => {
         return ts.visitEachChild(sourceFile, visitIfStatements, context);
     };
 

@@ -15,7 +15,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(`
@@ -31,7 +31,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(`
@@ -47,7 +47,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(`
@@ -63,7 +63,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(`
@@ -81,7 +81,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(`
@@ -98,7 +98,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(`
@@ -115,7 +115,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(`
@@ -142,7 +142,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(code);
@@ -158,7 +158,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(code);
@@ -174,7 +174,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(code);
@@ -182,7 +182,7 @@ describe('CjsToEsmTransformer', () => {
 
         it('does not transform if shouldTransform returns false', () => {
             const transformer = createCjsToEsmTransformer({
-                shouldTransform: lib => lib === 'a'
+                shouldTransform: (lib) => lib === 'a',
             });
 
             const code = `
@@ -192,7 +192,7 @@ describe('CjsToEsmTransformer', () => {
 
             const { outputText } = ts.transpileModule(code, {
                 transformers: { before: [transformer] },
-                compilerOptions
+                compilerOptions,
             });
 
             expect(outputText).to.matchCode(`

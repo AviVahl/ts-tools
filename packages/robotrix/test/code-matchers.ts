@@ -1,7 +1,7 @@
 import prettier from 'prettier';
 
 export const codeMatchers: Chai.ChaiPlugin = (chai, util) => {
-    chai.Assertion.addMethod('matchCode', function(expectedCode: string): void {
+    chai.Assertion.addMethod('matchCode', function (expectedCode: string): void {
         const { flag, inspect } = util;
         let actualCode: string = flag(this, 'object');
 

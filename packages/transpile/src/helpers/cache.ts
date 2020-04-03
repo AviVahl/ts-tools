@@ -19,9 +19,7 @@ export function compilerOptionsToCacheName(compilerOptions: ts.CompilerOptions):
 }
 
 export function calcSha1(data: string) {
-    return createHash('sha1')
-        .update(data)
-        .digest('hex');
+    return createHash('sha1').update(data).digest('hex');
 }
 
 // eslint-disable-next-line
