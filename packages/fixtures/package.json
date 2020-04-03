@@ -6,7 +6,7 @@
   "private": true,
   "dependencies": {
     "@babel/parser": "^7.9.4",
-    "@popperjs/core": "^2.1.1",
+    "@popperjs/core": "^2.2.0",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
     "classnames": "^2.2.6",
@@ -29,7 +29,7 @@
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.5",
-    "rxjs": "^6.5.4",
+    "rxjs": "^6.5.5",
     "sanitize.css": "^11.0.0",
     "sinon": "^9.0.1",
     "styled-components": "^5.0.1",
