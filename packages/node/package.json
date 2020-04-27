@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@ts-tools/transpile": "^2.0.0",
-    "source-map-support": "^0.5.17"
+    "source-map-support": "^0.5.19"
   },
   "files": [
     "cjs",
