@@ -6,35 +6,35 @@ import ts from 'typescript';
 type ResolvedModules = Map<string, ts.ResolvedModuleFull | undefined>;
 
 declare module 'typescript' {
-    // needed for custom readDirectory
-    export function matchFiles(
-        path: string,
-        extensions: ReadonlyArray<string> | undefined,
-        excludes: ReadonlyArray<string> | undefined,
-        includes: ReadonlyArray<string> | undefined,
-        useCaseSensitiveFileNames: boolean,
-        currentDirectory: string,
-        depth: number | undefined,
-        getFileSystemEntries: (path: string) => FileSystemEntries,
-        realpath: (path: string) => string
-    ): string[];
+  // needed for custom readDirectory
+  export function matchFiles(
+    path: string,
+    extensions: ReadonlyArray<string> | undefined,
+    excludes: ReadonlyArray<string> | undefined,
+    includes: ReadonlyArray<string> | undefined,
+    useCaseSensitiveFileNames: boolean,
+    currentDirectory: string,
+    depth: number | undefined,
+    getFileSystemEntries: (path: string) => FileSystemEntries,
+    realpath: (path: string) => string
+  ): string[];
 
-    // used by matchFiles above
-    export interface FileSystemEntries {
-        readonly files: ReadonlyArray<string>;
-        readonly directories: ReadonlyArray<string>;
-    }
+  // used by matchFiles above
+  export interface FileSystemEntries {
+    readonly files: ReadonlyArray<string>;
+    readonly directories: ReadonlyArray<string>;
+  }
 
-    // needed to resolve newLine, while taking compilerOptions into consideration, for each `LanguageServiceHost`
-    export function getNewLineCharacter(
-        options: ts.CompilerOptions | ts.PrinterOptions,
-        getNewLine?: () => string
-    ): string;
+  // needed to resolve newLine, while taking compilerOptions into consideration, for each `LanguageServiceHost`
+  export function getNewLineCharacter(
+    options: ts.CompilerOptions | ts.PrinterOptions,
+    getNewLine?: () => string
+  ): string;
 
-    // dirname, typescript version (slashes normalized to posix-style). needed for default baseHost.
-    export function getDirectoryPath(path: string): string;
+  // dirname, typescript version (slashes normalized to posix-style). needed for default baseHost.
+  export function getDirectoryPath(path: string): string;
 
-    export interface SourceFile {
-        resolvedModules?: ResolvedModules;
-    }
+  export interface SourceFile {
+    resolvedModules?: ResolvedModules;
+  }
 }

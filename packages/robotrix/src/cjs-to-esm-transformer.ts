@@ -4,12 +4,12 @@ import ts from 'typescript';
  * CommonJS to ESM transformer options
  */
 export interface ICjsToEsmTransformerOptions {
-    /**
-     * Optional filtering callback to indicate whether to
-     * transform a `require(request)` call to an import statement,
-     * based on its request string.
-     */
-    shouldTransform?(request: string): boolean;
+  /**
+   * Optional filtering callback to indicate whether to
+   * transform a `require(request)` call to an import statement,
+   * based on its request string.
+   */
+  shouldTransform?(request: string): boolean;
 }
 
 /**
@@ -29,133 +29,133 @@ export interface ICjsToEsmTransformerOptions {
  * with a unique identifier.
  */
 export function createCjsToEsmTransformer(
-    options: ICjsToEsmTransformerOptions = {}
+  options: ICjsToEsmTransformerOptions = {}
 ): ts.TransformerFactory<ts.SourceFile> {
-    return (context) => (sourceFile) => transformSourceFile(sourceFile, context, options);
+  return (context) => (sourceFile) => transformSourceFile(sourceFile, context, options);
 }
 
 function transformSourceFile(
-    sourceFile: ts.SourceFile,
-    context: ts.TransformationContext,
-    { shouldTransform = () => true }: ICjsToEsmTransformerOptions
+  sourceFile: ts.SourceFile,
+  context: ts.TransformationContext,
+  { shouldTransform = () => true }: ICjsToEsmTransformerOptions
 ): ts.SourceFile {
-    if (sourceFile.statements.some((node) => ts.isImportDeclaration(node) || ts.isExportDeclaration(node))) {
-        // file has esm, so avoid cjs conversion.
-        return sourceFile;
-    }
-
-    let fileUsesCommonJs = false;
-
-    const newImports: ts.ImportDeclaration[] = [];
-    sourceFile = ts.visitEachChild(sourceFile, visitCommonJS, context);
-
-    if (fileUsesCommonJs) {
-        const newStatements = [
-            ...newImports,
-            createCjsModuleDefinition(),
-            ...sourceFile.statements,
-            createCjsExportDefault(),
-        ];
-
-        sourceFile = ts.updateSourceFileNode(sourceFile, newStatements);
-    }
-
+  if (sourceFile.statements.some((node) => ts.isImportDeclaration(node) || ts.isExportDeclaration(node))) {
+    // file has esm, so avoid cjs conversion.
     return sourceFile;
+  }
 
-    function visitCommonJS(node: ts.Node): ts.Node | ts.Node[] | undefined {
-        if (
-            ts.isFunctionLike(node) &&
-            node.parameters.some(({ name }) => ts.isIdentifier(name) && name.text === 'require')
-        ) {
-            // do no iterate into bodies of functions defining a `require` parameter.
-            // mocha's bundle uses this pattern. avoid transforming `require` calls inside such functions.
-            return node;
-        } else if (ts.isTryStatement(node)) {
-            // heuristic for conditionally required libs (inside try/catch).
-            // typescript bundle uses this pattern to require `source-map-support`.
-            return node;
-        } else if (isModuleExportsElementAccess(node) || isExportsPropertyAccess(node) || isTypeOfExports(node)) {
-            fileUsesCommonJs = true;
-        } else if (isCJsRequireCall(node) && shouldTransform((node.arguments[0] as ts.StringLiteral).text)) {
-            fileUsesCommonJs = true;
+  let fileUsesCommonJs = false;
 
-            const importIdentifier = createImportIdentifier(node);
+  const newImports: ts.ImportDeclaration[] = [];
+  sourceFile = ts.visitEachChild(sourceFile, visitCommonJS, context);
 
-            newImports.push(
-                ts.createImportDeclaration(
-                    undefined /* decorators */,
-                    undefined /* modifiers */,
-                    ts.createImportClause(importIdentifier, undefined /* namedBindings */),
-                    node.arguments[0]
-                )
-            );
+  if (fileUsesCommonJs) {
+    const newStatements = [
+      ...newImports,
+      createCjsModuleDefinition(),
+      ...sourceFile.statements,
+      createCjsExportDefault(),
+    ];
 
-            // replace require call with identifier
-            return importIdentifier;
-        }
+    sourceFile = ts.updateSourceFileNode(sourceFile, newStatements);
+  }
 
-        return ts.visitEachChild(node, visitCommonJS, context);
+  return sourceFile;
+
+  function visitCommonJS(node: ts.Node): ts.Node | ts.Node[] | undefined {
+    if (
+      ts.isFunctionLike(node) &&
+      node.parameters.some(({ name }) => ts.isIdentifier(name) && name.text === 'require')
+    ) {
+      // do no iterate into bodies of functions defining a `require` parameter.
+      // mocha's bundle uses this pattern. avoid transforming `require` calls inside such functions.
+      return node;
+    } else if (ts.isTryStatement(node)) {
+      // heuristic for conditionally required libs (inside try/catch).
+      // typescript bundle uses this pattern to require `source-map-support`.
+      return node;
+    } else if (isModuleExportsElementAccess(node) || isExportsPropertyAccess(node) || isTypeOfExports(node)) {
+      fileUsesCommonJs = true;
+    } else if (isCJsRequireCall(node) && shouldTransform((node.arguments[0] as ts.StringLiteral).text)) {
+      fileUsesCommonJs = true;
+
+      const importIdentifier = createImportIdentifier(node);
+
+      newImports.push(
+        ts.createImportDeclaration(
+          undefined /* decorators */,
+          undefined /* modifiers */,
+          ts.createImportClause(importIdentifier, undefined /* namedBindings */),
+          node.arguments[0]
+        )
+      );
+
+      // replace require call with identifier
+      return importIdentifier;
     }
+
+    return ts.visitEachChild(node, visitCommonJS, context);
+  }
 }
 
 // export default module.exports
 function createCjsExportDefault() {
-    return ts.createExportDefault(ts.createPropertyAccess(ts.createIdentifier('module'), 'exports'));
+  return ts.createExportDefault(ts.createPropertyAccess(ts.createIdentifier('module'), 'exports'));
 }
 
 // unique identifier generation
 function createImportIdentifier(node: ts.CallExpression) {
-    const { parent } = node;
-    if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
-        // var libName = require(...)
-        // so use libName
-        return ts.createUniqueName(parent.name.text);
-    } else {
-        // use _imported_1, _imported_2, etc
-        return ts.createUniqueName('_imported');
-    }
+  const { parent } = node;
+  if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
+    // var libName = require(...)
+    // so use libName
+    return ts.createUniqueName(parent.name.text);
+  } else {
+    // use _imported_1, _imported_2, etc
+    return ts.createUniqueName('_imported');
+  }
 }
 
 // let exports = {}, module = { exports }
 function createCjsModuleDefinition() {
-    return ts.createVariableStatement(
-        undefined /* modifiers */,
-        ts.createVariableDeclarationList(
-            [
-                ts.createVariableDeclaration('exports', undefined /* type */, ts.createObjectLiteral()),
-                ts.createVariableDeclaration(
-                    'module',
-                    undefined /* type */,
-                    ts.createObjectLiteral([ts.createShorthandPropertyAssignment('exports')])
-                ),
-            ],
-            ts.NodeFlags.Let
-        )
-    );
+  return ts.createVariableStatement(
+    undefined /* modifiers */,
+    ts.createVariableDeclarationList(
+      [
+        ts.createVariableDeclaration('exports', undefined /* type */, ts.createObjectLiteral()),
+        ts.createVariableDeclaration(
+          'module',
+          undefined /* type */,
+          ts.createObjectLiteral([ts.createShorthandPropertyAssignment('exports')])
+        ),
+      ],
+      ts.NodeFlags.Let
+    )
+  );
 }
 
 // require(...) calls with a single string argument
 const isCJsRequireCall = (node: ts.Node): node is ts.CallExpression =>
-    ts.isCallExpression(node) &&
-    ts.isIdentifier(node.expression) &&
-    node.expression.text === 'require' &&
-    node.arguments.length === 1 &&
-    ts.isStringLiteral(node.arguments[0]);
+  ts.isCallExpression(node) &&
+  ts.isIdentifier(node.expression) &&
+  node.expression.text === 'require' &&
+  node.arguments.length === 1 &&
+  ts.isStringLiteral(node.arguments[0]);
 
 // module['exports']
 const isModuleExportsElementAccess = (node: ts.Node): node is ts.ElementAccessExpression =>
-    ts.isElementAccessExpression(node) &&
-    ts.isIdentifier(node.expression) &&
-    node.expression.text === 'module' &&
-    ts.isStringLiteral(node.argumentExpression) &&
-    node.argumentExpression.text === 'exports';
+  ts.isElementAccessExpression(node) &&
+  ts.isIdentifier(node.expression) &&
+  node.expression.text === 'module' &&
+  ts.isStringLiteral(node.argumentExpression) &&
+  node.argumentExpression.text === 'exports';
 
 // module.exports OR exports.<something>
 const isExportsPropertyAccess = (node: ts.Node): node is ts.PropertyAccessExpression =>
-    ts.isPropertyAccessExpression(node) &&
-    ts.isIdentifier(node.expression) &&
-    ((node.expression.text === 'module' && node.name.text === 'exports') || node.expression.text === 'exports');
+  ts.isPropertyAccessExpression(node) &&
+  ts.isIdentifier(node.expression) &&
+  ((node.expression.text === 'module' && node.name.text === 'exports') || node.expression.text === 'exports');
 
 // typeof exports
 const isTypeOfExports = (node: ts.Node): node is ts.TypeOfExpression =>
-    ts.isTypeOfExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === 'exports';
+  ts.isTypeOfExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === 'exports';

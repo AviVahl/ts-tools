@@ -18,8 +18,8 @@ Then, import its programmatic API to use:
 import { transpileCached } from '@ts-tools/transpile';
 
 const { outputText, sourceMapText } = transpileCached({
-    fileName: '/project/src/file.ts',
-    cachedDirectoryPath: '/project/node_modules/.cache/whatever'
+  fileName: '/project/src/file.ts',
+  cachedDirectoryPath: '/project/node_modules/.cache/whatever',
 });
 ```
 

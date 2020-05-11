@@ -1,4 +1,5 @@
 # TypeScript Tools for Node.js
+
 [![Build Status](https://github.com/AviVahl/ts-tools/workflows/tests/badge.svg)](https://github.com/AviVahl/ts-tools/actions)
 
 Several packages to assist [TypeScript](https://www.typescriptlang.org/) developers working with [Node.js](https://nodejs.org/en/).
