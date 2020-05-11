@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .js,.ts,.tsx -f codeframe",
     "pretest": "yarn build && yarn lint",
     "test": "lerna run test --stream --parallel",
-    "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write"
+    "prettify": "prettier \"./**/*.{js,ts,tsx,md}\" --write"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
@@ -35,6 +35,10 @@
     "rimraf": "^3.0.2",
     "typescript": "~3.8.3",
     "webpack": "^4.43.0"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
