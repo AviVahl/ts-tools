@@ -4,7 +4,9 @@ import { expect } from 'chai';
 import { fixturesRoot } from '@ts-tools/fixtures';
 import { bundleWithLoader } from './bundle-with-loader';
 
-describe('webpack loader', () => {
+describe('webpack loader', function () {
+  this.timeout(10_000);
+
   describe('when tsconfig.json is found', () => {
     it('allows bundling an empty file', async () => {
       const entry = join(fixturesRoot, 'empty.ts');
