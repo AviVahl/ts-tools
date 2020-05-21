@@ -2,13 +2,13 @@ import prettier from 'prettier';
 
 export const codeMatchers: Chai.ChaiPlugin = (chai, util) => {
   chai.Assertion.addMethod('matchCode', function (expectedCode: string): void {
-    const { flag, inspect } = util;
-    let actualCode: string = flag(this, 'object');
+    const { flag } = util;
+    let actualCode = flag(this, 'object') as string;
 
     if (typeof actualCode !== 'string') {
-      throw new Error(`Actual code is not a string: ${inspect(actualCode)}`);
+      throw new Error(`Actual code is not a string: ${String(actualCode)}`);
     } else if (typeof expectedCode !== 'string') {
-      throw new Error(`Expected code is not a string: ${inspect(expectedCode)}`);
+      throw new Error(`Expected code is not a string: ${String(expectedCode)}`);
     }
 
     actualCode = prettier.format(actualCode, { parser: 'typescript', endOfLine: 'lf' });

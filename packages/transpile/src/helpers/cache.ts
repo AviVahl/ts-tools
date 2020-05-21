@@ -23,7 +23,7 @@ export function calcSha1(data: string) {
 }
 
 // eslint-disable-next-line
-export function createCachedFn<FN extends (...args: any[]) => any>(
+export function createCachedFn<FN extends (...args: any[]) => unknown>(
   fn: FN,
   argsToCacheKey: (...args: Parameters<FN>) => string
 ): [FN, Map<string, ReturnType<FN>>] {
@@ -33,7 +33,7 @@ export function createCachedFn<FN extends (...args: any[]) => any>(
     if (cache.has(cacheKey)) {
       return cache.get(cacheKey);
     }
-    const item = fn(...args);
+    const item = fn(...args) as ReturnType<FN>;
     cache.set(cacheKey, item);
     return item;
   };

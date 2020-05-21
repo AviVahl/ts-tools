@@ -57,7 +57,13 @@ if (esm) {
 }
 
 try {
-  const targetFiles = build({ srcDirectoryPath, outputDirectoryPath, formats, configName });
+  const targetFiles = build({
+    srcDirectoryPath,
+    outputDirectoryPath,
+    formats,
+    configName: configName as string | undefined,
+  });
+  // eslint-disable-next-line no-console
   console.log(`Done transpiling. Writing ${targetFiles.length} files...`);
   for (const { name, text } of targetFiles) {
     ensureDirectorySync(dirname(name));
@@ -68,8 +74,9 @@ try {
 }
 
 function printErrorAndExit(message: unknown) {
+  // eslint-disable-next-line no-console
   console.error(message);
-  process.exit(1);
+  process.exitCode = 1;
 }
 
 function ensureDirectorySync(directoryPath: string): void {
@@ -83,7 +90,7 @@ function ensureDirectorySync(directoryPath: string): void {
   try {
     mkdirSync(directoryPath);
   } catch (e) {
-    if (e.code !== 'EEXIST') {
+    if ((e as NodeJS.ErrnoException).code !== 'EEXIST') {
       const parentPath = dirname(directoryPath);
       if (parentPath === directoryPath) {
         throw e;

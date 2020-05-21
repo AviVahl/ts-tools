@@ -19,7 +19,7 @@ const identity = (value: string) => value;
 
 const [cachedFindConfigFile] = createCachedFn(
   ts.findConfigFile,
-  (searchPath, _, configName) => searchPath + delimiter + configName
+  (searchPath, _, configName) => searchPath + delimiter + String(configName)
 );
 const [cachedReadAndParseConfigFile] = createCachedFn(readAndParseConfigFile, identity);
 const [cachedFindCacheDirectory] = createCachedFn(findCacheDirectory, identity);
@@ -34,7 +34,7 @@ export interface ITypeScriptLoaderOptions {
    * Keys to override in the `compilerOptions` section of the
    * `tsconfig.json` file.
    */
-  compilerOptions?: object;
+  compilerOptions?: Record<string, unknown>;
 
   /**
    * Turn persistent caching on/off.

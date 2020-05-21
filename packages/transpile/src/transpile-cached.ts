@@ -62,7 +62,7 @@ export function writeCacheFileSync(cacheFilePath: string, output: ICachedTranspi
 export function readCacheFileSync(cacheFilePath: string): ICachedTranspileOutput | undefined {
   if (existsSync(cacheFilePath)) {
     try {
-      const cachedOutput = JSON.parse(readFileSync(cacheFilePath, 'utf8'));
+      const cachedOutput = JSON.parse(readFileSync(cacheFilePath, 'utf8')) as unknown;
       if (typeof cachedOutput === 'object' && cachedOutput !== null) {
         return cachedOutput as ICachedTranspileOutput;
       }

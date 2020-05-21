@@ -50,7 +50,7 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
   const tsConfigPath = ts.findConfigFile(srcDirectoryPath, fileExists, configName);
 
   if (!tsConfigPath) {
-    throw chalk.red(`Cannot find a ${configName} file for ${srcDirectoryPath}`);
+    throw chalk.red(`Cannot find a ${configName ?? 'tsconfig.json'} file for ${srcDirectoryPath}`);
   }
 
   const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
@@ -135,7 +135,7 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
 
 function remapSourceMap(originalSourceMap: string, mappedSrcRequest: string): string {
   try {
-    const sourceMap = JSON.parse(originalSourceMap);
+    const sourceMap = JSON.parse(originalSourceMap) as Record<string, unknown>;
     if (Array.isArray(sourceMap.sources) && sourceMap.sources.length === 1) {
       sourceMap.sources[0] = mappedSrcRequest;
     }

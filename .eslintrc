@@ -1,34 +1,34 @@
 {
-    "env": {
-        "browser": true,
-        "es6": true,
-        "node": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
+  "env": {
+    "browser": true,
+    "es2017": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended", "prettier"],
+  "plugins": ["no-only-tests"],
+  "rules": {
+    "no-only-tests/no-only-tests": "error",
+    "no-console": "error"
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": "./tsconfig.json",
+        "warnOnUnsupportedTypeScriptVersion": false
+      },
+      "extends": [
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "prettier",
         "prettier/@typescript-eslint"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "project": "./tsconfig.json"
-    },
-    "rules": {
-        "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/interface-name-prefix": "off",
+      ],
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-floating-promises": "error",
-        "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/require-await": "off",
         "@typescript-eslint/unbound-method": "off"
-    },
-    "overrides": [
-        {
-            "files": ["*.js"],
-            "rules": {
-                "@typescript-eslint/no-var-requires": "off"
-            }
-        }
-    ]
+      }
+    }
+  ]
 }
