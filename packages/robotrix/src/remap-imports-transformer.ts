@@ -10,7 +10,8 @@ export interface IRemapImportsTransformerOptions {
 export function createRemapImportsTransformer({
   remapTarget,
 }: IRemapImportsTransformerOptions): ts.TransformerFactory<ts.SourceFile> {
-  return (context) => (sourceFile) => remapSourceFileImports(sourceFile, context, remapTarget);
+  return (context) => (sourceFile: ts.SourceFile): ts.SourceFile =>
+    remapSourceFileImports(sourceFile, context, remapTarget);
 }
 
 export function remapSourceFileImports(

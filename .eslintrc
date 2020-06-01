@@ -20,11 +20,7 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "prettier/@typescript-eslint"
-      ],
-      "rules": {
-        "@typescript-eslint/no-floating-promises": "error",
-        "@typescript-eslint/explicit-module-boundary-types": "off"
-      }
+      ]
     }
   ]
 }

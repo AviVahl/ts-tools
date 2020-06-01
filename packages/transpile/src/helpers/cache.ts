@@ -4,7 +4,7 @@ import { join, dirname } from 'path';
 import { findAllUp, getCanonicalPath } from './fs';
 import { getEmitModuleKind, getEmitScriptTarget } from './typescript';
 
-export const filePathToCacheFileName = (filePath: string) => `${calcSha1(getCanonicalPath(filePath))}.json`;
+export const filePathToCacheFileName = (filePath: string): string => `${calcSha1(getCanonicalPath(filePath))}.json`;
 
 export function findCacheDirectory(workDirPath: string): string | undefined {
   const packageJsonPaths = findAllUp(workDirPath, 'package.json');
@@ -18,7 +18,7 @@ export function compilerOptionsToCacheName(compilerOptions: ts.CompilerOptions):
   return `ts-${moduleKind.toLowerCase()}-${scriptTarget.toLowerCase()}`;
 }
 
-export function calcSha1(data: string) {
+export function calcSha1(data: string): string {
   return createHash('sha1').update(data).digest('hex');
 }
 

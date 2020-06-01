@@ -31,7 +31,7 @@ export interface ICjsToEsmTransformerOptions {
 export function createCjsToEsmTransformer(
   options: ICjsToEsmTransformerOptions = {}
 ): ts.TransformerFactory<ts.SourceFile> {
-  return (context) => (sourceFile) => transformSourceFile(sourceFile, context, options);
+  return (context) => (sourceFile: ts.SourceFile): ts.SourceFile => transformSourceFile(sourceFile, context, options);
 }
 
 function transformSourceFile(
