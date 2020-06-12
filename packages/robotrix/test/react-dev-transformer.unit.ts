@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import ts from 'typescript';
-import { reactDevTransformer } from '../src';
+import { reactDevTransformer } from '@ts-tools/robotrix';
 
 describe('ReactDevTransformer', () => {
   const transformers: ts.CustomTransformers = { before: [reactDevTransformer] };

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import ts from 'typescript';
-import { createRemapImportsTransformer } from '../src';
+import { createRemapImportsTransformer } from '@ts-tools/robotrix';
 
 describe('RemapImportsTransformer', () => {
   const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };

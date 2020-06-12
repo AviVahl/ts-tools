@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { transpileModule } from 'typescript';
-import { createNodeEnvTransformer } from '../src';
+import { createNodeEnvTransformer } from '@ts-tools/robotrix';
 
 describe('NodeEnvTransformer', () => {
   it('replaces process.env.[PARAM] using provided dictionary', () => {

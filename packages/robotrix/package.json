@@ -2,24 +2,16 @@
   "name": "@ts-tools/robotrix",
   "version": "1.0.4",
   "description": "Useful TypeScript transpilation transformers.",
-  "main": "./cjs/index.js",
-  "module": "./esm/index.js",
-  "types": "./esm/index.d.ts",
-  "scripts": {
-    "clean": "rimraf ./cjs ./esm",
-    "prebuild": "yarn clean",
-    "build": "yarn build:cjs && yarn build:esm",
-    "build:cjs": "tsc -p tsconfig.build.json --outDir cjs --module commonjs",
-    "build:esm": "tsc -p tsconfig.build.json --outDir esm --module esnext",
-    "test": "mocha -r @ts-tools/node/r -r test/chai-setup.ts \"test/**/*.unit.ts\""
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "peerDependencies": {
     "typescript": ">=2.8.0"
   },
   "files": [
-    "cjs",
-    "esm",
-    "src"
+    "dist",
+    "!dist/test",
+    "src",
+    "!*/tsconfig.{json,tsbuildinfo}"
   ],
   "sideEffects": false,
   "author": "Avi Vahl <avi.vahl@wix.com>",

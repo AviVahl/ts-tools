@@ -1,15 +1,12 @@
 import { join, dirname } from 'path';
 import webpack from 'webpack';
-import { ITypeScriptLoaderOptions } from '../src';
+import type { ITypeScriptLoaderOptions } from '@ts-tools/webpack-loader';
 
 export interface IBundleWithLoaderOptions {
   entry: string;
   options?: ITypeScriptLoaderOptions;
   context?: string;
 }
-
-// direct path to loader's source
-const loaderPath = require.resolve('../src/index.ts');
 
 export async function bundleWithLoader({
   entry,
@@ -25,7 +22,7 @@ export async function bundleWithLoader({
       rules: [
         {
           test: /\.tsx?$/,
-          loader: loaderPath,
+          loader: '@ts-tools/webpack-loader',
           options,
         },
       ],

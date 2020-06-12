@@ -5,12 +5,12 @@
     "packages/*"
   ],
   "scripts": {
-    "clean": "lerna run clean --stream --parallel",
-    "build": "lerna run build --stream",
+    "clean": "rimraf ./packages/*/dist",
+    "build": "tsc --build",
+    "watch": "yarn build -w",
+    "test": "mocha \"./packages/*/dist/**/*.unit.js\" --enable-source-maps",
     "lint": "eslint . -f codeframe",
-    "pretest": "yarn build && yarn lint",
-    "test": "lerna run test --stream --parallel",
-    "prettify": "prettier \"./**/*.{js,ts,tsx,md}\" --write"
+    "prettify": "prettier . --write"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
@@ -40,6 +40,11 @@
   "prettier": {
     "printWidth": 120,
     "singleQuote": true
+  },
+  "mocha": {
+    "require": [
+      "@ts-tools/robotrix/dist/test/chai-setup"
+    ]
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
