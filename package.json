@@ -42,6 +42,7 @@
     "singleQuote": true
   },
   "mocha": {
+    "colors": true,
     "require": [
       "@ts-tools/robotrix/dist/test/chai-setup"
     ]
