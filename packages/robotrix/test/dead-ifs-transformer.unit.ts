@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import ts from 'typescript';
-import { deadIfsTransformer } from '../src';
+import { deadIfsTransformer } from '@ts-tools/robotrix';
 
 describe('DeadIfsTransformer', () => {
   const transformers: ts.CustomTransformers = { before: [deadIfsTransformer] };

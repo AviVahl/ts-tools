@@ -2,19 +2,16 @@
   "name": "@ts-tools/transpile",
   "version": "2.0.0",
   "description": "TypeScript transpilation helpers.",
-  "main": "./cjs/index.js",
-  "types": "./cjs/index.d.ts",
-  "scripts": {
-    "clean": "rimraf ./cjs",
-    "prebuild": "yarn clean",
-    "build": "tsc -p tsconfig.build.json"
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "peerDependencies": {
     "typescript": ">=2.8.0"
   },
   "files": [
-    "cjs",
-    "src"
+    "dist",
+    "!dist/test",
+    "src",
+    "!*/tsconfig.{json,tsbuildinfo}"
   ],
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",

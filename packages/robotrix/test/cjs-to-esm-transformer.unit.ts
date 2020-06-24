@@ -1,6 +1,6 @@
 import ts from 'typescript';
 import { expect } from 'chai';
-import { createCjsToEsmTransformer } from '../src';
+import { createCjsToEsmTransformer } from '@ts-tools/robotrix';
 
 const cjsDef = `let exports = {}, module = { exports }`;
 const cjsEsmExport = `export default module.exports`;

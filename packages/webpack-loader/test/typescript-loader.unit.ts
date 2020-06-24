@@ -1,8 +1,9 @@
-import { join } from 'path';
+import { join, dirname } from 'path';
 import ts from 'typescript';
 import { expect } from 'chai';
-import { fixturesRoot } from '@ts-tools/fixtures';
 import { bundleWithLoader } from './bundle-with-loader';
+
+const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
 
 describe('webpack loader', function () {
   this.timeout(10_000);

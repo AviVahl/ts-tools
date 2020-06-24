@@ -1,8 +1,9 @@
 import { expect } from 'chai';
-import { join, sep } from 'path';
+import { join, sep, dirname } from 'path';
 import { platform } from 'os';
 import { spawnSync } from 'child_process';
-import { fixturesRoot } from '@ts-tools/fixtures';
+
+const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
 
 export function runCommand(command: string): { output: string; exitCode: number } {
   const [execName, ...args] = command.split(' ');

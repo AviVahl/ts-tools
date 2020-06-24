@@ -1,1 +1,1 @@
-require('./cjs/register');
+require('./dist/register');
