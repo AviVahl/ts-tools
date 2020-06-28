@@ -1,6 +1,6 @@
 import { delimiter, join } from 'path';
 import ts from 'typescript';
-import webpack from 'webpack';
+import type webpack from 'webpack';
 import { getOptions, getRemainingRequest } from 'loader-utils';
 import {
   externalSourceMapPrefix,

@@ -1,5 +1,5 @@
 import { join, dirname } from 'path';
-import ts from 'typescript';
+import type ts from 'typescript';
 import { expect } from 'chai';
 import { bundleWithLoader } from './bundle-with-loader';
 
