@@ -13,6 +13,9 @@
     "src",
     "!*/tsconfig.{json,tsbuildinfo}"
   ],
+  "engines": {
+    "node": ">=10"
+  },
   "sideEffects": false,
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",

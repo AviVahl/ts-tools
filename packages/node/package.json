@@ -18,6 +18,9 @@
     "!*/tsconfig.{json,tsbuildinfo}",
     "r.js"
   ],
+  "engines": {
+    "node": ">=10"
+  },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
   "repository": "https://github.com/AviVahl/ts-tools/tree/master/packages/node",
