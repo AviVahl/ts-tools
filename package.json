@@ -8,6 +8,7 @@
     "clean": "rimraf ./packages/*/dist",
     "build": "tsc --build",
     "watch": "yarn build -w",
+    "pretest": "yarn build && yarn lint",
     "test": "mocha \"./packages/*/dist/**/*.unit.js\" --enable-source-maps",
     "lint": "eslint . -f codeframe",
     "prettify": "prettier . --write"
