@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/webpack-loader",
-  "version": "1.1.4",
+  "version": "2.0.0",
   "description": "TypeScript loader for webpack.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,7 +9,7 @@
     "webpack": ">=4"
   },
   "dependencies": {
-    "@ts-tools/transpile": "^2.0.0",
+    "@ts-tools/transpile": "^2.0.1",
     "loader-utils": "^2.0.0"
   },
   "files": [
