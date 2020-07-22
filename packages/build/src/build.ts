@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import ts from 'typescript';
 import { getCanonicalPath, getNewLine, readAndParseConfigFile } from '@ts-tools/transpile';
 
-const { directoryExists, fileExists, getCurrentDirectory } = ts.sys;
+const { directoryExists, fileExists } = ts.sys;
 
 export interface IBuildFormat {
   /**
@@ -47,19 +47,20 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
     throw chalk.red(`Cannot find directory ${srcDirectoryPath}`);
   }
 
-  const tsConfigPath = ts.findConfigFile(srcDirectoryPath, fileExists, configName);
+  const tsconfigPath = ts.findConfigFile(srcDirectoryPath, fileExists, configName);
 
-  if (!tsConfigPath) {
+  if (!tsconfigPath) {
     throw chalk.red(`Cannot find a ${configName ?? 'tsconfig.json'} file for ${srcDirectoryPath}`);
   }
 
+  const tsconfigDirectoryPath = dirname(tsconfigPath);
   const formatDiagnosticsHost: ts.FormatDiagnosticsHost = {
-    getCurrentDirectory,
+    getCurrentDirectory: () => tsconfigDirectoryPath,
     getCanonicalFileName: getCanonicalPath,
     getNewLine: getNewLine,
   };
 
-  const { errors, fileNames, options: tsconfigOptions } = readAndParseConfigFile(tsConfigPath);
+  const { errors, fileNames, options: tsconfigOptions } = readAndParseConfigFile(tsconfigPath);
 
   if (errors.length) {
     throw ts.formatDiagnosticsWithColorAndContext(errors, formatDiagnosticsHost);
