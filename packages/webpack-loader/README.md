@@ -111,7 +111,6 @@ module.exports = {
 ## Similar projects
 
 - [ts-loader](https://github.com/TypeStrong/ts-loader)
-- [awesome-typescript-loader](https://github.com/s-panferov/awesome-typescript-loader)
 
 ## License
 
