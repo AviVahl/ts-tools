@@ -9,14 +9,6 @@ describe('webpack loader', function () {
   this.timeout(10_000);
 
   describe('when tsconfig.json is found', () => {
-    it('allows bundling an empty file', async () => {
-      const entry = join(fixturesRoot, 'empty.ts');
-      const { stats, statsText } = await bundleWithLoader({ entry });
-
-      expect(stats.hasErrors(), statsText).to.equal(false);
-      expect(stats.hasWarnings(), statsText).to.equal(false);
-    });
-
     it('allows bundling .ts files', async () => {
       const entry = join(fixturesRoot, 'file-with-types.ts');
       const { stats, statsText } = await bundleWithLoader({ entry });
@@ -61,6 +53,14 @@ describe('webpack loader', function () {
       expect(stats.hasErrors(), statsText).to.equal(false);
       expect(stats.hasWarnings(), statsText).to.equal(false);
       expect(transpileCtx?.getCompilerOptions()).to.not.equal(undefined);
+    });
+
+    it('allows bundling an empty file', async () => {
+      const entry = join(fixturesRoot, 'empty.ts');
+      const { stats, statsText } = await bundleWithLoader({ entry });
+
+      expect(stats.hasErrors(), statsText).to.equal(false);
+      expect(stats.hasWarnings(), statsText).to.equal(false);
     });
   });
 
