@@ -1,7 +1,8 @@
-import { sys } from 'typescript';
+import ts from 'typescript';
 import { existsSync, mkdirSync, statSync } from 'fs';
 import { dirname, join, resolve } from 'path';
 
+const { sys } = ts;
 export const getCanonicalPath: (path: string) => string = sys.useCaseSensitiveFileNames
   ? (v) => v
   : (v) => v.toLowerCase();

@@ -1,14 +1,7 @@
 import { dirname } from 'path';
-import {
-  CompilerOptions,
-  ScriptTarget,
-  ModuleKind,
-  readJsonConfigFile,
-  parseJsonSourceFileConfigFileContent,
-  sys,
-  ParsedCommandLine,
-} from 'typescript';
+import ts from 'typescript';
 
+const { ScriptTarget, ModuleKind, readJsonConfigFile, parseJsonSourceFileConfigFileContent, sys } = ts;
 const { readFile, newLine } = sys;
 
 export const affectsEmit = new Set([
@@ -31,7 +24,7 @@ export const affectsEmit = new Set([
   'preserveConstEnums',
 ]);
 
-export function areEmitCompatible(oldOptions: CompilerOptions, options: CompilerOptions): boolean {
+export function areEmitCompatible(oldOptions: ts.CompilerOptions, options: ts.CompilerOptions): boolean {
   for (const optionName of affectsEmit) {
     const newOptionValue = options[optionName];
     const oldOptionValue = oldOptions[optionName];
@@ -45,8 +38,8 @@ export function areEmitCompatible(oldOptions: CompilerOptions, options: Compiler
   return true;
 }
 
-export function filterAffectsEmit(compilerOptions: CompilerOptions): CompilerOptions {
-  const filteredOptions: CompilerOptions = {};
+export function filterAffectsEmit(compilerOptions: ts.CompilerOptions): ts.CompilerOptions {
+  const filteredOptions: ts.CompilerOptions = {};
   for (const [optionName, optionValue] of Object.entries(compilerOptions)) {
     if (affectsEmit.has(optionName)) {
       filteredOptions[optionName] = optionValue;
@@ -55,7 +48,7 @@ export function filterAffectsEmit(compilerOptions: CompilerOptions): CompilerOpt
   return filteredOptions;
 }
 
-export function readAndParseConfigFile(filePath: string): ParsedCommandLine {
+export function readAndParseConfigFile(filePath: string): ts.ParsedCommandLine {
   const jsonSourceFile = readJsonConfigFile(filePath, readFile);
   return parseJsonSourceFileConfigFileContent(jsonSourceFile, sys, dirname(filePath));
 }
@@ -64,11 +57,11 @@ export function getNewLine(): string {
   return newLine;
 }
 
-export function getEmitScriptTarget(compilerOptions: CompilerOptions): ScriptTarget {
+export function getEmitScriptTarget(compilerOptions: ts.CompilerOptions): ts.ScriptTarget {
   return compilerOptions.target || ScriptTarget.ES3;
 }
 
-export function getEmitModuleKind(compilerOptions: CompilerOptions): ModuleKind {
+export function getEmitModuleKind(compilerOptions: ts.CompilerOptions): ts.ModuleKind {
   return typeof compilerOptions.module === 'number'
     ? compilerOptions.module
     : getEmitScriptTarget(compilerOptions) >= ScriptTarget.ES2015
