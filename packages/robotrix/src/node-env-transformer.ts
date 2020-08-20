@@ -10,6 +10,7 @@ export function createNodeEnvTransformer(env: {
   [key: string]: string | undefined;
 }): ts.TransformerFactory<ts.SourceFile> {
   return (context) => {
+    const { factory } = context;
     return (sourceFile) => ts.visitEachChild(sourceFile, visitNodeEnv, context);
 
     function visitNodeEnv(node: ts.Node): ts.Node | ts.Node[] {
@@ -24,7 +25,7 @@ export function createNodeEnvTransformer(env: {
         // do lookup inside the if, so we don't do it twice
         const valueForParam = env[node.name.text];
         if (valueForParam !== undefined) {
-          return ts.createStringLiteral(valueForParam);
+          return factory.createStringLiteral(valueForParam);
         }
       }
 

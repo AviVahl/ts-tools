@@ -46,18 +46,19 @@ function transformSourceFile(
 
   let fileUsesCommonJs = false;
 
+  const { factory } = context;
   const newImports: ts.ImportDeclaration[] = [];
   sourceFile = ts.visitEachChild(sourceFile, visitCommonJS, context);
 
   if (fileUsesCommonJs) {
     const newStatements = [
       ...newImports,
-      createCjsModuleDefinition(),
+      createCjsModuleDefinition(factory),
       ...sourceFile.statements,
-      createCjsExportDefault(),
+      createCjsExportDefault(factory),
     ];
 
-    sourceFile = ts.updateSourceFileNode(sourceFile, newStatements);
+    sourceFile = factory.updateSourceFile(sourceFile, newStatements);
   }
 
   return sourceFile;
@@ -79,13 +80,13 @@ function transformSourceFile(
     } else if (isCJsRequireCall(node) && shouldTransform((node.arguments[0] as ts.StringLiteral).text)) {
       fileUsesCommonJs = true;
 
-      const importIdentifier = createImportIdentifier(node);
+      const importIdentifier = createImportIdentifier(node, factory);
 
       newImports.push(
-        ts.createImportDeclaration(
+        factory.createImportDeclaration(
           undefined /* decorators */,
           undefined /* modifiers */,
-          ts.createImportClause(importIdentifier, undefined /* namedBindings */),
+          factory.createImportClause(false, importIdentifier, undefined /* namedBindings */),
           node.arguments[0]
         )
       );
@@ -99,34 +100,42 @@ function transformSourceFile(
 }
 
 // export default module.exports
-function createCjsExportDefault() {
-  return ts.createExportDefault(ts.createPropertyAccess(ts.createIdentifier('module'), 'exports'));
+function createCjsExportDefault(factory: ts.NodeFactory) {
+  return factory.createExportDefault(
+    factory.createPropertyAccessExpression(factory.createIdentifier('module'), 'exports')
+  );
 }
 
 // unique identifier generation
-function createImportIdentifier(node: ts.CallExpression) {
+function createImportIdentifier(node: ts.CallExpression, factory: ts.NodeFactory) {
   const { parent } = node;
   if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
     // var libName = require(...)
     // so use libName
-    return ts.createUniqueName(parent.name.text);
+    return factory.createUniqueName(parent.name.text);
   } else {
     // use _imported_1, _imported_2, etc
-    return ts.createUniqueName('_imported');
+    return factory.createUniqueName('_imported');
   }
 }
 
 // let exports = {}, module = { exports }
-function createCjsModuleDefinition() {
-  return ts.createVariableStatement(
+function createCjsModuleDefinition(factory: ts.NodeFactory) {
+  return factory.createVariableStatement(
     undefined /* modifiers */,
-    ts.createVariableDeclarationList(
+    factory.createVariableDeclarationList(
       [
-        ts.createVariableDeclaration('exports', undefined /* type */, ts.createObjectLiteral()),
-        ts.createVariableDeclaration(
-          'module',
+        factory.createVariableDeclaration(
+          'exports',
+          undefined /* exclamationToken */,
           undefined /* type */,
-          ts.createObjectLiteral([ts.createShorthandPropertyAssignment('exports')])
+          factory.createObjectLiteralExpression()
+        ),
+        factory.createVariableDeclaration(
+          'module',
+          undefined /* exclamationToken */,
+          undefined /* type */,
+          factory.createObjectLiteralExpression([factory.createShorthandPropertyAssignment('exports')])
         ),
       ],
       ts.NodeFlags.Let

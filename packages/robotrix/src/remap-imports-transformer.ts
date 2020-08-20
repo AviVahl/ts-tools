@@ -19,6 +19,7 @@ export function remapSourceFileImports(
   context: ts.TransformationContext,
   remapTarget: IRemapImportsTransformerOptions['remapTarget']
 ): ts.SourceFile {
+  const { factory } = context;
   const { fileName } = sourceFile;
   return ts.visitEachChild(sourceFile, visitStaticImportsExports, context);
 
@@ -36,25 +37,25 @@ export function remapSourceFileImports(
       const originalTarget = node.moduleSpecifier.text;
       const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
       if (originalTarget !== remappedTarget) {
-        return ts.updateImportDeclaration(
+        return factory.updateImportDeclaration(
           node,
           node.decorators,
           node.modifiers,
           node.importClause,
-          ts.createLiteral(remappedTarget)
+          factory.createStringLiteral(remappedTarget)
         );
       }
     } else if (ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
       const originalTarget = node.moduleSpecifier.text;
       const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
       if (originalTarget !== remappedTarget) {
-        return ts.updateExportDeclaration(
+        return factory.updateExportDeclaration(
           node,
           node.decorators,
           node.modifiers,
+          node.isTypeOnly,
           node.exportClause,
-          ts.createLiteral(remappedTarget),
-          node.isTypeOnly
+          factory.createStringLiteral(remappedTarget)
         );
       }
     }
@@ -80,7 +81,9 @@ export function remapSourceFileImports(
       const originalTarget = (node.arguments[0] as ts.StringLiteral).text;
       const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
       if (originalTarget !== remappedTarget) {
-        return ts.updateCall(node, node.expression, node.typeArguments, [ts.createLiteral(remappedTarget)]);
+        return factory.updateCallExpression(node, node.expression, node.typeArguments, [
+          factory.createStringLiteral(remappedTarget),
+        ]);
       }
     }
 

@@ -15,6 +15,7 @@ const JSX_FILENAME = '__jsxFileName';
  *   const __jsxFileName = [absolute file path]
  */
 export function reactDevTransformer(context: ts.TransformationContext): ts.Transformer<ts.SourceFile> {
+  const { factory } = context;
   return (sourceFile) => {
     const { fileName } = sourceFile; // absolute file path
 
@@ -22,13 +23,16 @@ export function reactDevTransformer(context: ts.TransformationContext): ts.Trans
     let shouldAddFileNameConst = false;
 
     // file-wide unique identifier that would point to the fileName string literal
-    const jsxFileNameIdentifier = ts.createFileLevelUniqueName(JSX_FILENAME);
+    const jsxFileNameIdentifier = factory.createUniqueName(
+      JSX_FILENAME,
+      ts.GeneratedIdentifierFlags.Optimistic | ts.GeneratedIdentifierFlags.FileLevel
+    );
 
     // fist run the visitor, so it will mark whether we need to add fileName const declaration
     sourceFile = ts.visitEachChild(sourceFile, addJSXMetadata, context);
 
     if (shouldAddFileNameConst) {
-      sourceFile = addFileNameConst(sourceFile, jsxFileNameIdentifier, fileName);
+      sourceFile = addFileNameConst(sourceFile, jsxFileNameIdentifier, fileName, factory);
     }
 
     return sourceFile;
@@ -44,21 +48,20 @@ export function reactDevTransformer(context: ts.TransformationContext): ts.Trans
       const newAttributes: ts.JsxAttribute[] = [];
 
       if (!userDefinedSelf) {
-        newAttributes.push(createSelfAttribute());
+        newAttributes.push(createSelfAttribute(factory));
       }
 
       if (!userDefinedSource) {
         shouldAddFileNameConst = true;
         const parentJsx = ts.isJsxSelfClosingElement(node.parent) ? node.parent : node.parent.parent;
         const pos = parentJsx.pos;
-        const end = parentJsx.end;
         const { line } = ts.getLineAndCharacterOfPosition(sourceFile, pos);
-        newAttributes.push(createSourceAttribute(createLocationObject(jsxFileNameIdentifier, line, pos, end)));
+        newAttributes.push(createSourceAttribute(createLocationObject(jsxFileNameIdentifier, line, factory), factory));
       }
 
       if (newAttributes.length) {
         // we actually created new attributes, so append them
-        node = ts.updateJsxAttributes(node, node.properties.concat(newAttributes));
+        node = factory.updateJsxAttributes(node, node.properties.concat(newAttributes));
       }
 
       // if any of the attributes contain JSX elements, we want to transform them as well
@@ -86,25 +89,29 @@ function findUserDefinedAttributes(node: ts.JsxAttributes) {
 }
 
 // __self={this}
-function createSelfAttribute(): ts.JsxAttribute {
-  return ts.createJsxAttribute(ts.createIdentifier(SELF), ts.createJsxExpression(undefined, ts.createThis()));
+function createSelfAttribute(factory: ts.NodeFactory): ts.JsxAttribute {
+  return factory.createJsxAttribute(
+    factory.createIdentifier(SELF),
+    factory.createJsxExpression(undefined, factory.createThis())
+  );
 }
 
 // __source={ [location-object] }
-function createSourceAttribute(locationObj: ts.ObjectLiteralExpression): ts.JsxAttribute {
-  return ts.createJsxAttribute(ts.createIdentifier(SOURCE), ts.createJsxExpression(undefined, locationObj));
+function createSourceAttribute(locationObj: ts.ObjectLiteralExpression, factory: ts.NodeFactory): ts.JsxAttribute {
+  return factory.createJsxAttribute(
+    factory.createIdentifier(SOURCE),
+    factory.createJsxExpression(undefined, locationObj)
+  );
 }
 
 // { fileName: [path-to-file], lineNumber: [element-line-number] }
-function createLocationObject(jsxFileNameIdentifier: ts.Identifier, line: number, pos: number, end: number) {
-  return ts.createObjectLiteral([
-    ts.createPropertyAssignment(
+function createLocationObject(jsxFileNameIdentifier: ts.Identifier, line: number, factory: ts.NodeFactory) {
+  return factory.createObjectLiteralExpression([
+    factory.createPropertyAssignment(
       'fileName',
       jsxFileNameIdentifier // use the file-wide identifier for fileName value
     ),
-    ts.createPropertyAssignment('lineNumber', ts.createNumericLiteral(String(line + 1))),
-    ts.createPropertyAssignment('pos', ts.createNumericLiteral(String(pos))),
-    ts.createPropertyAssignment('end', ts.createNumericLiteral(String(end))),
+    factory.createPropertyAssignment('lineNumber', factory.createNumericLiteral(String(line + 1))),
   ]);
 }
 
@@ -112,23 +119,34 @@ function createLocationObject(jsxFileNameIdentifier: ts.Identifier, line: number
 function addFileNameConst(
   sourceFile: ts.SourceFile,
   jsxFileNameIdentifier: ts.Identifier,
-  fileName: string
+  fileName: string,
+  factory: ts.NodeFactory
 ): ts.SourceFile {
   const variableDecls = [
-    ts.createVariableDeclaration(jsxFileNameIdentifier, undefined /* type */, ts.createStringLiteral(fileName)),
+    factory.createVariableDeclaration(
+      jsxFileNameIdentifier,
+      undefined /* exclamationToken */,
+      undefined /* type */,
+      factory.createStringLiteral(fileName)
+    ),
   ];
 
   return insertStatementAfterImports(
     sourceFile,
-    ts.createVariableStatement(
+    factory.createVariableStatement(
       undefined /* modifiers */,
-      ts.createVariableDeclarationList(variableDecls, ts.NodeFlags.Const)
-    )
+      factory.createVariableDeclarationList(variableDecls, ts.NodeFlags.Const)
+    ),
+    factory
   );
 }
 
 // insert a new statement above the first non-import statement
-function insertStatementAfterImports(sourceFile: ts.SourceFile, statement: ts.Statement): ts.SourceFile {
+function insertStatementAfterImports(
+  sourceFile: ts.SourceFile,
+  statement: ts.Statement,
+  factory: ts.NodeFactory
+): ts.SourceFile {
   const { statements } = sourceFile;
 
   const nonImportIdx = statements.findIndex((s) => !ts.isImportDeclaration(s));
@@ -138,5 +156,5 @@ function insertStatementAfterImports(sourceFile: ts.SourceFile, statement: ts.St
       ? [statement, ...statements]
       : [...statements.slice(0, nonImportIdx), statement, ...statements.slice(nonImportIdx)];
 
-  return ts.updateSourceFileNode(sourceFile, newStatements);
+  return factory.updateSourceFile(sourceFile, newStatements);
 }

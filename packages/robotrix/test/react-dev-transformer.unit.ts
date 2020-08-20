@@ -19,8 +19,8 @@ describe('ReactDevTransformer', () => {
 
     expect(outputText).to.matchCode(`
             ${jsxFileNameDef}
-            (<div __self={this} __source={{ fileName: __jsxFileName, lineNumber: 2, pos: 14, end: 63 }}>
-                <span __self={this} __source={{ fileName: __jsxFileName, lineNumber: 3, pos: 36, end: 44 }} />
+            (<div __self={this} __source={{ fileName: __jsxFileName, lineNumber: 2 }}>
+                <span __self={this} __source={{ fileName: __jsxFileName, lineNumber: 3 }} />
             </div>)
         `);
   });
@@ -37,9 +37,9 @@ describe('ReactDevTransformer', () => {
     expect(outputText).to.matchCode(`
             ${jsxFileNameDef}
             (<div
-                icon={<p __self={this} __source={{ fileName: __jsxFileName, lineNumber: 3, pos: 41, end: 46 }} />}
+                icon={<p __self={this} __source={{ fileName: __jsxFileName, lineNumber: 3 }} />}
                 __self={this}
-                __source={{ fileName: __jsxFileName, lineNumber: 2, pos: 14, end: 62 }} />)
+                __source={{ fileName: __jsxFileName, lineNumber: 2 }} />)
         `);
   });
 
@@ -58,7 +58,7 @@ describe('ReactDevTransformer', () => {
 
     expect(outputText).to.matchCode(`
             ${jsxFileNameDef}
-            (<div __self="custom value" __source={{ fileName: __jsxFileName, lineNumber: 1, pos: 1, end: 30 }} />)
+            (<div __self="custom value" __source={{ fileName: __jsxFileName, lineNumber: 1 }} />)
         `);
   });
 });
