@@ -5,7 +5,7 @@
   },
   "references": [
     {
-      "path": "../../transpile/src/tsconfig.json"
+      "path": "../../transpile/src"
     }
   ]
 }

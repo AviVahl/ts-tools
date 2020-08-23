@@ -2,17 +2,17 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "./packages/build/src/tsconfig.json" },
+    { "path": "./packages/build/src" },
 
-    { "path": "./packages/node/src/tsconfig.json" },
-    { "path": "./packages/node/test/tsconfig.json" },
+    { "path": "./packages/node/src" },
+    { "path": "./packages/node/test" },
 
-    { "path": "./packages/robotrix/src/tsconfig.json" },
-    { "path": "./packages/robotrix/test/tsconfig.json" },
+    { "path": "./packages/robotrix/src" },
+    { "path": "./packages/robotrix/test" },
 
-    { "path": "./packages/transpile/src/tsconfig.json" },
+    { "path": "./packages/transpile/src" },
 
-    { "path": "./packages/webpack-loader/src/tsconfig.json" },
-    { "path": "./packages/webpack-loader/test/tsconfig.json" }
+    { "path": "./packages/webpack-loader/src" },
+    { "path": "./packages/webpack-loader/test" }
   ]
 }
