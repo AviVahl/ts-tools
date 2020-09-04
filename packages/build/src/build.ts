@@ -1,4 +1,4 @@
-import { dirname, normalize, join, relative } from 'path';
+import { dirname, normalize, join, relative, basename } from 'path';
 import chalk from 'chalk';
 import ts from 'typescript';
 import { getCanonicalPath, getNewLine, readAndParseConfigFile } from '@ts-tools/transpile';
@@ -68,15 +68,14 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
 
   const canonicalSrcPath = getCanonicalPath(srcDirectoryPath);
   const filesInSrcDirectory = fileNames
-    .map((filePath) => ({ filePath, normalizedPath: normalize(filePath) }))
-    .filter(({ normalizedPath }) => getCanonicalPath(normalizedPath).startsWith(canonicalSrcPath));
+    .map((filePath) => ({ filePath, normalizedFilePath: normalize(filePath) }))
+    .filter(({ normalizedFilePath }) => getCanonicalPath(normalizedFilePath).startsWith(canonicalSrcPath));
 
   const programs: Array<{ folderName: string; program: ts.Program }> = [];
 
   for (const { folderName, getCompilerOptions } of formats) {
     const compilerOptions: ts.CompilerOptions = {
       ...getCompilerOptions(tsconfigOptions),
-      outDir: undefined,
       outFile: undefined,
       out: undefined,
       noEmit: false,
@@ -112,15 +111,19 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
     }
 
     const formatOutDir = join(outputDirectoryPath, folderName);
-    for (const { filePath, normalizedPath } of filesInSrcDirectory) {
+    for (const { filePath, normalizedFilePath } of filesInSrcDirectory) {
       const { emitSkipped, outputFiles: compilationOutput } = getFileEmitOutput(program, filePath);
       if (!emitSkipped) {
+        const srcFileDirectoryPath = dirname(normalizedFilePath);
         for (const { name: outputFilePath, text, writeByteOrderMark } of compilationOutput) {
-          const relativeToSrc = relative(srcDirectoryPath, outputFilePath);
-          const targetFilePath = join(formatOutDir, relativeToSrc);
+          const targetFilename = basename(outputFilePath);
+          const srcRelativeDirectory = relative(srcDirectoryPath, srcFileDirectoryPath);
+          const targetFilePath = join(formatOutDir, srcRelativeDirectory, targetFilename);
           const targetFileDirectoryPath = dirname(targetFilePath);
-          const relativeRequestToSrc = relative(targetFileDirectoryPath, normalizedPath).replace(/\\/g, '/');
-          const contents = outputFilePath.endsWith('.map') ? remapSourceMap(text, relativeRequestToSrc) : text;
+          const contents = targetFilename.endsWith('.map')
+            ? remapSourceMap(text, relative(targetFileDirectoryPath, normalizedFilePath).replace(/\\/g, '/'))
+            : text;
+
           outputFiles.push({
             name: targetFilePath,
             text: contents,
