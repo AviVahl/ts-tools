@@ -1,4 +1,4 @@
-import { dirname, normalize, join, relative, basename } from 'path';
+import { dirname, normalize, join, relative, basename, sep } from 'path';
 import chalk from 'chalk';
 import ts from 'typescript';
 import { getCanonicalPath, getNewLine, readAndParseConfigFile } from '@ts-tools/transpile';
@@ -66,7 +66,7 @@ export function build({ formats, outputDirectoryPath, srcDirectoryPath, configNa
     throw ts.formatDiagnosticsWithColorAndContext(errors, formatDiagnosticsHost);
   }
 
-  const canonicalSrcPath = getCanonicalPath(srcDirectoryPath);
+  const canonicalSrcPath = ensureTrailingSep(getCanonicalPath(srcDirectoryPath));
   const filesInSrcDirectory = fileNames
     .map((filePath) => ({ filePath, normalizedFilePath: normalize(filePath) }))
     .filter(({ normalizedFilePath }) => getCanonicalPath(normalizedFilePath).startsWith(canonicalSrcPath));
@@ -157,4 +157,8 @@ function getFileEmitOutput(program: ts.Program, filePath: string): ts.EmitOutput
   );
 
   return { outputFiles: outputFiles, emitSkipped: emitResult.emitSkipped };
+}
+
+function ensureTrailingSep(directoryPath: string) {
+  return directoryPath.endsWith(sep) ? directoryPath : directoryPath + sep;
 }
