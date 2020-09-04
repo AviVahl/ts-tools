@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/build",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "CLI for easier building of multi-target TypeScript libraries.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,7 +11,7 @@
     "typescript": ">=2.8.0"
   },
   "dependencies": {
-    "@ts-tools/transpile": "^2.1.0",
+    "@ts-tools/transpile": "^2.1.1",
     "chalk": "^4.1.0",
     "commander": "^6.1.0"
   },
