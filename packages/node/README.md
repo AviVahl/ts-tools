@@ -18,7 +18,7 @@ Features:
 Install the library as a dev dependency in an existing TypeScript project:
 
 ```
-yarn add @ts-tools/node --dev
+npm i @ts-tools/node --save-dev
 ```
 
 Usage with [Node.js](https://nodejs.org/en/):

@@ -9,7 +9,7 @@ TypeScript transpilation helpers.
 Install the library in an existing TypeScript project:
 
 ```
-yarn add @ts-tools/transpile
+npm i @ts-tools/transpile
 ```
 
 Then, import its programmatic API to use:
