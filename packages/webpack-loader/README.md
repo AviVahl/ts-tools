@@ -16,7 +16,7 @@ Features:
 Install the library as a dev dependency in an existing TypeScript project:
 
 ```
-yarn add @ts-tools/webpack-loader --dev
+npm i @ts-tools/webpack-loader --save-dev
 ```
 
 And adjust your webpack configuration to include:

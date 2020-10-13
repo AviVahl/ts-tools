@@ -14,7 +14,7 @@ Features:
 Install the library as a dev dependency in an existing TypeScript project:
 
 ```
-yarn add @ts-tools/build --dev
+npm i @ts-tools/build --save-dev
 ```
 
 In project's `package.json`:
@@ -30,7 +30,7 @@ In project's `package.json`:
 When wanting to build, run:
 
 ```
-yarn build
+npm run build
 ```
 
 ## License

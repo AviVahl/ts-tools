@@ -9,7 +9,7 @@ Useful [TypeScript](https://www.typescriptlang.org/) transpilation transformers.
 Install the library:
 
 ```
-yarn add @ts-tools/robotrix
+npm i @ts-tools/robotrix
 ```
 
 ## Transformers
