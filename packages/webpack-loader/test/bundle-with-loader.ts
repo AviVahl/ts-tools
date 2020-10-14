@@ -30,7 +30,7 @@ export async function bundleWithLoader({
   });
 
   // so test output isn't saved on local hard drive
-  compiler.outputFileSystem = noopOutputFileSystem;
+  compiler.outputFileSystem = (noopOutputFileSystem as unknown) as import('webpack').Compiler['outputFileSystem'];
 
   const stats = await new Promise<webpack.Stats>((res, rej) => {
     compiler.run((e, s) => (e ? rej(e) : res(s)));
@@ -39,21 +39,24 @@ export async function bundleWithLoader({
   return { stats, statsText: stats.toString() };
 }
 
-const noopOutputFileSystem: webpack.OutputFileSystem = {
+const noopOutputFileSystem = {
   join,
-  mkdir(_path, callback) {
-    callback(null);
+  mkdir(_path: string, callback: () => void) {
+    callback();
   },
-  mkdirp(_path, callback) {
-    callback(null);
+  mkdirp(_path: string, callback: () => void) {
+    callback();
   },
-  rmdir(_path, callback) {
-    callback(null);
+  rmdir(_path: string, callback: () => void) {
+    callback();
   },
-  unlink(_path, callback) {
-    callback(null);
+  stat(_path: string, callback: (e?: Error) => void) {
+    callback(new Error(`ENOENT`));
   },
-  writeFile(_path, _data, callback) {
-    callback(null);
+  unlink(_path: string, callback: () => void) {
+    callback();
+  },
+  writeFile(_path: string, _data: unknown, callback: () => void) {
+    callback();
   },
 };

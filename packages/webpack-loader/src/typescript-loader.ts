@@ -1,6 +1,5 @@
 import { delimiter, join } from 'path';
 import ts from 'typescript';
-import type webpack from 'webpack';
 import { getOptions, getRemainingRequest } from 'loader-utils';
 import {
   externalSourceMapPrefix,
@@ -13,6 +12,7 @@ import {
   compilerOptionsToCacheName,
   createCachedFn,
 } from '@ts-tools/transpile';
+import type { WebpackLoader } from './loader-types';
 
 const { fileExists } = ts.sys;
 const identity = (value: string) => value;
@@ -79,7 +79,7 @@ export interface ITypeScriptLoaderOptions {
   transformers?: ts.CustomTransformers;
 }
 
-export const typescriptLoader: webpack.loader.Loader = function (source) {
+export const typescriptLoader: WebpackLoader = function (source) {
   const fileContents = source.toString();
   const { resourcePath, rootContext, sourceMap } = this;
   const options: ITypeScriptLoaderOptions = {
