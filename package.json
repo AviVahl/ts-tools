@@ -14,19 +14,19 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.13",
+    "@types/chai": "^4.2.14",
     "@types/loader-utils": "^2.0.1",
     "@types/mocha": "^8.0.3",
     "@types/node": "10",
-    "@types/prettier": "^2.1.2",
-    "@types/react": "^16.9.52",
+    "@types/prettier": "^2.1.5",
+    "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "@types/source-map-support": "^0.5.3",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "@typescript-eslint/parser": "^4.4.1",
     "chai": "^4.2.0",
     "eslint": "^7.11.0",
-    "eslint-config-prettier": "^6.12.0",
+    "eslint-config-prettier": "^6.13.0",
     "eslint-plugin-no-only-tests": "^2.4.0",
     "memfs": "^3.2.0",
     "mocha": "^8.1.3",
@@ -35,7 +35,7 @@
     "react-dom": "^16.14.0",
     "rimraf": "^3.0.2",
     "typescript": "~4.0.3",
-    "webpack": "^5.1.2"
+    "webpack": "^5.1.3"
   },
   "engines": {
     "node": ">=10",
