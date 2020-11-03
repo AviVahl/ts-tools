@@ -29,7 +29,7 @@
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-no-only-tests": "^2.4.0",
     "memfs": "^3.2.0",
-    "mocha": "^8.2.0",
+    "mocha": "^8.2.1",
     "prettier": "^2.1.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
