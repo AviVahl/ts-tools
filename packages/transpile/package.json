@@ -18,7 +18,7 @@
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
-  "repository": "https://github.com/AviVahl/ts-tools/tree/master/packages/transpile",
+  "repository": "https://github.com/AviVahl/ts-tools/tree/main/packages/transpile",
   "homepage": "https://github.com/AviVahl/ts-tools",
   "publishConfig": {
     "access": "public"
