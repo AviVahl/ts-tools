@@ -33,7 +33,7 @@ export async function bundleWithLoader({
   compiler.outputFileSystem = createFsFromVolume(new Volume()) as webpack.Compiler['outputFileSystem'];
 
   const stats = await new Promise<webpack.Stats>((res, rej) => {
-    compiler.run((e, s) => (e ? rej(e) : res(s)));
+    compiler.run((e, s) => (e ? rej(e) : res(s!)));
   });
 
   return { stats, statsText: stats.toString() };

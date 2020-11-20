@@ -87,7 +87,7 @@ function transformSourceFile(
           undefined /* decorators */,
           undefined /* modifiers */,
           factory.createImportClause(false, importIdentifier, undefined /* namedBindings */),
-          node.arguments[0]
+          node.arguments[0]!
         )
       );
 
@@ -149,7 +149,7 @@ const isCJsRequireCall = (node: ts.Node): node is ts.CallExpression =>
   ts.isIdentifier(node.expression) &&
   node.expression.text === 'require' &&
   node.arguments.length === 1 &&
-  ts.isStringLiteral(node.arguments[0]);
+  ts.isStringLiteral(node.arguments[0]!);
 
 // module['exports']
 const isModuleExportsElementAccess = (node: ts.Node): node is ts.ElementAccessExpression =>

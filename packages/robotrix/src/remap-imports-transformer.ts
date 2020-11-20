@@ -76,11 +76,11 @@ export function remapSourceFileImports(
       ts.isCallExpression(node) &&
       (isDynamicImportKeyword(node.expression) || isRequireIdentifier(node.expression)) &&
       node.arguments.length === 1 &&
-      ts.isStringLiteral(node.arguments[0])
+      ts.isStringLiteral(node.arguments[0]!)
     ) {
-      const originalTarget = (node.arguments[0] as ts.StringLiteral).text;
-      const remappedTarget = remapTarget(originalTarget, fileName, sourceFile);
-      if (originalTarget !== remappedTarget) {
+      const [{ text }] = node.arguments;
+      const remappedTarget = remapTarget(text, fileName, sourceFile);
+      if (text !== remappedTarget) {
         return factory.updateCallExpression(node, node.expression, node.typeArguments, [
           factory.createStringLiteral(remappedTarget),
         ]);

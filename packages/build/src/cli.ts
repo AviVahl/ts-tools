@@ -29,7 +29,7 @@ if (args.length !== 1) {
 }
 
 const [srcDirName] = args;
-const srcDirectoryPath = resolve(srcDirName);
+const srcDirectoryPath = resolve(srcDirName!);
 const outputDirectoryPath = resolve(outDir);
 
 const formats: IBuildFormat[] = [];
