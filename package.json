@@ -41,16 +41,6 @@
     "node": ">=10",
     "npm": ">=7"
   },
-  "prettier": {
-    "printWidth": 120,
-    "singleQuote": true
-  },
-  "mocha": {
-    "colors": true,
-    "require": [
-      "@ts-tools/robotrix/dist/test/chai-setup"
-    ]
-  },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
   "private": true
