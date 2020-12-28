@@ -9,7 +9,7 @@
     "build": "tsc --build",
     "watch": "npm run build -- -w",
     "pretest": "npm run build && npm run lint",
-    "test": "mocha \"./packages/*/dist/**/*.unit.js\" --enable-source-maps",
+    "test": "mocha \"./packages/*/dist/**/*.unit.js\"",
     "lint": "eslint . -f codeframe",
     "prettify": "prettier . --write"
   },
