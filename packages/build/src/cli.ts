@@ -13,8 +13,8 @@ process.on('unhandledRejection', printErrorAndMarkFailed);
 const { argv } = yargs
   .usage(`Usage: $0 <src folder> [options]`)
   .version(version)
-  .option('out-dir', { default: '.', description: 'output directory' })
-  .option('config-name', { default: 'tsconfig.json', description: 'tsconfig file name' })
+  .option('out-dir', { type: 'string', default: '.', description: 'output directory' })
+  .option('config-name', { type: 'string', default: 'tsconfig.json', description: 'tsconfig file name' })
   .option('cjs', { type: 'boolean', description: 'compile a "cjs" folder containing commonjs module target' })
   .option('esm', { type: 'boolean', description: 'compile an "esm" folder containing esnext module target' })
   .alias('h', 'help')
