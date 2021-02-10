@@ -14,7 +14,7 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.14",
+    "@types/chai": "^4.2.15",
     "@types/loader-utils": "^2.0.1",
     "@types/mocha": "^8.2.0",
     "@types/node": "10",
@@ -35,7 +35,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "rimraf": "^3.0.2",
-    "typescript": "~4.1.4",
+    "typescript": "~4.1.5",
     "webpack": "^5.21.2"
   },
   "engines": {
