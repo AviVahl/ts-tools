@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/chai": "^4.2.15",
     "@types/loader-utils": "^2.0.1",
-    "@types/mocha": "^8.2.0",
+    "@types/mocha": "^8.2.1",
     "@types/node": "10",
     "@types/prettier": "^2.2.1",
     "@types/react": "^17.0.2",
