@@ -20,3 +20,8 @@ export interface LoaderContext {
   emitWarning(message: string | Error): void;
   emitError(message: string | Error): void;
 }
+
+export interface LoaderUtils {
+  getOptions(loaderContext: LoaderContext): Record<string, unknown>;
+  getRemainingRequest(loaderContext: LoaderContext): string;
+}

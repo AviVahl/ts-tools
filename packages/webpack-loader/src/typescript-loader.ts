@@ -1,6 +1,5 @@
 import { delimiter, join } from 'path';
 import ts from 'typescript';
-import { getOptions, getRemainingRequest } from 'loader-utils';
 import {
   externalSourceMapPrefix,
   readAndParseConfigFile,
@@ -12,7 +11,10 @@ import {
   compilerOptionsToCacheName,
   createCachedFn,
 } from '@ts-tools/transpile';
-import type { WebpackLoader } from './loader-types';
+import type { WebpackLoader, LoaderUtils } from './loader-types';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { getOptions, getRemainingRequest } = require('loader-utils') as LoaderUtils;
 
 const { fileExists } = ts.sys;
 const identity = (value: string) => value;
