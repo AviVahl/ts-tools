@@ -14,7 +14,7 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.15",
+    "@types/chai": "^4.2.16",
     "@types/mocha": "^8.2.2",
     "@types/node": "10",
     "@types/prettier": "^2.2.3",
