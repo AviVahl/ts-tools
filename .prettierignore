@@ -1,2 +1,3 @@
 /tsconfig.base.json
+/packages/fixtures/tsconfig.tsc-init.json
 dist
