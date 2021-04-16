@@ -2,8 +2,6 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "./packages/build/src" },
-
     { "path": "./packages/node/src" },
     { "path": "./packages/node/test" },
 
