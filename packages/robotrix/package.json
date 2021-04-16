@@ -14,7 +14,7 @@
     "!*/tsconfig.{json,tsbuildinfo}"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "sideEffects": false,
   "author": "Avi Vahl <avi.vahl@wix.com>",

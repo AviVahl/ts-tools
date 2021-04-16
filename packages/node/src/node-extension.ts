@@ -133,9 +133,8 @@ export function createNodeExtension({
   compilerOptions.mapRoot = compilerOptions.sourceRoot = undefined;
   compilerOptions.outDir = compilerOptions.outFile = undefined;
 
-  if (autoScriptTarget) {
-    const [nodeMajor] = process.versions.node.split('.'); // '12.0.0' => '12'
-    compilerOptions.target = nodeVersionToScriptTarget(Number(nodeMajor));
+  if (autoScriptTarget && (compilerOptions.target === undefined || compilerOptions.target < ts.ScriptTarget.ES2019)) {
+    compilerOptions.target = ts.ScriptTarget.ES2019;
   }
 
   if (typeof cacheDirectoryPath !== 'string') {
@@ -191,13 +190,4 @@ export function createTransformerExtension(transform: TransformFn): NodeExtensio
   return function nodeExtension(nodeModule, filePath) {
     (nodeModule as ICompilerModule)._compile(transform(filePath), filePath);
   };
-}
-
-export function nodeVersionToScriptTarget(major: number): ts.ScriptTarget {
-  if (major >= 10) {
-    // for older TypeScript versions without es2019
-    return ts.ScriptTarget.ES2019 || ts.ScriptTarget.ES2018;
-  } else {
-    return ts.ScriptTarget.ES2017;
-  }
 }
