@@ -30,7 +30,7 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
   esModuleInterop: true,
 
   // Transpile jsx to React calls (opinionated).
-  jsx: ts.JsxEmit.React,
+  jsx: ts.JsxEmit.ReactJSX || ts.JsxEmit.React,
 };
 
 export type NodeExtension = (module: NodeModule, filePath: string) => unknown;

@@ -115,7 +115,7 @@ export const typescriptLoader: WebpackLoader = function (source) {
     Object.assign(compilerOptions, options);
   } else {
     compilerOptions.target = ts.ScriptTarget.ES2018;
-    compilerOptions.jsx = ts.JsxEmit.React;
+    compilerOptions.jsx = ts.JsxEmit.ReactJSX || ts.JsxEmit.React;
   }
 
   // webpack supports, validates, and tree-shakes es modules.

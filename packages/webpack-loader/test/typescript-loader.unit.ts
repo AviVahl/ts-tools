@@ -17,13 +17,13 @@ describe('webpack loader', function () {
       expect(stats.hasWarnings(), statsText).to.equal(false);
     });
 
-    it(`allows bundling .tsx files (when specifying jsx: "react")`, async () => {
+    it(`allows bundling .tsx files (when specifying jsx: "react-jsx")`, async () => {
       const entry = join(fixturesRoot, 'react.tsx');
       const { stats, statsText } = await bundleWithLoader({
         entry,
         options: {
           compilerOptions: {
-            jsx: 'react',
+            jsx: 'react-jsx',
           },
         },
       });
@@ -78,7 +78,7 @@ describe('webpack loader', function () {
       expect(stats.hasWarnings(), statsText).to.equal(false);
     });
 
-    it(`allows bundling .tsx files (assumes "jsx": "react" by default)`, async () => {
+    it(`allows bundling .tsx files (assumes "jsx": "react-jsx" by default)`, async () => {
       const entry = join(fixturesRoot, 'react.tsx');
       const { stats, statsText } = await bundleWithLoader({
         entry,
