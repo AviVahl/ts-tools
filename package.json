@@ -14,11 +14,11 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.16",
+    "@types/chai": "^4.2.17",
     "@types/mocha": "^8.2.2",
     "@types/node": "12",
     "@types/prettier": "^2.2.3",
-    "@types/react": "^17.0.3",
+    "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
     "@types/source-map-support": "^0.5.3",
     "@types/yargs": "^16.0.1",
