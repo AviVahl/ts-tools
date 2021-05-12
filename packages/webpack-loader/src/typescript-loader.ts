@@ -1,3 +1,4 @@
+import type webpack from 'webpack';
 import { delimiter, join } from 'path';
 import ts from 'typescript';
 import {
@@ -11,10 +12,6 @@ import {
   compilerOptionsToCacheName,
   createCachedFn,
 } from '@ts-tools/transpile';
-import type { WebpackLoader, LoaderUtils } from './loader-types';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { getOptions, getRemainingRequest } = require('loader-utils') as LoaderUtils;
 
 const { fileExists } = ts.sys;
 const identity = (value: string) => value;
@@ -81,11 +78,11 @@ export interface ITypeScriptLoaderOptions {
   transformers?: ts.CustomTransformers;
 }
 
-export const typescriptLoader: WebpackLoader = function (source) {
+export const typescriptLoader: webpack.LoaderDefinition = function (source) {
   const fileContents = source.toString();
   const { resourcePath, rootContext, sourceMap } = this;
   const options: ITypeScriptLoaderOptions = {
-    ...getOptions(this), // webpack's recommended method to parse loader options
+    ...this.getOptions(),
   };
   const {
     configFileName,
@@ -177,10 +174,10 @@ export const typescriptLoader: WebpackLoader = function (source) {
   }
 
   if (sourceMapText) {
-    const rawSourceMap = JSON.parse(sourceMapText) as import('source-map').RawSourceMap;
+    const rawSourceMap = JSON.parse(sourceMapText) as SourceMap;
     if (rawSourceMap.sources.length === 1) {
       // ensure source maps point to the correct target in a loader chain
-      rawSourceMap.sources[0] = getRemainingRequest(this);
+      rawSourceMap.sources[0] = this.remainingRequest;
     }
 
     // find/remove inline comment linking to sourcemap
@@ -190,3 +187,13 @@ export const typescriptLoader: WebpackLoader = function (source) {
     this.callback(null, outputText);
   }
 };
+
+interface SourceMap {
+  version: number;
+  sources: string[];
+  mappings: string;
+  file?: string;
+  sourceRoot?: string;
+  sourcesContent?: string[];
+  names?: string[];
+}

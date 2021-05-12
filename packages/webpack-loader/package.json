@@ -9,8 +9,7 @@
     "webpack": ">=4"
   },
   "dependencies": {
-    "@ts-tools/transpile": "^2.1.1",
-    "loader-utils": "^2.0.0"
+    "@ts-tools/transpile": "^2.1.1"
   },
   "files": [
     "dist",
