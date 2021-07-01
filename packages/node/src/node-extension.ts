@@ -19,8 +19,8 @@ import {
 const { fileExists } = ts.sys;
 
 export const defaultCompilerOptions: ts.CompilerOptions = {
-  // Node 8+.
-  target: ts.ScriptTarget.ES2017,
+  // Node 12+.
+  target: ts.ScriptTarget.ES2019,
 
   // Node has a CommonJS module system.
   module: ts.ModuleKind.CommonJS,
