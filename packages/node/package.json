@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@ts-tools/transpile": "^3.0.1",
-    "source-map-support": "^0.5.19"
+    "source-map-support": "^0.5.20"
   },
   "files": [
     "dist",
