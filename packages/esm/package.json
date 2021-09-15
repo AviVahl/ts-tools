@@ -1,0 +1,31 @@
+{
+  "name": "@ts-tools/esm",
+  "version": "3.0.1",
+  "description": "TypeScript support for Node.js.",
+  "type": "module",
+  "types": "./dist/default-loader.d.ts",
+  "exports": {
+    ".": "./dist/default-loader.js",
+    "./lib": "./dist/index.js"
+  },
+  "peerDependencies": {
+    "typescript": ">=2.8.0"
+  },
+  "files": [
+    "dist",
+    "!dist/test",
+    "src",
+    "!*/tsconfig.{json,tsbuildinfo}",
+    "lib.d.ts"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "author": "Avi Vahl <avi.vahl@wix.com>",
+  "license": "MIT",
+  "repository": "https://github.com/AviVahl/ts-tools/tree/main/packages/esm",
+  "homepage": "https://github.com/AviVahl/ts-tools",
+  "publishConfig": {
+    "access": "public"
+  }
+}

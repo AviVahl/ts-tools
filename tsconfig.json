@@ -2,6 +2,9 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
+    { "path": "./packages/esm/src" },
+    { "path": "./packages/esm/test" },
+
     { "path": "./packages/node/src" },
     { "path": "./packages/node/test" },
 
