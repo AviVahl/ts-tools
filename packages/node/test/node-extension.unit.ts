@@ -12,7 +12,7 @@ export function runCommand(command: string): { output: string; exitCode: number 
   return { output: output.join('\n'), exitCode: exitCode || 0 };
 }
 
-describe('using node -r @ts-tools/node/r [file]', function () {
+describe('using node -r @ts-tools/node/r <file>', function () {
   this.timeout(5000);
 
   describe('when tsconfig.json is found', () => {
