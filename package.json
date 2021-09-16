@@ -29,12 +29,12 @@
     "eslint-plugin-no-only-tests": "^2.6.0",
     "memfs": "^3.2.4",
     "mocha": "^9.1.1",
-    "prettier": "^2.4.0",
+    "prettier": "^2.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
     "typescript": "~4.4.3",
-    "webpack": "^5.52.1"
+    "webpack": "^5.53.0"
   },
   "engines": {
     "node": ">=12",
