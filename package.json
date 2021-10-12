@@ -10,7 +10,7 @@
     "watch": "npm run build -- -w",
     "pretest": "npm run build && npm run lint",
     "test": "mocha \"./packages/*/dist/**/*.unit.js\"",
-    "lint": "eslint . -f codeframe",
+    "lint": "eslint .",
     "prettify": "prettier . --write"
   },
   "devDependencies": {
@@ -21,10 +21,10 @@
     "@types/react": "^17.0.27",
     "@types/react-dom": "^17.0.9",
     "@types/source-map-support": "^0.5.4",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "chai": "^4.3.4",
-    "eslint": "^7.32.0",
+    "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-no-only-tests": "^2.6.0",
     "memfs": "^3.3.0",
