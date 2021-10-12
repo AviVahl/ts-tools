@@ -8,7 +8,7 @@
     "clean": "rimraf ./packages/*/dist",
     "build": "tsc --build",
     "watch": "npm run build -- -w",
-    "pretest": "npm run build && npm run lint",
+    "pretest": "npm run lint && npm run build",
     "test": "mocha \"./packages/*/dist/**/*.unit.js\"",
     "lint": "eslint .",
     "prettify": "prettier . --write"
