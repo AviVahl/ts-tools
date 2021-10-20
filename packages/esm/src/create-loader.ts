@@ -1,25 +1,24 @@
+import { readFileSync } from 'fs';
 import { pathToFileURL, fileURLToPath } from 'url';
 import ts from 'typescript';
 
 const isTypescriptFile = (url: string) => url.endsWith('.ts') || url.endsWith('.tsx');
 
-/** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#esm_resolve_specifier_context_defaultresolve */
-export type ResolveHook = (
-  specifier: string,
-  context: { parentURL: string; conditions: string[] },
-  defaultResolve: ResolveHook
-) => { url: string };
-
-/** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#esm_getformat_url_context_defaultgetformat */
-export type FormatHook = (url: string, context: {}, defaultGetFormat: FormatHook) => { format: ModuleFormat };
 export type ModuleFormat = 'builtin' | 'commonjs' | 'json' | 'module' | 'wasm';
 
-/** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#esm_transformsource_source_context_defaulttransformsource */
-export type TransformHook = (
-  source: string | SharedArrayBuffer | Uint8Array,
-  context: { url: string; format: ModuleFormat },
-  defaultTransformSource: TransformHook
-) => { source: string | SharedArrayBuffer | Uint8Array };
+/** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#resolvespecifier-context-defaultresolve */
+export type ResolveHook = (
+  specifier: string,
+  context: { parentURL?: string; conditions: string[] },
+  defaultResolve: ResolveHook
+) => { url: string; format?: ModuleFormat };
+
+/** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#loadurl-context-defaultload */
+export type LoadHook = (
+  url: string,
+  context: { format?: ModuleFormat },
+  defaultTransformSource: LoadHook
+) => { source: string | SharedArrayBuffer | Uint8Array; format: ModuleFormat };
 
 export interface CreateLoaderOptions {
   compilerOptions: ts.CompilerOptions;
@@ -53,25 +52,24 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
     return defaultResolve(specifier, context, defaultResolve);
   };
 
-  const getFormat: FormatHook = (url, context, defaultGetFormat) => {
-    return isTypescriptFile(url) ? { format: 'module' } : defaultGetFormat(url, context, defaultGetFormat);
+  const load: LoadHook = (url, context, defaultTransformSource) => {
+    if (isTypescriptFile(url)) {
+      const filePath = fileURLToPath(url);
+      const source = readFileSync(filePath, 'utf8');
+      return {
+        source: ts.transpileModule(source, {
+          fileName: filePath,
+          compilerOptions,
+        }).outputText,
+        format: 'module',
+      };
+    } else {
+      return defaultTransformSource(url, context, defaultTransformSource);
+    }
   };
 
-  const transformSource: TransformHook = (source, context, defaultTransformSource) => {
-    const { url } = context;
-
-    return isTypescriptFile(url)
-      ? {
-          source: ts.transpileModule(source.toString(), {
-            fileName: fileURLToPath(url),
-            compilerOptions,
-          }).outputText,
-        }
-      : defaultTransformSource(source, context, defaultTransformSource);
-  };
   return {
     resolve,
-    getFormat,
-    transformSource,
+    load,
   };
 }
