@@ -14,6 +14,6 @@ const cwd = process.cwd();
 const tsconfigPath = ts.findConfigFile(cwd, ts.sys.fileExists);
 const compilerOptions = tsconfigPath !== undefined ? loadTsconfig(tsconfigPath) : defaultCompilerOptions;
 
-const { resolve, getFormat, transformSource } = createLoader({ compilerOptions, cwd });
+const { resolve, load } = createLoader({ compilerOptions, cwd });
 
-export { resolve, getFormat, transformSource };
+export { resolve, load };
