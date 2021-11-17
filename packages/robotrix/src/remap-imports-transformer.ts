@@ -43,7 +43,8 @@ export function remapSourceFileImports(
           node.decorators,
           node.modifiers,
           node.importClause,
-          factory.createStringLiteral(remappedTarget)
+          factory.createStringLiteral(remappedTarget),
+          node.assertClause
         );
       }
     } else if (ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
@@ -56,7 +57,8 @@ export function remapSourceFileImports(
           node.modifiers,
           node.isTypeOnly,
           node.exportClause,
-          factory.createStringLiteral(remappedTarget)
+          factory.createStringLiteral(remappedTarget),
+          node.assertClause
         );
       }
     }
