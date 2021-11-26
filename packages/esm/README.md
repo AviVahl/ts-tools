@@ -34,6 +34,7 @@ to the current working directory.
 If found, it is loaded and adjusted for direct esm execution.
 
 If a `tsconfig.json` file is not found, the following `compilerOptions` are used:
+
 ```ts
 const defaultCompilerOptions: ts.CompilerOptions = {
   module: ts.ModuleKind.ESNext,
@@ -41,7 +42,7 @@ const defaultCompilerOptions: ts.CompilerOptions = {
   inlineSourceMap: true,
   moduleResolution: ts.ModuleResolutionKind.NodeJs,
   jsx: ts.JsxEmit.React,
-}
+};
 ```
 
 ## Custom Loader
