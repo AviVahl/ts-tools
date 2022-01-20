@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.3.0",
-    "@types/mocha": "^9.0.0",
+    "@types/mocha": "^9.1.0",
     "@types/node": "12",
     "@types/prettier": "^2.4.3",
     "@types/react": "^17.0.38",
