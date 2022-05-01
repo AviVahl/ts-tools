@@ -37,8 +37,8 @@
     "webpack": "^5.72.0"
   },
   "engines": {
-    "node": ">=12",
-    "npm": ">=7"
+    "node": ">=14",
+    "npm": ">=8"
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
