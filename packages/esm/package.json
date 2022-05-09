@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/esm",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "TypeScript support for Node.js.",
   "type": "module",
   "types": "./dist/default-loader.d.ts",
