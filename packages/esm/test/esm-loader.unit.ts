@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { dirname, join, sep } from 'path';
-import { platform } from 'os';
-import { spawnSync } from 'child_process';
-import Module from 'module';
+import { dirname, join, sep } from 'node:path';
+import { platform } from 'node:os';
+import { spawnSync } from 'node:child_process';
+import Module from 'node:module';
 
 const require = Module.createRequire(import.meta.url);
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));

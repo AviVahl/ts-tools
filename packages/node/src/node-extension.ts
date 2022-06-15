@@ -1,6 +1,5 @@
-import { statSync, readFileSync } from 'fs';
-import { join } from 'path';
-
+import { statSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import ts from 'typescript';
 import sourceMapSupport from 'source-map-support';
 import {

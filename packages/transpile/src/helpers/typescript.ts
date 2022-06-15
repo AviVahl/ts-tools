@@ -1,4 +1,4 @@
-import { dirname } from 'path';
+import { dirname } from 'node:path';
 import ts from 'typescript';
 
 const { ScriptTarget, ModuleKind, readJsonConfigFile, parseJsonSourceFileConfigFileContent, sys } = ts;

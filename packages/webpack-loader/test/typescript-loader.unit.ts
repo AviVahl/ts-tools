@@ -1,6 +1,6 @@
-import { join, dirname } from 'path';
-import type ts from 'typescript';
 import { expect } from 'chai';
+import { join, dirname } from 'node:path';
+import type ts from 'typescript';
 import { bundleWithLoader } from './bundle-with-loader';
 
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));

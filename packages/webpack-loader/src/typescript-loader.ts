@@ -1,5 +1,5 @@
+import { delimiter, join } from 'node:path';
 import type webpack from 'webpack';
-import { delimiter, join } from 'path';
 import ts from 'typescript';
 import {
   externalSourceMapPrefix,

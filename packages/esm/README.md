@@ -50,8 +50,8 @@ const defaultCompilerOptions: ts.CompilerOptions = {
 `@ts-tools/esm/lib` (notice the `/lib`) exposes a programmatic API, which can be used to create a custom loader:
 
 ```ts
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createLoader, loadTsconfig } from '@ts-tools/esm/lib';
 
 const tsconfigPath = fileURLToPath(new URL('./my-custom-tsconfig.json', import.meta.url));

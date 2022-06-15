@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { join, sep, dirname } from 'path';
-import { platform } from 'os';
-import { spawnSync } from 'child_process';
+import { join, sep, dirname } from 'node:path';
+import { platform } from 'node:os';
+import { spawnSync } from 'node:child_process';
 
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
 const nodeMajorVersion = parseInt(process.versions.node.split('.')[0]!, 10);

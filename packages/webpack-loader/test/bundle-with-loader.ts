@@ -1,7 +1,8 @@
-import { dirname } from 'path';
+import { dirname } from 'node:path';
 import webpack from 'webpack';
-import type { ITypeScriptLoaderOptions } from '@ts-tools/webpack-loader';
 import { createFsFromVolume, Volume } from 'memfs';
+import type { ITypeScriptLoaderOptions } from '@ts-tools/webpack-loader';
+
 export interface IBundleWithLoaderOptions {
   entry: string;
   options?: ITypeScriptLoaderOptions;

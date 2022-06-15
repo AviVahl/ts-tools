@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { statSync, readFileSync, writeFileSync, existsSync } from 'fs';
+import { join } from 'node:path';
+import { statSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import ts from 'typescript';
 import { filePathToCacheFileName, filterAffectsEmit, areEmitCompatible } from './helpers';
 

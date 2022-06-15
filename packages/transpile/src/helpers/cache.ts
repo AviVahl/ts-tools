@@ -1,6 +1,6 @@
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
+import { join, dirname } from 'node:path';
 import ts from 'typescript';
-import { join, dirname } from 'path';
 import { findAllUp, getCanonicalPath } from './fs';
 import { getEmitModuleKind, getEmitScriptTarget } from './typescript';
 

@@ -1,5 +1,5 @@
-import { readFileSync } from 'fs';
-import { pathToFileURL, fileURLToPath } from 'url';
+import { readFileSync } from 'node:fs';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import ts from 'typescript';
 
 const isTypescriptFile = (url: string) =>
