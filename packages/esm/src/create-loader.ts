@@ -2,8 +2,13 @@ import { readFileSync } from 'node:fs';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import ts from 'typescript';
 
+const { Extension } = ts;
+
 const isTypescriptFile = (url: string) =>
-  url.endsWith('.ts') || url.endsWith('.tsx') || url.endsWith('.mts') || url.endsWith('.cts');
+  url.endsWith(Extension.Ts) ||
+  url.endsWith(Extension.Tsx) ||
+  url.endsWith(Extension.Mts) ||
+  url.endsWith(Extension.Cts);
 
 export type ModuleFormat = 'builtin' | 'commonjs' | 'json' | 'module' | 'wasm';
 
@@ -26,6 +31,8 @@ export interface CreateLoaderOptions {
   cwd: string;
 }
 
+const definitionExtensions = new Set([Extension.Dts, Extension.Dcts, Extension.Dmts]);
+
 export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
   const moduleResolutionCache = ts.createModuleResolutionCache(
     cwd,
@@ -43,7 +50,7 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
         moduleResolutionCache
       );
 
-      if (resolvedModule && resolvedModule.extension !== '.d.ts') {
+      if (resolvedModule && !definitionExtensions.has(resolvedModule.extension)) {
         return {
           url: pathToFileURL(resolvedModule.resolvedFileName).href,
         };
