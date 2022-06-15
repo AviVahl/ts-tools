@@ -2,7 +2,8 @@ import { readFileSync } from 'fs';
 import { pathToFileURL, fileURLToPath } from 'url';
 import ts from 'typescript';
 
-const isTypescriptFile = (url: string) => url.endsWith('.ts') || url.endsWith('.tsx');
+const isTypescriptFile = (url: string) =>
+  url.endsWith('.ts') || url.endsWith('.tsx') || url.endsWith('.mts') || url.endsWith('.cts');
 
 export type ModuleFormat = 'builtin' | 'commonjs' | 'json' | 'module' | 'wasm';
 

@@ -37,11 +37,11 @@ If a `tsconfig.json` file is not found, the following `compilerOptions` are used
 
 ```ts
 const defaultCompilerOptions: ts.CompilerOptions = {
-  module: ts.ModuleKind.ESNext,
   target: ts.ScriptTarget.ES2020,
   inlineSourceMap: true,
-  moduleResolution: ts.ModuleResolutionKind.NodeJs,
-  jsx: ts.JsxEmit.React,
+  module: ts.ModuleKind.Node16,
+  moduleResolution: ts.ModuleResolutionKind.Node16,
+  jsx: ts.JsxEmit.ReactJSX,
 };
 ```
 

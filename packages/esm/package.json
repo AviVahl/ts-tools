@@ -9,14 +9,13 @@
     "./lib": "./dist/index.js"
   },
   "peerDependencies": {
-    "typescript": ">=2.8.0"
+    "typescript": ">=4.7"
   },
   "files": [
     "dist",
     "!dist/test",
     "src",
-    "!*/tsconfig.{json,tsbuildinfo}",
-    "lib.d.ts"
+    "!*/tsconfig.{json,tsbuildinfo}"
   ],
   "engines": {
     "node": ">=14"

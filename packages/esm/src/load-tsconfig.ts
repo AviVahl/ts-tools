@@ -13,7 +13,10 @@ export function loadTsconfig(tsconfigPath: string): ts.CompilerOptions {
     dirname(tsconfigPath)
   );
   if (options.module === undefined || options.module < ts.ModuleKind.ES2015) {
-    options.module = ts.ModuleKind.ES2020;
+    options.module = ts.ModuleKind.Node16;
+  }
+  if (options.moduleResolution === undefined) {
+    options.moduleResolution = ts.ModuleResolutionKind.Node16;
   }
   options.inlineSourceMap = true;
   options.sourceMap = options.inlineSources = undefined;

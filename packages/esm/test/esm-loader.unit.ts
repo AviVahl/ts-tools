@@ -20,7 +20,7 @@ if (nodeMajorVersion >= 16) {
 
     describe('when tsconfig.json is found', () => {
       it('allows using imports (with default interop)', () => {
-        const filePath = join(fixturesRoot, 'imports.ts');
+        const filePath = join(fixturesRoot, 'esm/imports.mts');
 
         const { output, exitCode } = runCommand(`node --experimental-loader @ts-tools/esm ${filePath}`);
 
@@ -30,7 +30,7 @@ if (nodeMajorVersion >= 16) {
       });
 
       it('maps stack traces using source maps when specifying --enable-source-maps', () => {
-        const filePath = join(fixturesRoot, 'throwing.ts');
+        const filePath = join(fixturesRoot, 'esm/throwing.mts');
 
         const { output, exitCode } = runCommand(
           `node --experimental-loader @ts-tools/esm --enable-source-maps ${filePath}`
@@ -41,7 +41,7 @@ if (nodeMajorVersion >= 16) {
       });
 
       it('does not throw on empty files', () => {
-        const filePath = join(fixturesRoot, 'empty.ts');
+        const filePath = join(fixturesRoot, 'esm/empty.mts');
 
         const { exitCode, output } = runCommand(`node --experimental-loader @ts-tools/esm ${filePath}`);
 
