@@ -3,9 +3,5 @@
   "compilerOptions": {
     "outDir": "../dist"
   },
-  "references": [
-    {
-      "path": "../../transpile/src"
-    }
-  ]
+  "references": [{ "path": "../../transpile/src" }]
 }
