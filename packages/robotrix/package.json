@@ -2,8 +2,10 @@
   "name": "@ts-tools/robotrix",
   "version": "4.0.0",
   "description": "Useful TypeScript transpilation transformers.",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
   "peerDependencies": {
     "typescript": ">=4"
   },

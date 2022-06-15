@@ -3,10 +3,10 @@
   "version": "4.0.0",
   "description": "TypeScript support for Node.js.",
   "type": "module",
-  "types": "./dist/default-loader.d.ts",
   "exports": {
     ".": "./dist/default-loader.js",
-    "./lib": "./dist/index.js"
+    "./lib": "./dist/index.js",
+    "./package.json": "./package.json"
   },
   "peerDependencies": {
     "typescript": ">=4.7"

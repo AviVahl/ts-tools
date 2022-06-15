@@ -2,8 +2,11 @@
   "name": "@ts-tools/node",
   "version": "4.0.0",
   "description": "TypeScript support for Node.js.",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./r": "./dist/register.js",
+    "./package.json": "./package.json"
+  },
   "peerDependencies": {
     "typescript": ">=2.8.0"
   },
@@ -15,8 +18,7 @@
     "dist",
     "!dist/test",
     "src",
-    "!*/tsconfig.{json,tsbuildinfo}",
-    "r.js"
+    "!*/tsconfig.{json,tsbuildinfo}"
   ],
   "engines": {
     "node": ">=14"
