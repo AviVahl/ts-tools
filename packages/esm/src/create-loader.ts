@@ -24,7 +24,7 @@ export type LoadHook = (
   url: string,
   context: { format?: ModuleFormat },
   defaultTransformSource: LoadHook
-) => { source: string | SharedArrayBuffer | Uint8Array; format: ModuleFormat };
+) => { source: string | SharedArrayBuffer | Uint8Array; format: ModuleFormat; shortCircuit?: boolean };
 
 export interface CreateLoaderOptions {
   compilerOptions: ts.CompilerOptions;
@@ -70,6 +70,7 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
           compilerOptions,
         }).outputText,
         format: 'module',
+        shortCircuit: true,
       };
     } else {
       return defaultTransformSource(url, context, defaultTransformSource);
