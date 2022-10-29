@@ -24,7 +24,7 @@ export async function bundleWithLoader({
         {
           test: /\.tsx?$/,
           loader: '@ts-tools/webpack-loader',
-          options,
+          options: options!,
         },
       ],
     },

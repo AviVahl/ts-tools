@@ -129,15 +129,15 @@ export const typescriptLoader: webpack.LoaderDefinition = function (source) {
 
   // we dont accept any user overrides of sourcemap configuration
   // instead, we force external sourcemaps (with inline sources) on/off based on webpack signals.
-  compilerOptions.sourceMap = compilerOptions.inlineSources = sourceMap;
-  compilerOptions.inlineSourceMap = compilerOptions.mapRoot = compilerOptions.sourceRoot = undefined;
+  compilerOptions.sourceMap = compilerOptions.inlineSources = sourceMap!;
+  compilerOptions.inlineSourceMap = compilerOptions.mapRoot = compilerOptions.sourceRoot = undefined!;
 
   // force declarations off, as we don't have .d.ts bundling.
   // output locations are irrelevant, as we bundle. this ensures source maps have proper relative paths.
   // noEmit will not give us any output, so force that off.
-  compilerOptions.declaration = compilerOptions.declarationMap = undefined;
-  compilerOptions.outDir = compilerOptions.out = compilerOptions.outFile = undefined;
-  compilerOptions.noEmit = compilerOptions.noEmitOnError = compilerOptions.emitDeclarationOnly = undefined;
+  compilerOptions.declaration = compilerOptions.declarationMap = undefined!;
+  compilerOptions.outDir = compilerOptions.out = compilerOptions.outFile = undefined!;
+  compilerOptions.noEmit = compilerOptions.noEmitOnError = compilerOptions.emitDeclarationOnly = undefined!;
 
   // caching
   const optionsScopedCachePath = cacheDirectoryPath
@@ -156,7 +156,7 @@ export const typescriptLoader: webpack.LoaderDefinition = function (source) {
   const transpileOptions = {
     fileName: resourcePath,
     compilerOptions,
-    transformers,
+    transformers: transformers!,
     reportDiagnostics: true,
   };
 

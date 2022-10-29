@@ -128,9 +128,9 @@ export function createNodeExtension({
 
   // Ensure source maps get picked up by v8 inspector (vscode/chrome debuggers) and node's `--enable-source-maps`.
   compilerOptions.inlineSourceMap = true;
-  compilerOptions.sourceMap = compilerOptions.inlineSources = undefined;
-  compilerOptions.mapRoot = compilerOptions.sourceRoot = undefined;
-  compilerOptions.outDir = compilerOptions.outFile = undefined;
+  compilerOptions.sourceMap = compilerOptions.inlineSources = undefined!;
+  compilerOptions.mapRoot = compilerOptions.sourceRoot = undefined!;
+  compilerOptions.outDir = compilerOptions.outFile = undefined!;
 
   if (autoScriptTarget && (compilerOptions.target === undefined || compilerOptions.target < ts.ScriptTarget.ES2019)) {
     compilerOptions.target = ts.ScriptTarget.ES2019;

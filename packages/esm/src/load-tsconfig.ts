@@ -19,9 +19,9 @@ export function loadTsconfig(tsconfigPath: string): ts.CompilerOptions {
     options.moduleResolution = ts.ModuleResolutionKind.Node16;
   }
   options.inlineSourceMap = true;
-  options.sourceMap = options.inlineSources = undefined;
-  options.mapRoot = options.sourceRoot = undefined;
-  options.outDir = options.outFile = undefined;
-  options.noEmit = undefined;
+  options.sourceMap = options.inlineSources = undefined!;
+  options.mapRoot = options.sourceRoot = undefined!;
+  options.outDir = options.outFile = undefined!;
+  options.noEmit = undefined!;
   return options;
 }
