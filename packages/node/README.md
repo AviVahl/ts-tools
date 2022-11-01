@@ -30,7 +30,7 @@ node -r @ts-tools/node/r ./my-script.ts
 Usage with [Mocha](https://github.com/mochajs/mocha):
 
 ```
-mocha -r @ts-tools/node/r "./test/**/*.unit.ts?(x)" --watch-extensions ts,tsx
+mocha -r @ts-tools/node/r "./test/**/*.test.ts?(x)" --watch-extensions ts,tsx
 ```
 
 OR, create a `.mocharc.js` file with:
