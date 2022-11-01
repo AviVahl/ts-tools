@@ -1,3 +1,4 @@
+import { describe, it } from 'node:test';
 import chai, { expect } from 'chai';
 import ts from 'typescript';
 import { deadIfsTransformer } from '@ts-tools/robotrix';

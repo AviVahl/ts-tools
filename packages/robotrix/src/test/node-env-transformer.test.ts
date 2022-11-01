@@ -1,3 +1,4 @@
+import { describe, it } from 'node:test';
 import chai, { expect } from 'chai';
 import ts from 'typescript';
 import { createNodeEnvTransformer } from '@ts-tools/robotrix';

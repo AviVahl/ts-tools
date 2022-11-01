@@ -1,3 +1,4 @@
+import { describe, it } from 'node:test';
 import ts from 'typescript';
 import chai, { expect } from 'chai';
 import { createCjsToEsmTransformer } from '@ts-tools/robotrix';

@@ -9,13 +9,12 @@
     "build": "tsc --build",
     "watch": "npm run build -- -w",
     "pretest": "npm run lint && npm run build",
-    "test": "mocha \"./packages/*/dist/**/*.test.js\"",
+    "test": "node --test --enable-source-maps",
     "lint": "eslint .",
     "prettify": "prettier . --write"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
-    "@types/mocha": "^10.0.0",
     "@types/node": "18",
     "@types/prettier": "^2.7.1",
     "@types/react": "^18.0.24",
@@ -28,7 +27,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-no-only-tests": "^3.1.0",
     "memfs": "^3.4.9",
-    "mocha": "^10.1.0",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

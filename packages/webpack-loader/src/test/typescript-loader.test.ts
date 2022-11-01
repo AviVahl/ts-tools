@@ -1,13 +1,12 @@
-import { expect } from 'chai';
+import { describe, it } from 'node:test';
 import { join, dirname } from 'node:path';
+import { expect } from 'chai';
 import type ts from 'typescript';
 import { bundleWithLoader } from './bundle-with-loader';
 
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
 
-describe('webpack loader', function () {
-  this.timeout(10_000);
-
+describe('webpack loader', { timeout: 10_000 }, () => {
   describe('when tsconfig.json is found', () => {
     it('allows bundling .ts files', async () => {
       const entry = join(fixturesRoot, 'file-with-types.ts');
