@@ -11,8 +11,8 @@
   },
   "files": [
     "dist",
-    "!dist/test",
     "src",
+    "!*/test",
     "!*/tsconfig.{json,tsbuildinfo}"
   ],
   "engines": {
