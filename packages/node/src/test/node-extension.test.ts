@@ -4,7 +4,6 @@ import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
 
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
-const nodeMajorVersion = parseInt(process.versions.node.split('.')[0]!, 10);
 
 export function runCommand(command: string): { output: string; exitCode: number } {
   const [execName, ...args] = command.split(' ');
@@ -35,16 +34,14 @@ describe('using node -r @ts-tools/node/r <file>', function () {
       expect(output).to.include(`runMe (${filePath}:10:11)`);
     });
 
-    if (nodeMajorVersion >= 14) {
-      it('maps stack traces using source maps when specifying --enable-source-maps', () => {
-        const filePath = join(fixturesRoot, 'throwing.ts');
+    it('maps stack traces using source maps when specifying --enable-source-maps', () => {
+      const filePath = join(fixturesRoot, 'throwing.ts');
 
-        const { output, exitCode } = runCommand(`node -r @ts-tools/node/r --enable-source-maps ${filePath}`);
+      const { output, exitCode } = runCommand(`node -r @ts-tools/node/r --enable-source-maps ${filePath}`);
 
-        expect(exitCode).to.not.equal(0);
-        expect(output).to.include(`runMe (${filePath}:10:11)`);
-      });
-    }
+      expect(exitCode).to.not.equal(0);
+      expect(output).to.include(`runMe (${filePath}:10:11)`);
+    });
 
     it('does not throw on empty files', () => {
       const filePath = join(fixturesRoot, 'empty.ts');
