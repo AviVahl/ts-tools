@@ -14,7 +14,7 @@
     {
       "files": ["*.ts", "*.tsx", "*.mts", "*.cts"],
       "parserOptions": {
-        "project": "packages/*/{src,test}/tsconfig.json",
+        "project": "packages/*/src/tsconfig.json",
         "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true
       },
       "extends": [
