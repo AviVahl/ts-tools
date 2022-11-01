@@ -1,8 +1,9 @@
-import { expect } from 'chai';
+import { describe, it } from 'node:test';
 import { dirname, join, sep } from 'node:path';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import Module from 'node:module';
+import { expect } from 'chai';
 
 const require = Module.createRequire(import.meta.url);
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
@@ -13,9 +14,7 @@ export function runCommand(command: string): { output: string; exitCode: number 
   return { output: output.join('\n'), exitCode: exitCode || 0 };
 }
 
-describe('using node --experimental-loader @ts-tools/esm <file>', function () {
-  this.timeout(5000);
-
+describe('using node --experimental-loader @ts-tools/esm <file>', { timeout: 5_000 }, () => {
   describe('when tsconfig.json is found', () => {
     it('allows using imports (with default interop)', () => {
       const filePath = join(fixturesRoot, 'esm/imports.mts');
