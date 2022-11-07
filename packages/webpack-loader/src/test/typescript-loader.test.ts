@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
+import { equal, notEqual } from 'node:assert';
 import { join, dirname } from 'node:path';
-import { expect } from 'chai';
 import type ts from 'typescript';
 import { bundleWithLoader } from './bundle-with-loader';
 
@@ -12,8 +12,8 @@ describe('webpack loader', { timeout: 10_000 }, () => {
       const entry = join(fixturesRoot, 'file-with-types.ts');
       const { stats, statsText } = await bundleWithLoader({ entry });
 
-      expect(stats.hasErrors(), statsText).to.equal(false);
-      expect(stats.hasWarnings(), statsText).to.equal(false);
+      equal(stats.hasErrors(), false, statsText);
+      equal(stats.hasWarnings(), false, statsText);
     });
 
     it(`allows bundling .tsx files (when specifying jsx: "react-jsx")`, async () => {
@@ -27,8 +27,8 @@ describe('webpack loader', { timeout: 10_000 }, () => {
         },
       });
 
-      expect(stats.hasErrors(), statsText).to.equal(false);
-      expect(stats.hasWarnings(), statsText).to.equal(false);
+      equal(stats.hasErrors(), false, statsText);
+      equal(stats.hasWarnings(), false, statsText);
     });
 
     it(`allows specifying transformers`, async () => {
@@ -49,17 +49,17 @@ describe('webpack loader', { timeout: 10_000 }, () => {
         },
       });
 
-      expect(stats.hasErrors(), statsText).to.equal(false);
-      expect(stats.hasWarnings(), statsText).to.equal(false);
-      expect(transpileCtx?.getCompilerOptions()).to.not.equal(undefined);
+      equal(stats.hasErrors(), false, statsText);
+      equal(stats.hasWarnings(), false, statsText);
+      notEqual(transpileCtx?.getCompilerOptions(), undefined);
     });
 
     it('allows bundling an empty file', async () => {
       const entry = join(fixturesRoot, 'empty.ts');
       const { stats, statsText } = await bundleWithLoader({ entry });
 
-      expect(stats.hasErrors(), statsText).to.equal(false);
-      expect(stats.hasWarnings(), statsText).to.equal(false);
+      equal(stats.hasErrors(), false, statsText);
+      equal(stats.hasWarnings(), false, statsText);
     });
   });
 
@@ -73,8 +73,8 @@ describe('webpack loader', { timeout: 10_000 }, () => {
         },
       });
 
-      expect(stats.hasErrors(), statsText).to.equal(false);
-      expect(stats.hasWarnings(), statsText).to.equal(false);
+      equal(stats.hasErrors(), false, statsText);
+      equal(stats.hasWarnings(), false, statsText);
     });
 
     it(`allows bundling .tsx files (assumes "jsx": "react-jsx" by default)`, async () => {
@@ -86,8 +86,8 @@ describe('webpack loader', { timeout: 10_000 }, () => {
         },
       });
 
-      expect(stats.hasErrors(), statsText).to.equal(false);
-      expect(stats.hasWarnings(), statsText).to.equal(false);
+      equal(stats.hasErrors(), false, statsText);
+      equal(stats.hasWarnings(), false, statsText);
     });
   });
 
@@ -99,8 +99,8 @@ describe('webpack loader', { timeout: 10_000 }, () => {
         options: { configFileName: 'tsconfig.tsc-init.json' },
       });
 
-      expect(stats.hasErrors(), statsText).to.equal(true);
-      expect(stats.hasWarnings(), statsText).to.equal(false);
+      equal(stats.hasErrors(), true, statsText);
+      equal(stats.hasWarnings(), false, statsText);
     });
   });
 });
