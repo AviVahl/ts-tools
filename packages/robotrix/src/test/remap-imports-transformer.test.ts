@@ -1,10 +1,7 @@
 import { describe, it } from 'node:test';
-import chai, { expect } from 'chai';
 import ts from 'typescript';
 import { createRemapImportsTransformer } from '@ts-tools/robotrix';
-import { codeMatchers } from './code-matchers';
-
-chai.use(codeMatchers);
+import { codeEqual } from './code-equal';
 
 describe('RemapImportsTransformer', () => {
   const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
@@ -15,40 +12,46 @@ describe('RemapImportsTransformer', () => {
 
   it('remaps static imports', () => {
     const code = `
-            import {namedSymbol} from "A"
-            import * as namespaceSymbol from "A"
-            import "A"
-            console.log(namedSymbol, namespaceSymbol)
-            `;
+      import {namedSymbol} from "A"
+      import * as namespaceSymbol from "A"
+      import "A"
+      console.log(namedSymbol, namespaceSymbol)
+    `;
 
     const { outputText } = ts.transpileModule(code, {
       transformers: { before: [transformer] },
       compilerOptions,
     });
 
-    expect(outputText).to.matchCode(`
-            import {namedSymbol} from "B"
-            import * as namespaceSymbol from "B"
-            import "B"
-            console.log(namedSymbol, namespaceSymbol)
-        `);
+    codeEqual(
+      outputText,
+      `
+        import {namedSymbol} from "B"
+        import * as namespaceSymbol from "B"
+        import "B"
+        console.log(namedSymbol, namespaceSymbol)
+      `
+    );
   });
 
   it('remaps re-exports', () => {
     const code = `
-            export {someSymbol} from "A"
-            export * from "A"
-        `;
+      export {someSymbol} from "A"
+      export * from "A"
+    `;
 
     const { outputText } = ts.transpileModule(code, {
       transformers: { before: [transformer] },
       compilerOptions,
     });
 
-    expect(outputText).to.matchCode(`
+    codeEqual(
+      outputText,
+      `
             export {someSymbol} from "B"
             export * from "B"
-        `);
+        `
+    );
   });
 
   it('remaps dynamic imports', () => {
@@ -61,9 +64,12 @@ describe('RemapImportsTransformer', () => {
       compilerOptions,
     });
 
-    expect(outputText).to.matchCode(`
+    codeEqual(
+      outputText,
+      `
             import("B").then(console.log)
-        `);
+        `
+    );
   });
 
   it('remaps common js require calls', () => {
@@ -76,8 +82,11 @@ describe('RemapImportsTransformer', () => {
       compilerOptions,
     });
 
-    expect(outputText).to.matchCode(`
+    codeEqual(
+      outputText,
+      `
             require("B")
-        `);
+        `
+    );
   });
 });

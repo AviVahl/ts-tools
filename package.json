@@ -14,7 +14,6 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.3",
     "@types/node": "18",
     "@types/prettier": "^2.7.1",
     "@types/react": "^18.0.25",
@@ -22,7 +21,6 @@
     "@types/source-map-support": "^0.5.6",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
-    "chai": "^4.3.7",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-no-only-tests": "^3.1.0",

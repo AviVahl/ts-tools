@@ -1,10 +1,7 @@
 import { describe, it } from 'node:test';
 import ts from 'typescript';
-import chai, { expect } from 'chai';
 import { createCjsToEsmTransformer } from '@ts-tools/robotrix';
-import { codeMatchers } from './code-matchers';
-
-chai.use(codeMatchers);
+import { codeEqual } from './code-equal';
 
 const cjsDef = `let exports = {}, module = { exports }`;
 const cjsEsmExport = `export default module.exports`;
@@ -22,11 +19,14 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(`
-                ${cjsDef}
-                ${code}
-                ${cjsEsmExport}
-            `);
+      codeEqual(
+        outputText,
+        `
+          ${cjsDef}
+          ${code}
+          ${cjsEsmExport}
+        `
+      );
     });
 
     it(`wraps code using module['exports']`, () => {
@@ -38,11 +38,14 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(`
-                ${cjsDef}
-                ${code}
-                ${cjsEsmExport}
-            `);
+      codeEqual(
+        outputText,
+        `
+          ${cjsDef}
+          ${code}
+          ${cjsEsmExport}
+        `
+      );
     });
 
     it('wraps code using exports.<something>', () => {
@@ -54,11 +57,14 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(`
-                ${cjsDef}
-                ${code}
-                ${cjsEsmExport}
-            `);
+      codeEqual(
+        outputText,
+        `
+          ${cjsDef}
+          ${code}
+          ${cjsEsmExport}
+        `
+      );
     });
 
     it('wraps code using typeof exports', () => {
@@ -70,11 +76,14 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(`
-                ${cjsDef}
-                ${code}
-                ${cjsEsmExport}
-            `);
+      codeEqual(
+        outputText,
+        `
+          ${cjsDef}
+          ${code}
+          ${cjsEsmExport}
+        `
+      );
     });
   });
 
@@ -88,12 +97,15 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(`
-                import _imported_1 from 'some-package'
-                ${cjsDef}
-                module.exports = _imported_1
-                ${cjsEsmExport}
-            `);
+      codeEqual(
+        outputText,
+        `
+          import _imported_1 from 'some-package'
+          ${cjsDef}
+          module.exports = _imported_1
+          ${cjsEsmExport}
+        `
+      );
     });
 
     it('wraps code as cjs even if just require() is used (without exports)', () => {
@@ -105,12 +117,15 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(`
-                import _imported_1 from 'some-package'
-                ${cjsDef}
-                _imported_1
-                ${cjsEsmExport}
-            `);
+      codeEqual(
+        outputText,
+        `
+          import _imported_1 from 'some-package'
+          ${cjsDef}
+          _imported_1
+          ${cjsEsmExport}
+        `
+      );
     });
 
     it('retains package names when variable declaration is detected', () => {
@@ -122,13 +137,16 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(`
-                import myPackage_1 from 'some-package'
-                import b_1 from 'b'
-                ${cjsDef}
-                const myPackage = myPackage_1, b = b_1
-                ${cjsEsmExport}
-            `);
+      codeEqual(
+        outputText,
+        `
+          import myPackage_1 from 'some-package'
+          import b_1 from 'b'
+          ${cjsDef}
+          const myPackage = myPackage_1, b = b_1
+          ${cjsEsmExport}
+        `
+      );
     });
 
     it('does not transform if a require function parameter is detected', () => {
@@ -149,7 +167,7 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(code);
+      codeEqual(outputText, code);
     });
 
     it('does not transform require(...) calls inside a try block', () => {
@@ -165,7 +183,7 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(code);
+      codeEqual(outputText, code);
     });
 
     it('does not transform require(...) if esm is detected', () => {
@@ -181,7 +199,7 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(code);
+      codeEqual(outputText, code);
     });
 
     it('does not transform if shouldTransform returns false', () => {
@@ -199,13 +217,16 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      expect(outputText).to.matchCode(`
-                import a_1 from 'a'
-                ${cjsDef}
-                const a = a_1
-                const b = require('b')
-                ${cjsEsmExport}
-            `);
+      codeEqual(
+        outputText,
+        `
+          import a_1 from 'a'
+          ${cjsDef}
+          const a = a_1
+          const b = require('b')
+          ${cjsEsmExport}
+        `
+      );
     });
   });
 });

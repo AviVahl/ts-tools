@@ -1,5 +1,5 @@
 import { describe, it } from 'node:test';
-import { equal, notEqual, ok } from 'node:assert';
+import { equal, notEqual, ok } from 'node:assert/strict';
 import { join, sep, dirname } from 'node:path';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';

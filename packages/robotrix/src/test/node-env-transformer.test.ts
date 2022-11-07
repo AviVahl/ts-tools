@@ -1,10 +1,7 @@
 import { describe, it } from 'node:test';
-import chai, { expect } from 'chai';
 import ts from 'typescript';
 import { createNodeEnvTransformer } from '@ts-tools/robotrix';
-import { codeMatchers } from './code-matchers';
-
-chai.use(codeMatchers);
+import { codeEqual } from './code-equal';
 
 describe('NodeEnvTransformer', () => {
   it('replaces process.env.[PARAM] using provided dictionary', () => {
@@ -13,7 +10,7 @@ describe('NodeEnvTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    expect(outputText).to.matchCode(`"TEST" || "SOMEVALUE"`);
+    codeEqual(outputText, `"TEST" || "SOMEVALUE"`);
   });
 
   it('replaces keys pointing to empty strings', () => {
@@ -21,7 +18,7 @@ describe('NodeEnvTransformer', () => {
     const code = `process.env.EMPTY`;
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    expect(outputText).to.matchCode(`""`);
+    codeEqual(outputText, `""`);
   });
 
   it('does not replace unmapped keys', () => {
@@ -29,7 +26,7 @@ describe('NodeEnvTransformer', () => {
     const code = `process.env.NOT_MAPPED`;
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    expect(outputText).to.matchCode(code);
+    codeEqual(outputText, code);
   });
 
   it('does not replace keys pointing to undefined', () => {
@@ -37,7 +34,7 @@ describe('NodeEnvTransformer', () => {
     const code = `process.env.NOOP`;
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    expect(outputText).to.matchCode(code);
+    codeEqual(outputText, code);
   });
 
   it('does not replace inherited Object attributes', () => {
@@ -45,6 +42,6 @@ describe('NodeEnvTransformer', () => {
     const code = `process.env.toString`;
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    expect(outputText).to.matchCode(code);
+    codeEqual(outputText, code);
   });
 });

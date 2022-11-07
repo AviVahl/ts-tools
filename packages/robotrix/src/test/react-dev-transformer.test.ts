@@ -1,10 +1,7 @@
 import { describe, it } from 'node:test';
-import chai, { expect } from 'chai';
 import ts from 'typescript';
 import { reactDevTransformer } from '@ts-tools/robotrix';
-import { codeMatchers } from './code-matchers';
-
-chai.use(codeMatchers);
+import { codeEqual } from './code-equal';
 
 describe('ReactDevTransformer', () => {
   const transformers: ts.CustomTransformers = { before: [reactDevTransformer] };
@@ -21,12 +18,15 @@ describe('ReactDevTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
 
-    expect(outputText).to.matchCode(`
+    codeEqual(
+      outputText,
+      `
             ${jsxFileNameDef}
             (<div __self={this} __source={{ fileName: __jsxFileName, lineNumber: 2 }}>
                 <span __self={this} __source={{ fileName: __jsxFileName, lineNumber: 3 }} />
             </div>)
-        `);
+        `
+    );
   });
 
   it('adds attributes to jsx elements inside jsx attributes', () => {
@@ -38,13 +38,16 @@ describe('ReactDevTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
 
-    expect(outputText).to.matchCode(`
+    codeEqual(
+      outputText,
+      `
             ${jsxFileNameDef}
             (<div
                 icon={<p __self={this} __source={{ fileName: __jsxFileName, lineNumber: 3 }} />}
                 __self={this}
                 __source={{ fileName: __jsxFileName, lineNumber: 2 }} />)
-        `);
+        `
+    );
   });
 
   it('does not override existing __source attribute set by user', () => {
@@ -52,7 +55,7 @@ describe('ReactDevTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
 
-    expect(outputText).to.matchCode(`(<div __source="custom value" __self={this} />)`);
+    codeEqual(outputText, `(<div __source="custom value" __self={this} />)`);
   });
 
   it('does not override existing __self attribute set by user', () => {
@@ -60,9 +63,12 @@ describe('ReactDevTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
 
-    expect(outputText).to.matchCode(`
+    codeEqual(
+      outputText,
+      `
             ${jsxFileNameDef}
             (<div __self="custom value" __source={{ fileName: __jsxFileName, lineNumber: 1 }} />)
-        `);
+        `
+    );
   });
 });

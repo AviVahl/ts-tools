@@ -1,5 +1,5 @@
 import { describe, it } from 'node:test';
-import { equal, notEqual } from 'node:assert';
+import { equal, notEqual } from 'node:assert/strict';
 import { join, dirname } from 'node:path';
 import type ts from 'typescript';
 import { bundleWithLoader } from './bundle-with-loader';
