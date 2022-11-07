@@ -1,11 +1,11 @@
 import { describe, it } from 'node:test';
+import { equal, notEqual } from 'node:assert';
 import { dirname, join, sep } from 'node:path';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import Module from 'node:module';
-import { expect } from 'chai';
+import { createRequire } from 'node:module';
 
-const require = Module.createRequire(import.meta.url);
+const require = createRequire(import.meta.url);
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
 
 export function runCommand(command: string): { output: string; exitCode: number } {
@@ -21,9 +21,9 @@ describe('using node --experimental-loader @ts-tools/esm <file>', { timeout: 5_0
 
       const { output, exitCode } = runCommand(`node --experimental-loader @ts-tools/esm ${filePath}`);
 
-      expect(exitCode).to.equal(0);
-      expect(output).to.include(`Current platform is: ${platform()}`);
-      expect(output).to.include(`Path separator is: ${sep}`);
+      equal(exitCode, 0, output);
+      equal(output.includes(`Current platform is: ${platform()}`), true);
+      equal(output.includes(`Path separator is: ${sep}`), true);
     });
 
     it('maps stack traces using source maps when specifying --enable-source-maps', () => {
@@ -33,8 +33,8 @@ describe('using node --experimental-loader @ts-tools/esm <file>', { timeout: 5_0
         `node --experimental-loader @ts-tools/esm --enable-source-maps ${filePath}`
       );
 
-      expect(exitCode).to.not.equal(0);
-      expect(output).to.include(`runMe (${filePath}:10:11)`);
+      notEqual(exitCode, 0, output);
+      equal(output.includes(`runMe (${filePath}:10:11)`), true);
     });
 
     it('does not throw on empty files', () => {
@@ -42,7 +42,7 @@ describe('using node --experimental-loader @ts-tools/esm <file>', { timeout: 5_0
 
       const { exitCode, output } = runCommand(`node --experimental-loader @ts-tools/esm ${filePath}`);
 
-      expect(exitCode, output).to.equal(0);
+      equal(exitCode, 0, output);
     });
   });
 });
