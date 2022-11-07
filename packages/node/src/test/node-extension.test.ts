@@ -1,8 +1,8 @@
 import { describe, it } from 'node:test';
+import { equal, notEqual, ok } from 'node:assert';
 import { join, sep, dirname } from 'node:path';
 import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { expect } from 'chai';
 
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
 
@@ -19,9 +19,9 @@ describe('using node -r @ts-tools/node/r <file>', { timeout: 5_000 }, () => {
 
       const { output, exitCode } = runCommand(`node -r @ts-tools/node/r ${filePath}`);
 
-      expect(exitCode).to.equal(0);
-      expect(output).to.include(`Current platform is: ${platform()}`);
-      expect(output).to.include(`Path separator is: ${sep}`);
+      equal(exitCode, 0, output);
+      ok(output.includes(`Current platform is: ${platform()}`), output);
+      ok(output.includes(`Path separator is: ${sep}`), output);
     });
 
     it('maps stack traces using source maps', () => {
@@ -29,8 +29,8 @@ describe('using node -r @ts-tools/node/r <file>', { timeout: 5_000 }, () => {
 
       const { output, exitCode } = runCommand(`node -r @ts-tools/node/r ${filePath}`);
 
-      expect(exitCode).to.not.equal(0);
-      expect(output).to.include(`runMe (${filePath}:10:11)`);
+      notEqual(exitCode, 0, output);
+      ok(output.includes(`runMe (${filePath}:10:11)`), output);
     });
 
     it('maps stack traces using source maps when specifying --enable-source-maps', () => {
@@ -38,8 +38,8 @@ describe('using node -r @ts-tools/node/r <file>', { timeout: 5_000 }, () => {
 
       const { output, exitCode } = runCommand(`node -r @ts-tools/node/r --enable-source-maps ${filePath}`);
 
-      expect(exitCode).to.not.equal(0);
-      expect(output).to.include(`runMe (${filePath}:10:11)`);
+      notEqual(exitCode, 0, output);
+      ok(output.includes(`runMe (${filePath}:10:11)`), output);
     });
 
     it('does not throw on empty files', () => {
@@ -47,7 +47,7 @@ describe('using node -r @ts-tools/node/r <file>', { timeout: 5_000 }, () => {
 
       const { exitCode, output } = runCommand(`node -r @ts-tools/node/r ${filePath}`);
 
-      expect(exitCode, output).to.equal(0);
+      equal(exitCode, 0, output);
     });
 
     it('handles tsx as react ("jsx" is specified)', () => {
@@ -55,8 +55,8 @@ describe('using node -r @ts-tools/node/r <file>', { timeout: 5_000 }, () => {
 
       const { exitCode, output } = runCommand(`node -r @ts-tools/node/r ${filePath}`);
 
-      expect(exitCode, output).to.equal(0);
-      expect(output).to.include(`<div style="width:10px;height:20px"></div>`);
+      equal(exitCode, 0, output);
+      ok(output.includes(`<div style="width:10px;height:20px"></div>`), output);
     });
   });
 
@@ -66,9 +66,9 @@ describe('using node -r @ts-tools/node/r <file>', { timeout: 5_000 }, () => {
 
       const { output, exitCode } = runCommand(`node -r @ts-tools/node/r ${filePath}`);
 
-      expect(exitCode).to.equal(0);
-      expect(output).to.include(`Current platform is: ${platform()}`);
-      expect(output).to.include(`Path separator is: ${sep}`);
+      equal(exitCode, 0, output);
+      ok(output.includes(`Current platform is: ${platform()}`), output);
+      ok(output.includes(`Path separator is: ${sep}`), output);
     });
 
     it(`fails running .tsx files ("jsx" is not set by default)`, () => {
@@ -77,8 +77,8 @@ describe('using node -r @ts-tools/node/r <file>', { timeout: 5_000 }, () => {
 
       const { exitCode, output } = runCommand(`node -r ${registerTscInitConfig} ${filePath}`);
 
-      expect(exitCode, output).to.equal(1);
-      expect(output).to.include(`Unexpected token`);
+      equal(exitCode, 1, output);
+      ok(output.includes(`Unexpected token`), output);
     });
   });
 });
