@@ -22,7 +22,7 @@
     "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.47.1",
     "eslint": "^8.31.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-no-only-tests": "^3.1.0",
     "memfs": "^3.4.12",
     "prettier": "^2.8.1",
