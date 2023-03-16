@@ -86,7 +86,6 @@ function transformSourceFile(
 
       newImports.push(
         factory.createImportDeclaration(
-          undefined /* decorators */,
           undefined /* modifiers */,
           factory.createImportClause(false, importIdentifier, undefined /* namedBindings */),
           node.arguments[0]!

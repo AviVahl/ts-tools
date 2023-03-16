@@ -31,7 +31,7 @@ export interface CreateLoaderOptions {
   cwd: string;
 }
 
-const definitionExtensions = new Set([Extension.Dts, Extension.Dcts, Extension.Dmts]);
+const definitionExtensions = new Set<string>([Extension.Dts, Extension.Dcts, Extension.Dmts]);
 
 export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
   const moduleResolutionCache = ts.createModuleResolutionCache(

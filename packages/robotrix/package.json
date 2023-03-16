@@ -7,7 +7,7 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "typescript": ">=4"
+    "typescript": ">=4.9"
   },
   "files": [
     "dist",

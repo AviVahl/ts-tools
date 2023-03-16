@@ -40,8 +40,7 @@ export function remapSourceFileImports(
       if (originalTarget !== remappedTarget) {
         return factory.updateImportDeclaration(
           node,
-          node.decorators,
-          node.modifiers,
+          ts.getModifiers(node),
           node.importClause,
           factory.createStringLiteral(remappedTarget),
           node.assertClause
@@ -53,8 +52,7 @@ export function remapSourceFileImports(
       if (originalTarget !== remappedTarget) {
         return factory.updateExportDeclaration(
           node,
-          node.decorators,
-          node.modifiers,
+          ts.getModifiers(node),
           node.isTypeOnly,
           node.exportClause,
           factory.createStringLiteral(remappedTarget),
