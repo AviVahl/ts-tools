@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "clean": "rimraf ./packages/*/dist",
+    "clean": "rimraf -g \"./packages/*/dist\"",
     "build": "tsc --build",
     "watch": "npm run build -- -w",
     "pretest": "npm run lint && npm run build",
