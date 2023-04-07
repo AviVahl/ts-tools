@@ -23,7 +23,7 @@
     "eslint": "^8.37.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-no-only-tests": "^3.1.0",
-    "memfs": "^3.4.13",
+    "memfs": "^3.5.0",
     "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
