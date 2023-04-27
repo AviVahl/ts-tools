@@ -29,7 +29,7 @@
     "react-dom": "^18.2.0",
     "rimraf": "^5.0.0",
     "typescript": "~5.0.4",
-    "webpack": "^5.80.0"
+    "webpack": "^5.81.0"
   },
   "engines": {
     "node": ">=16",
