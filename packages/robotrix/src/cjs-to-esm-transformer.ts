@@ -29,7 +29,7 @@ export interface ICjsToEsmTransformerOptions {
  * with a unique identifier.
  */
 export function createCjsToEsmTransformer(
-  options: ICjsToEsmTransformerOptions = {}
+  options: ICjsToEsmTransformerOptions = {},
 ): ts.TransformerFactory<ts.SourceFile> {
   return (context) =>
     (sourceFile: ts.SourceFile): ts.SourceFile =>
@@ -39,7 +39,7 @@ export function createCjsToEsmTransformer(
 function transformSourceFile(
   sourceFile: ts.SourceFile,
   context: ts.TransformationContext,
-  { shouldTransform = () => true }: ICjsToEsmTransformerOptions
+  { shouldTransform = () => true }: ICjsToEsmTransformerOptions,
 ): ts.SourceFile {
   if (sourceFile.statements.some((node) => ts.isImportDeclaration(node) || ts.isExportDeclaration(node))) {
     // file has esm, so avoid cjs conversion.
@@ -88,8 +88,8 @@ function transformSourceFile(
         factory.createImportDeclaration(
           undefined /* modifiers */,
           factory.createImportClause(false, importIdentifier, undefined /* namedBindings */),
-          node.arguments[0]!
-        )
+          node.arguments[0]!,
+        ),
       );
 
       // replace require call with identifier
@@ -103,7 +103,7 @@ function transformSourceFile(
 // export default module.exports
 function createCjsExportDefault(factory: ts.NodeFactory) {
   return factory.createExportDefault(
-    factory.createPropertyAccessExpression(factory.createIdentifier('module'), 'exports')
+    factory.createPropertyAccessExpression(factory.createIdentifier('module'), 'exports'),
   );
 }
 
@@ -130,17 +130,17 @@ function createCjsModuleDefinition(factory: ts.NodeFactory) {
           'exports',
           undefined /* exclamationToken */,
           undefined /* type */,
-          factory.createObjectLiteralExpression()
+          factory.createObjectLiteralExpression(),
         ),
         factory.createVariableDeclaration(
           'module',
           undefined /* exclamationToken */,
           undefined /* type */,
-          factory.createObjectLiteralExpression([factory.createShorthandPropertyAssignment('exports')])
+          factory.createObjectLiteralExpression([factory.createShorthandPropertyAssignment('exports')]),
         ),
       ],
-      ts.NodeFlags.Let
-    )
+      ts.NodeFlags.Let,
+    ),
   );
 }
 

@@ -9,7 +9,7 @@ describe('ReactDevTransformer', () => {
   const fileName = '/path/to/test-file.tsx';
   const jsxFileNameDef = `const __jsxFileName = "${fileName}";`;
 
-  it('adds __self and __source attributes to jsx elements', () => {
+  it('adds __self and __source attributes to jsx elements', async () => {
     const code = `
             (<div>
                 <span />
@@ -18,18 +18,18 @@ describe('ReactDevTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
             ${jsxFileNameDef}
             (<div __self={this} __source={{ fileName: __jsxFileName, lineNumber: 2 }}>
                 <span __self={this} __source={{ fileName: __jsxFileName, lineNumber: 3 }} />
             </div>)
-        `
+        `,
     );
   });
 
-  it('adds attributes to jsx elements inside jsx attributes', () => {
+  it('adds attributes to jsx elements inside jsx attributes', async () => {
     const code = `
             (<div
                 icon={<p />}
@@ -38,7 +38,7 @@ describe('ReactDevTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
             ${jsxFileNameDef}
@@ -46,29 +46,29 @@ describe('ReactDevTransformer', () => {
                 icon={<p __self={this} __source={{ fileName: __jsxFileName, lineNumber: 3 }} />}
                 __self={this}
                 __source={{ fileName: __jsxFileName, lineNumber: 2 }} />)
-        `
+        `,
     );
   });
 
-  it('does not override existing __source attribute set by user', () => {
+  it('does not override existing __source attribute set by user', async () => {
     const code = `(<div __source="custom value" />) `;
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
 
-    codeEqual(outputText, `(<div __source="custom value" __self={this} />)`);
+    await codeEqual(outputText, `(<div __source="custom value" __self={this} />)`);
   });
 
-  it('does not override existing __self attribute set by user', () => {
+  it('does not override existing __self attribute set by user', async () => {
     const code = `(<div __self="custom value" />) `;
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
             ${jsxFileNameDef}
             (<div __self="custom value" __source={{ fileName: __jsxFileName, lineNumber: 1 }} />)
-        `
+        `,
     );
   });
 });

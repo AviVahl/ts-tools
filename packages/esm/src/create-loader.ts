@@ -16,14 +16,14 @@ export type ModuleFormat = 'builtin' | 'commonjs' | 'json' | 'module' | 'wasm';
 export type ResolveHook = (
   specifier: string,
   context: { parentURL?: string; conditions: string[] },
-  defaultResolve: ResolveHook
+  defaultResolve: ResolveHook,
 ) => { url: string; format?: ModuleFormat };
 
 /** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#loadurl-context-defaultload */
 export type LoadHook = (
   url: string,
   context: { format?: ModuleFormat },
-  defaultTransformSource: LoadHook
+  defaultTransformSource: LoadHook,
 ) => { source: string | SharedArrayBuffer | Uint8Array; format: ModuleFormat; shortCircuit?: boolean };
 
 export interface CreateLoaderOptions {
@@ -37,7 +37,7 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
   const moduleResolutionCache = ts.createModuleResolutionCache(
     cwd,
     ts.sys.useCaseSensitiveFileNames ? (s) => s : (s) => s.toLowerCase(),
-    compilerOptions
+    compilerOptions,
   );
   const resolve: ResolveHook = (specifier, context, defaultResolve) => {
     const { parentURL } = context;
@@ -47,7 +47,7 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
         fileURLToPath(parentURL),
         compilerOptions,
         ts.sys,
-        moduleResolutionCache
+        moduleResolutionCache,
       );
 
       if (resolvedModule && !definitionExtensions.has(resolvedModule.extension)) {

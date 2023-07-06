@@ -25,7 +25,7 @@ export function calcSha1(data: string): string {
 // eslint-disable-next-line
 export function createCachedFn<FN extends (...args: any[]) => unknown>(
   fn: FN,
-  argsToCacheKey: (...args: Parameters<FN>) => string
+  argsToCacheKey: (...args: Parameters<FN>) => string,
 ): [FN, Map<string, ReturnType<FN>>] {
   const cache = new Map<string, ReturnType<FN>>();
   const cachedFn = (...args: Parameters<FN>) => {

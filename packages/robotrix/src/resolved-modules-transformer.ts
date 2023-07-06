@@ -22,7 +22,7 @@ export function resolvedModulesTransformer(context: ts.TransformationContext): t
 function remapImportsToResolvedModules(
   request: string,
   _containingFile: string,
-  { resolvedModules }: ResolvedSourceFile
+  { resolvedModules }: ResolvedSourceFile,
 ) {
   if (!resolvedModules || request.startsWith('./') || request.startsWith('../')) {
     // relative request or no typescript mapping.

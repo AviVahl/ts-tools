@@ -25,7 +25,7 @@ export function reactDevTransformer(context: ts.TransformationContext): ts.Trans
     // file-wide unique identifier that would point to the fileName string literal
     const jsxFileNameIdentifier = factory.createUniqueName(
       JSX_FILENAME,
-      ts.GeneratedIdentifierFlags.Optimistic | ts.GeneratedIdentifierFlags.FileLevel
+      ts.GeneratedIdentifierFlags.Optimistic | ts.GeneratedIdentifierFlags.FileLevel,
     );
 
     // fist run the visitor, so it will mark whether we need to add fileName const declaration
@@ -92,7 +92,7 @@ function findUserDefinedAttributes(node: ts.JsxAttributes) {
 function createSelfAttribute(factory: ts.NodeFactory): ts.JsxAttribute {
   return factory.createJsxAttribute(
     factory.createIdentifier(SELF),
-    factory.createJsxExpression(undefined, factory.createThis())
+    factory.createJsxExpression(undefined, factory.createThis()),
   );
 }
 
@@ -100,7 +100,7 @@ function createSelfAttribute(factory: ts.NodeFactory): ts.JsxAttribute {
 function createSourceAttribute(locationObj: ts.ObjectLiteralExpression, factory: ts.NodeFactory): ts.JsxAttribute {
   return factory.createJsxAttribute(
     factory.createIdentifier(SOURCE),
-    factory.createJsxExpression(undefined, locationObj)
+    factory.createJsxExpression(undefined, locationObj),
   );
 }
 
@@ -109,7 +109,7 @@ function createLocationObject(jsxFileNameIdentifier: ts.Identifier, line: number
   return factory.createObjectLiteralExpression([
     factory.createPropertyAssignment(
       'fileName',
-      jsxFileNameIdentifier // use the file-wide identifier for fileName value
+      jsxFileNameIdentifier, // use the file-wide identifier for fileName value
     ),
     factory.createPropertyAssignment('lineNumber', factory.createNumericLiteral(String(line + 1))),
   ]);
@@ -120,14 +120,14 @@ function addFileNameConst(
   sourceFile: ts.SourceFile,
   jsxFileNameIdentifier: ts.Identifier,
   fileName: string,
-  factory: ts.NodeFactory
+  factory: ts.NodeFactory,
 ): ts.SourceFile {
   const variableDecls = [
     factory.createVariableDeclaration(
       jsxFileNameIdentifier,
       undefined /* exclamationToken */,
       undefined /* type */,
-      factory.createStringLiteral(fileName)
+      factory.createStringLiteral(fileName),
     ),
   ];
 
@@ -135,9 +135,9 @@ function addFileNameConst(
     sourceFile,
     factory.createVariableStatement(
       undefined /* modifiers */,
-      factory.createVariableDeclarationList(variableDecls, ts.NodeFlags.Const)
+      factory.createVariableDeclarationList(variableDecls, ts.NodeFlags.Const),
     ),
-    factory
+    factory,
   );
 }
 
@@ -145,7 +145,7 @@ function addFileNameConst(
 function insertStatementAfterImports(
   sourceFile: ts.SourceFile,
   statement: ts.Statement,
-  factory: ts.NodeFactory
+  factory: ts.NodeFactory,
 ): ts.SourceFile {
   const { statements } = sourceFile;
 

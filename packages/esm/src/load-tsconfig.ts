@@ -10,7 +10,7 @@ export function loadTsconfig(tsconfigPath: string): ts.CompilerOptions {
   const { options } = ts.parseJsonSourceFileConfigFileContent(
     ts.readJsonConfigFile(tsconfigPath, ts.sys.readFile),
     ts.sys,
-    dirname(tsconfigPath)
+    dirname(tsconfigPath),
   );
   if (options.module === undefined || options.module < ts.ModuleKind.ES2015) {
     options.module = ts.ModuleKind.Node16;

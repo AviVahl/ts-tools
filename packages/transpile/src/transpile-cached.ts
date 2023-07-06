@@ -28,7 +28,7 @@ export function transpileCached(options: ITranspileCachedOptions): ts.TranspileO
 
   const transpiledOutput = ts.transpileModule(
     typeof fileContents === 'string' ? fileContents : readFileSync(filePath, 'utf8'),
-    options
+    options,
   );
 
   writeCacheFileSync(cacheFilePath, {

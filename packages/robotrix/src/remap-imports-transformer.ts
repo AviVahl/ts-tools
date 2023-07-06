@@ -18,7 +18,7 @@ export function createRemapImportsTransformer({
 export function remapSourceFileImports(
   sourceFile: ts.SourceFile,
   context: ts.TransformationContext,
-  remapTarget: IRemapImportsTransformerOptions['remapTarget']
+  remapTarget: IRemapImportsTransformerOptions['remapTarget'],
 ): ts.SourceFile {
   const { factory } = context;
   const { fileName } = sourceFile;
@@ -43,7 +43,7 @@ export function remapSourceFileImports(
           ts.getModifiers(node),
           node.importClause,
           factory.createStringLiteral(remappedTarget),
-          node.assertClause
+          node.assertClause,
         );
       }
     } else if (ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
@@ -56,7 +56,7 @@ export function remapSourceFileImports(
           node.isTypeOnly,
           node.exportClause,
           factory.createStringLiteral(remappedTarget),
-          node.assertClause
+          node.assertClause,
         );
       }
     }

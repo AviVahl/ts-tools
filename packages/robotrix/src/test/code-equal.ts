@@ -3,8 +3,8 @@ import prettier from 'prettier';
 
 const prettierOptions = { parser: 'typescript', endOfLine: 'lf' } as const;
 
-export function codeEqual(actualCode: string, expectedCode: string) {
-  actualCode = prettier.format(actualCode, prettierOptions);
-  expectedCode = prettier.format(expectedCode, prettierOptions);
+export async function codeEqual(actualCode: string, expectedCode: string) {
+  actualCode = await prettier.format(actualCode, prettierOptions);
+  expectedCode = await prettier.format(expectedCode, prettierOptions);
   equal(actualCode, expectedCode);
 }

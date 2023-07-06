@@ -10,7 +10,7 @@ describe('RemapImportsTransformer', () => {
     remapTarget: (target) => (target === 'A' ? 'B' : target),
   });
 
-  it('remaps static imports', () => {
+  it('remaps static imports', async () => {
     const code = `
       import {namedSymbol} from "A"
       import * as namespaceSymbol from "A"
@@ -23,18 +23,18 @@ describe('RemapImportsTransformer', () => {
       compilerOptions,
     });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
         import {namedSymbol} from "B"
         import * as namespaceSymbol from "B"
         import "B"
         console.log(namedSymbol, namespaceSymbol)
-      `
+      `,
     );
   });
 
-  it('remaps re-exports', () => {
+  it('remaps re-exports', async () => {
     const code = `
       export {someSymbol} from "A"
       export * from "A"
@@ -45,16 +45,16 @@ describe('RemapImportsTransformer', () => {
       compilerOptions,
     });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
             export {someSymbol} from "B"
             export * from "B"
-        `
+        `,
     );
   });
 
-  it('remaps dynamic imports', () => {
+  it('remaps dynamic imports', async () => {
     const code = `
             import("A").then(console.log)
         `;
@@ -64,15 +64,15 @@ describe('RemapImportsTransformer', () => {
       compilerOptions,
     });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
             import("B").then(console.log)
-        `
+        `,
     );
   });
 
-  it('remaps common js require calls', () => {
+  it('remaps common js require calls', async () => {
     const code = `
             require("A")
         `;
@@ -82,11 +82,11 @@ describe('RemapImportsTransformer', () => {
       compilerOptions,
     });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
             require("B")
-        `
+        `,
     );
   });
 });

@@ -140,7 +140,7 @@ export function createNodeExtension({
     // couldn't find a cache directory, so fall back to a non-caching implementation
     return createTransformerExtension(
       (filePath) =>
-        ts.transpileModule(readFileSync(filePath, 'utf8'), { fileName: filePath, compilerOptions }).outputText
+        ts.transpileModule(readFileSync(filePath, 'utf8'), { fileName: filePath, compilerOptions }).outputText,
     );
   }
 
@@ -175,7 +175,7 @@ export function createNodeExtension({
         cacheDirectoryPath: optionsScopedCachePath,
         fileName: filePath,
         compilerOptions,
-      }).outputText
+      }).outputText,
   );
 }
 

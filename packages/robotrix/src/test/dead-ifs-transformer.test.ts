@@ -7,7 +7,7 @@ describe('DeadIfsTransformer', () => {
   const transformers: ts.CustomTransformers = { before: [deadIfsTransformer] };
   const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
 
-  it('detects if (true) and cancels else branch', () => {
+  it('detects if (true) and cancels else branch', async () => {
     const code = `
         if (true) {
             shouldBeKept
@@ -18,17 +18,17 @@ describe('DeadIfsTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
         if (true) {
             shouldBeKept
         }
-      `
+      `,
     );
   });
 
-  it('detects if (false) and cancels then branch', () => {
+  it('detects if (false) and cancels then branch', async () => {
     const code = `
       if (false) {
           shouldBeRemoved
@@ -39,18 +39,18 @@ describe('DeadIfsTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
         if (false) { }
         else {
             shouldBeKept
         }
-      `
+      `,
     );
   });
 
-  it('checks `else if` as well', () => {
+  it('checks `else if` as well', async () => {
     const code = `
       if (false) {
           shouldBeRemoved
@@ -63,19 +63,19 @@ describe('DeadIfsTransformer', () => {
 
     const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
-    codeEqual(
+    await codeEqual(
       outputText,
       `
         if (false) { }
         else if (true) {
             shouldBeKept
         }
-      `
+      `,
     );
   });
 
   describe('string equality checks', () => {
-    it('handles === when strings are equal', () => {
+    it('handles === when strings are equal', async () => {
       const code = `
         if ('same' === 'same') {
             shouldBeKept
@@ -86,17 +86,17 @@ describe('DeadIfsTransformer', () => {
 
       const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           if (true) {
               shouldBeKept
           }
-        `
+        `,
       );
     });
 
-    it('handles === when actual strings are not equal', () => {
+    it('handles === when actual strings are not equal', async () => {
       const code = `
         if ('text' === 'another') {
             shouldBeRemoved
@@ -107,18 +107,18 @@ describe('DeadIfsTransformer', () => {
 
       const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           if (false) { }
           else {
               shouldBeKept
           }
-        `
+        `,
       );
     });
 
-    it('handles !== when actual strings are equal', () => {
+    it('handles !== when actual strings are equal', async () => {
       const code = `
         if ('same' !== 'same') {
             shouldBeRemoved
@@ -129,18 +129,18 @@ describe('DeadIfsTransformer', () => {
 
       const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           if (false) { }
           else {
               shouldBeKept
           }
-        `
+        `,
       );
     });
 
-    it('handles !== when actual strings are not equal', () => {
+    it('handles !== when actual strings are not equal', async () => {
       const code = `
         if ('text' !== 'another') {
             shouldBeKept
@@ -151,13 +151,13 @@ describe('DeadIfsTransformer', () => {
 
       const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           if (true) {
               shouldBeKept
           }
-        `
+        `,
       );
     });
   });

@@ -10,7 +10,7 @@ describe('CjsToEsmTransformer', () => {
   const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
 
   describe('wrapping of exports', () => {
-    it('wraps code using module.exports', () => {
+    it('wraps code using module.exports', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `module.exports = 123`;
 
@@ -19,17 +19,17 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           ${cjsDef}
           ${code}
           ${cjsEsmExport}
-        `
+        `,
       );
     });
 
-    it(`wraps code using module['exports']`, () => {
+    it(`wraps code using module['exports']`, async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `module['exports'] = 123`;
 
@@ -38,17 +38,17 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           ${cjsDef}
           ${code}
           ${cjsEsmExport}
-        `
+        `,
       );
     });
 
-    it('wraps code using exports.<something>', () => {
+    it('wraps code using exports.<something>', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `exports.do = 123`;
 
@@ -57,17 +57,17 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           ${cjsDef}
           ${code}
           ${cjsEsmExport}
-        `
+        `,
       );
     });
 
-    it('wraps code using typeof exports', () => {
+    it('wraps code using typeof exports', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `typeof exports`;
 
@@ -76,19 +76,19 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           ${cjsDef}
           ${code}
           ${cjsEsmExport}
-        `
+        `,
       );
     });
   });
 
   describe('handling require(...) calls', () => {
-    it('transforms require calls to default imports and wraps code as cjs', () => {
+    it('transforms require calls to default imports and wraps code as cjs', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `module.exports = require('some-package')`;
 
@@ -97,18 +97,18 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           import _imported_1 from 'some-package'
           ${cjsDef}
           module.exports = _imported_1
           ${cjsEsmExport}
-        `
+        `,
       );
     });
 
-    it('wraps code as cjs even if just require() is used (without exports)', () => {
+    it('wraps code as cjs even if just require() is used (without exports)', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `require('some-package')`;
 
@@ -117,18 +117,18 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           import _imported_1 from 'some-package'
           ${cjsDef}
           _imported_1
           ${cjsEsmExport}
-        `
+        `,
       );
     });
 
-    it('retains package names when variable declaration is detected', () => {
+    it('retains package names when variable declaration is detected', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `const myPackage = require('some-package'), b = require('b')`;
 
@@ -137,7 +137,7 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           import myPackage_1 from 'some-package'
@@ -145,11 +145,11 @@ describe('CjsToEsmTransformer', () => {
           ${cjsDef}
           const myPackage = myPackage_1, b = b_1
           ${cjsEsmExport}
-        `
+        `,
       );
     });
 
-    it('does not transform if a require function parameter is detected', () => {
+    it('does not transform if a require function parameter is detected', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `
                 function test(require) {
@@ -167,10 +167,10 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(outputText, code);
+      await codeEqual(outputText, code);
     });
 
-    it('does not transform require(...) calls inside a try block', () => {
+    it('does not transform require(...) calls inside a try block', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `
                 try {
@@ -183,10 +183,10 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(outputText, code);
+      await codeEqual(outputText, code);
     });
 
-    it('does not transform require(...) if esm is detected', () => {
+    it('does not transform require(...) if esm is detected', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `
                 import { someSymbol } from 'somewhere'
@@ -199,10 +199,10 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(outputText, code);
+      await codeEqual(outputText, code);
     });
 
-    it('does not transform if shouldTransform returns false', () => {
+    it('does not transform if shouldTransform returns false', async () => {
       const transformer = createCjsToEsmTransformer({
         shouldTransform: (lib) => lib === 'a',
       });
@@ -217,7 +217,7 @@ describe('CjsToEsmTransformer', () => {
         compilerOptions,
       });
 
-      codeEqual(
+      await codeEqual(
         outputText,
         `
           import a_1 from 'a'
@@ -225,7 +225,7 @@ describe('CjsToEsmTransformer', () => {
           const a = a_1
           const b = require('b')
           ${cjsEsmExport}
-        `
+        `,
       );
     });
   });

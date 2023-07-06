@@ -4,44 +4,44 @@ import { createNodeEnvTransformer } from '@ts-tools/robotrix';
 import { codeEqual } from './code-equal';
 
 describe('NodeEnvTransformer', () => {
-  it('replaces process.env.[PARAM] using provided dictionary', () => {
+  it('replaces process.env.[PARAM] using provided dictionary', async () => {
     const transformer = createNodeEnvTransformer({ NODE_ENV: 'TEST', PARAM2: 'SOMEVALUE' });
     const code = `process.env.NODE_ENV || process.env.PARAM2`;
 
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    codeEqual(outputText, `"TEST" || "SOMEVALUE"`);
+    await codeEqual(outputText, `"TEST" || "SOMEVALUE"`);
   });
 
-  it('replaces keys pointing to empty strings', () => {
+  it('replaces keys pointing to empty strings', async () => {
     const transformer = createNodeEnvTransformer({ EMPTY: '' });
     const code = `process.env.EMPTY`;
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    codeEqual(outputText, `""`);
+    await codeEqual(outputText, `""`);
   });
 
-  it('does not replace unmapped keys', () => {
+  it('does not replace unmapped keys', async () => {
     const transformer = createNodeEnvTransformer({});
     const code = `process.env.NOT_MAPPED`;
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    codeEqual(outputText, code);
+    await codeEqual(outputText, code);
   });
 
-  it('does not replace keys pointing to undefined', () => {
+  it('does not replace keys pointing to undefined', async () => {
     const transformer = createNodeEnvTransformer({ NOOP: undefined });
     const code = `process.env.NOOP`;
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    codeEqual(outputText, code);
+    await codeEqual(outputText, code);
   });
 
-  it('does not replace inherited Object attributes', () => {
+  it('does not replace inherited Object attributes', async () => {
     const transformer = createNodeEnvTransformer({});
     const code = `process.env.toString`;
     const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
-    codeEqual(outputText, code);
+    await codeEqual(outputText, code);
   });
 });

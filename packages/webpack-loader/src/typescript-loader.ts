@@ -18,7 +18,7 @@ const identity = (value: string) => value;
 
 const [cachedFindConfigFile] = createCachedFn(
   ts.findConfigFile,
-  (searchPath, _, configName) => searchPath + delimiter + String(configName)
+  (searchPath, _, configName) => searchPath + delimiter + String(configName),
 );
 const [cachedReadAndParseConfigFile] = createCachedFn(readAndParseConfigFile, identity);
 const [cachedFindCacheDirectory] = createCachedFn(findCacheDirectory, identity);
