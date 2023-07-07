@@ -1,9 +1,10 @@
 import { describe, it } from 'node:test';
 import { equal, notEqual, ok } from 'node:assert/strict';
-import { dirname, join, sep } from 'node:path';
-import { platform } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
+import { platform } from 'node:os';
+import { dirname, join, sep } from 'node:path';
+import stripAnsi from 'strip-ansi';
 
 const require = createRequire(import.meta.url);
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
@@ -11,7 +12,7 @@ const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'))
 export function runCommand(command: string): { output: string; exitCode: number } {
   const [execName, ...args] = command.split(' ');
   const { output, status: exitCode } = spawnSync(execName!, args);
-  return { output: output.join('\n'), exitCode: exitCode || 0 };
+  return { output: stripAnsi(output.join('\n')), exitCode: exitCode || 0 };
 }
 
 describe('using node --loader @ts-tools/esm <file>', { timeout: 5_000 }, () => {
