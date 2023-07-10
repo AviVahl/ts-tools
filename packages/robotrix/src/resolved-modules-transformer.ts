@@ -31,7 +31,7 @@ function remapImportsToResolvedModules(
 
   const resolvedModule = resolvedModules.get(request);
 
-  if (resolvedModule && resolvedModule.extension !== ts.Extension.Dts) {
+  if (resolvedModule && (resolvedModule.extension as ts.Extension) !== ts.Extension.Dts) {
     // remap request to absolute resolved file
     return resolvedModule.resolvedFileName;
   }
