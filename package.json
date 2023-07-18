@@ -30,7 +30,7 @@
     "rimraf": "^5.0.1",
     "strip-ansi": "^7.1.0",
     "typescript": "~5.1.6",
-    "webpack": "^5.88.1"
+    "webpack": "^5.88.2"
   },
   "engines": {
     "node": ">=16",
