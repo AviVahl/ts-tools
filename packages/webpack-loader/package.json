@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/webpack-loader",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "TypeScript loader for webpack.",
   "exports": {
     ".": "./dist/index.js",
@@ -11,7 +11,7 @@
     "webpack": ">=5.0.0"
   },
   "dependencies": {
-    "@ts-tools/transpile": "^4.0.0"
+    "@ts-tools/transpile": "^5.0.0"
   },
   "files": [
     "dist",
