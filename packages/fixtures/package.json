@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/fixtures",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Fixtures of the various supported use cases.",
   "license": "MIT",
   "private": true

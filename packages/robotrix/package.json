@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/robotrix",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Useful TypeScript transpilation transformers.",
   "exports": {
     ".": "./dist/index.js",
