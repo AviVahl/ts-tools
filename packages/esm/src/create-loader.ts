@@ -17,7 +17,7 @@ export type ResolveHook = (
   specifier: string,
   context: { parentURL?: string; conditions: string[] },
   defaultResolve: ResolveHook,
-) => { url: string; format?: ModuleFormat };
+) => { url: string; format?: ModuleFormat; shortCircuit?: boolean };
 
 /** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#loadurl-context-defaultload */
 export type LoadHook = (
@@ -53,6 +53,7 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
       if (resolvedModule && !definitionExtensions.has(resolvedModule.extension)) {
         return {
           url: pathToFileURL(resolvedModule.resolvedFileName).href,
+          shortCircuit: true,
         };
       }
     }
