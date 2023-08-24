@@ -1,6 +1,6 @@
 {
   "name": "@ts-tools/transpile",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "TypeScript transpilation helpers.",
   "exports": {
     ".": "./dist/index.js",
