@@ -117,7 +117,13 @@ export const typescriptLoader: webpack.LoaderDefinition = function (source) {
 
   // webpack supports, validates, and tree-shakes es modules.
   // apply it before overrides, so user can customize it
-  compilerOptions.module = ts.ModuleKind.ESNext;
+  if (
+    compilerOptions.module === ts.ModuleKind.CommonJS ||
+    compilerOptions.module === ts.ModuleKind.None ||
+    compilerOptions.module === undefined
+  ) {
+    compilerOptions.module = ts.ModuleKind.ESNext;
+  }
 
   if (overrideOptions) {
     const { options, errors } = ts.convertCompilerOptionsFromJson(overrideOptions, rootContext);
