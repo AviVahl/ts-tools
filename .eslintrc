@@ -24,6 +24,12 @@
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/unbound-method": "off"
       }
+    },
+    {
+      "files": ["*.test.ts", "*.test.tsx", "*.test.mts", "*.test.cts"],
+      "rules": {
+        "@typescript-eslint/no-floating-promises": "off"
+      }
     }
   ]
 }
