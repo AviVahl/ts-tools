@@ -32,7 +32,7 @@
     "webpack": "^5.89.0"
   },
   "engines": {
-    "node": ">=16",
+    "node": ">=18",
     "npm": ">=8"
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
