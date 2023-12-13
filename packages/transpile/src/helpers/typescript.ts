@@ -65,6 +65,6 @@ export function getEmitModuleKind(compilerOptions: ts.CompilerOptions): ts.Modul
   return typeof compilerOptions.module === 'number'
     ? compilerOptions.module
     : getEmitScriptTarget(compilerOptions) >= ScriptTarget.ES2015
-    ? ModuleKind.ES2015
-    : ModuleKind.CommonJS;
+      ? ModuleKind.ES2015
+      : ModuleKind.CommonJS;
 }
