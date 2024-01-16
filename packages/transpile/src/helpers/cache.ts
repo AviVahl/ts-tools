@@ -13,8 +13,8 @@ export function findCacheDirectory(workDirPath: string): string | undefined {
 }
 
 export function compilerOptionsToCacheName(compilerOptions: ts.CompilerOptions): string {
-  const moduleKind = ts.ModuleKind[getEmitModuleKind(compilerOptions)]!;
-  const scriptTarget = ts.ScriptTarget[getEmitScriptTarget(compilerOptions)]!;
+  const moduleKind = ts.ModuleKind[getEmitModuleKind(compilerOptions)];
+  const scriptTarget = ts.ScriptTarget[getEmitScriptTarget(compilerOptions)];
   return `ts-${moduleKind.toLowerCase()}-${scriptTarget.toLowerCase()}`;
 }
 
