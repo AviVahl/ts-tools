@@ -51,7 +51,7 @@ Usage with [Visual Studio Code](https://github.com/Microsoft/vscode):
   "request": "launch",
   "name": "Launch Program",
   "runtimeArgs": ["-r", "@ts-tools/node/r"],
-  "args": ["${workspaceFolder}/src/my-script.ts"]
+  "args": ["${workspaceFolder}/src/my-script.ts"],
 }
 ```
 
