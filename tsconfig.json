@@ -6,6 +6,6 @@
     { "path": "./packages/node/src" },
     { "path": "./packages/robotrix/src" },
     { "path": "./packages/transpile/src" },
-    { "path": "./packages/webpack-loader/src" },
-  ],
+    { "path": "./packages/webpack-loader/src" }
+  ]
 }
