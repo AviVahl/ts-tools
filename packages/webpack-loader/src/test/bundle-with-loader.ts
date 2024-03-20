@@ -31,7 +31,7 @@ export async function bundleWithLoader({
   });
 
   // so test output isn't saved on local hard drive
-  compiler.outputFileSystem = createFsFromVolume(new Volume()) as webpack.Compiler['outputFileSystem'];
+  compiler.outputFileSystem = createFsFromVolume(new Volume()) as unknown as webpack.Compiler['outputFileSystem'];
 
   const stats = await new Promise<webpack.Stats>((res, rej) => {
     compiler.run((e, s) => (e ? rej(e) : res(s!)));
