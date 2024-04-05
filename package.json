@@ -28,7 +28,7 @@
     "react-dom": "^18.2.0",
     "rimraf": "^5.0.5",
     "strip-ansi": "^7.1.0",
-    "typescript": "~5.4.3",
+    "typescript": "~5.4.4",
     "webpack": "^5.91.0"
   },
   "engines": {
