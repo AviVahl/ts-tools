@@ -29,7 +29,7 @@
     "rimraf": "^5.0.7",
     "strip-ansi": "^7.1.0",
     "typescript": "~5.4.5",
-    "webpack": "^5.91.0"
+    "webpack": "^5.92.0"
   },
   "engines": {
     "node": ">=18",
