@@ -1,7 +1,8 @@
 {
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "../dist"
+    "outDir": "../dist",
+    "lib": ["es2020", "dom"],
   },
   "references": [{ "path": "../../transpile/src" }]
 }
