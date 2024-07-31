@@ -23,7 +23,7 @@ npm i @ts-tools/esm --save-dev
 Usage with [Node.js](https://nodejs.org/en/):
 
 ```
-node --loader @ts-tools/esm ./my-script.ts
+node --import @ts-tools/esm ./my-script.ts
 ```
 
 ## Default Loader
