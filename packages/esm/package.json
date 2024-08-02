@@ -4,7 +4,8 @@
   "description": "TypeScript support for Node.js.",
   "type": "module",
   "exports": {
-    ".": "./dist/default-loader.js",
+    ".": "./dist/register.js",
+    "./default-loader": "./dist/default-loader.js",
     "./lib": "./dist/index.js",
     "./package.json": "./package.json"
   },
