@@ -21,7 +21,11 @@
   "sideEffects": false,
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
-  "repository": "https://github.com/AviVahl/ts-tools/tree/main/packages/robotrix",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AviVahl/ts-tools.git",
+    "directory": "packages/robotrix"
+  },
   "homepage": "https://github.com/AviVahl/ts-tools",
   "publishConfig": {
     "access": "public"
