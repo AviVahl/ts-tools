@@ -29,7 +29,7 @@
     "rimraf": "^6.0.1",
     "typescript": "~5.5.4",
     "typescript-eslint": "^8.2.0",
-    "webpack": "^5.93.0"
+    "webpack": "^5.94.0"
   },
   "engines": {
     "node": ">=20",
