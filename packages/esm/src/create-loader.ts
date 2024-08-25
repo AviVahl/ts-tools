@@ -1,8 +1,15 @@
 import { readFileSync } from 'node:fs';
-import { pathToFileURL, fileURLToPath } from 'node:url';
+import { dirname, extname } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import ts from 'typescript';
 
 const { Extension } = ts;
+
+const moduleKindsWithAutoDetection = new Set<ts.ModuleKind>([
+  ts.ModuleKind.Node16,
+  ts.ModuleKind.NodeNext,
+  ts.ModuleKind.Preserve,
+]);
 
 const isTypescriptFile = (url: string) =>
   url.endsWith(Extension.Ts) ||
@@ -17,7 +24,7 @@ export type ResolveHook = (
   specifier: string,
   context: { parentURL?: string; conditions: string[] },
   defaultResolve: ResolveHook,
-) => { url: string; format?: ModuleFormat; shortCircuit?: boolean };
+) => { url: string; format?: ModuleFormat | undefined; shortCircuit?: boolean };
 
 /** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#loadurl-context-defaultload */
 export type LoadHook = (
@@ -65,12 +72,20 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
     if (isTypescriptFile(url)) {
       const filePath = fileURLToPath(url);
       const source = readFileSync(filePath, 'utf8');
+      const format =
+        context.format ??
+        extensionToModuleFormat(extname(filePath)) ??
+        detectModuleFormat(filePath, compilerOptions.module ?? ts.ModuleKind.ESNext);
+
       return {
         source: ts.transpileModule(source, {
           fileName: filePath,
-          compilerOptions,
+          compilerOptions: {
+            ...compilerOptions,
+            module: format === 'module' ? ts.ModuleKind.ESNext : ts.ModuleKind.CommonJS,
+          },
         }).outputText,
-        format: 'module',
+        format,
         shortCircuit: true,
       };
     } else {
@@ -82,4 +97,42 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
     resolve,
     load,
   };
+}
+
+function extensionToModuleFormat(extension: string): ModuleFormat | undefined {
+  switch (extension as ts.Extension) {
+    case Extension.Cts:
+      return 'commonjs';
+    case Extension.Mts:
+      return 'module';
+    default:
+      return;
+  }
+}
+
+function detectModuleFormat(filePath: string, moduleKind: ts.ModuleKind): ModuleFormat {
+  if (moduleKind === ts.ModuleKind.CommonJS) {
+    return 'commonjs';
+  } else if (moduleKind >= ts.ModuleKind.ES2015 && moduleKind <= ts.ModuleKind.ESNext) {
+    return 'module';
+  } else if (moduleKindsWithAutoDetection.has(moduleKind)) {
+    const closestPackageJson = ts.findConfigFile(dirname(filePath), ts.sys.fileExists, 'package.json');
+    if (closestPackageJson !== undefined) {
+      const packageJsonContents = readFileSync(closestPackageJson, 'utf8');
+      const packageJson = safeParseJson(packageJsonContents);
+      const isObjectLike = typeof packageJson === 'object' && packageJson !== null;
+      if (isObjectLike) {
+        return 'type' in packageJson && packageJson['type'] === 'module' ? 'module' : 'commonjs';
+      }
+    }
+  }
+  return 'module';
+}
+
+function safeParseJson(json: string): unknown {
+  try {
+    return JSON.parse(json);
+  } catch {
+    return undefined;
+  }
 }
