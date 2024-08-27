@@ -33,7 +33,7 @@ describe('webpack loader', { timeout: 10_000 }, () => {
 
     it(`allows specifying transformers`, async () => {
       let transpileCtx: ts.TransformationContext | undefined;
-      const entry = join(fixturesRoot, 'transformed.ts');
+      const entry = join(fixturesRoot, 'empty.ts');
       const { stats, statsText } = await bundleWithLoader({
         entry,
         options: {
