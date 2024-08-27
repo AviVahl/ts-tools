@@ -9,7 +9,7 @@ import { stripVTControlCharacters } from 'node:util';
 const require = createRequire(import.meta.url);
 const fixturesRoot = dirname(require.resolve('@ts-tools/fixtures/package.json'));
 
-export function runCommand(command: string): { output: string; exitCode: number } {
+function runCommand(command: string): { output: string; exitCode: number } {
   const [execName, ...args] = command.split(' ');
   const { output, status: exitCode } = spawnSync(execName!, args);
   return { output: stripVTControlCharacters(output.join('\n')), exitCode: exitCode || 0 };
