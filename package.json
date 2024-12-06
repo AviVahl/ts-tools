@@ -15,8 +15,8 @@
   },
   "devDependencies": {
     "@types/node": "20",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
     "@types/source-map-support": "^0.5.10",
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
