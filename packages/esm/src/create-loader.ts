@@ -12,18 +12,18 @@ const isTypescriptFile = (url: string) =>
 
 export type ModuleFormat = 'builtin' | 'commonjs' | 'json' | 'module' | 'wasm';
 
-/** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#resolvespecifier-context-defaultresolve */
+/** @url https://nodejs.org/docs/latest-v22.x/api/module.html#resolvespecifier-context-nextresolve */
 export type ResolveHook = (
   specifier: string,
   context: { parentURL?: string; conditions: string[] },
-  defaultResolve: ResolveHook,
+  nextResolve: ResolveHook,
 ) => { url: string; format?: ModuleFormat; shortCircuit?: boolean };
 
-/** @url https://nodejs.org/docs/latest-v16.x/api/esm.html#loadurl-context-defaultload */
+/** @url https://nodejs.org/docs/latest-v22.x/api/module.html#loadurl-context-nextload */
 export type LoadHook = (
   url: string,
   context: { format?: ModuleFormat },
-  defaultTransformSource: LoadHook,
+  nextLoad: LoadHook,
 ) => { source: string | SharedArrayBuffer | Uint8Array; format: ModuleFormat; shortCircuit?: boolean };
 
 export interface CreateLoaderOptions {
@@ -39,7 +39,7 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
     ts.sys.useCaseSensitiveFileNames ? (s) => s : (s) => s.toLowerCase(),
     compilerOptions,
   );
-  const resolve: ResolveHook = (specifier, context, defaultResolve) => {
+  const resolve: ResolveHook = (specifier, context, nextResolve) => {
     const { parentURL } = context;
     if (parentURL !== undefined && isTypescriptFile(parentURL)) {
       const { resolvedModule } = ts.resolveModuleName(
@@ -58,10 +58,10 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
       }
     }
 
-    return defaultResolve(specifier, context, defaultResolve);
+    return nextResolve(specifier, context, nextResolve);
   };
 
-  const load: LoadHook = (url, context, defaultTransformSource) => {
+  const load: LoadHook = (url, context, nextLoad) => {
     if (isTypescriptFile(url)) {
       const filePath = fileURLToPath(url);
       const source = readFileSync(filePath, 'utf8');
@@ -74,7 +74,7 @@ export function createLoader({ compilerOptions, cwd }: CreateLoaderOptions) {
         shortCircuit: true,
       };
     } else {
-      return defaultTransformSource(url, context, defaultTransformSource);
+      return nextLoad(url, context, nextLoad);
     }
   };
 
