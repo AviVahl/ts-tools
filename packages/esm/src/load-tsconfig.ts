@@ -12,11 +12,13 @@ export function loadTsconfig(tsconfigPath: string): ts.CompilerOptions {
     ts.sys,
     dirname(tsconfigPath),
   );
-  if (options.module === undefined || options.module < ts.ModuleKind.ES2015) {
-    options.module = ts.ModuleKind.Node16;
+
+  if (options.module === undefined || !isESModuleKind(options.module)) {
+    options.module = ts.ModuleKind.ESNext;
   }
+
   if (options.moduleResolution === undefined) {
-    options.moduleResolution = ts.ModuleResolutionKind.Node16;
+    options.moduleResolution = ts.ModuleResolutionKind.Bundler;
   }
   options.inlineSourceMap = true;
   options.sourceMap = options.inlineSources = undefined!;
@@ -24,4 +26,8 @@ export function loadTsconfig(tsconfigPath: string): ts.CompilerOptions {
   options.outDir = options.outFile = undefined!;
   options.noEmit = undefined!;
   return options;
+}
+
+function isESModuleKind(moduleKind: ts.ModuleKind): boolean {
+  return moduleKind >= ts.ModuleKind.ES2015 && moduleKind <= ts.ModuleKind.ESNext;
 }
