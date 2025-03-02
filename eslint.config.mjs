@@ -21,7 +21,7 @@ export default [
     },
   },
   ...pluginTypescript.configs.recommendedTypeChecked,
-  { languageOptions: { parserOptions: { projectService: true } } },
+  { languageOptions: { parserOptions: { projectService: true, warnOnUnsupportedTypeScriptVersion: false } } },
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
     rules: {
