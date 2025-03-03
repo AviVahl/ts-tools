@@ -27,7 +27,7 @@
     "react-dom": "^19.0.0",
     "rimraf": "^6.0.1",
     "typescript": "~5.8.2",
-    "typescript-eslint": "^8.25.0",
+    "typescript-eslint": "^8.26.0",
     "webpack": "^5.98.0"
   },
   "engines": {
@@ -36,8 +36,5 @@
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
-  "private": true,
-  "overrides": {
-    "typescript": "~5.8.2"
-  }
+  "private": true
 }
