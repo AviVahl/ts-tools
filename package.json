@@ -18,7 +18,7 @@
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "@types/source-map-support": "^0.5.10",
-    "eslint": "^9.26.0",
+    "eslint": "^9.27.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "memfs": "^4.17.2",
