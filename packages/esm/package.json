@@ -19,7 +19,7 @@
     "!*/tsconfig.{json,tsbuildinfo}"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "author": "Avi Vahl <avi.vahl@wix.com>",
   "license": "MIT",
