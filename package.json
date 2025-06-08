@@ -14,7 +14,7 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.30",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",
     "@types/source-map-support": "^0.5.10",
