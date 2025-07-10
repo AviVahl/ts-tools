@@ -198,8 +198,8 @@ interface SourceMap {
   version: number;
   sources: string[];
   mappings: string;
-  file?: string;
+  file: string;
+  names: string[];
   sourceRoot?: string;
   sourcesContent?: string[];
-  names?: string[];
 }
