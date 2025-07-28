@@ -29,7 +29,9 @@ export async function bundleWithLoader({
       ],
     },
   });
-
+  if (!compiler) {
+    throw new Error('Failed to create webpack compiler');
+  }
   // so test output isn't saved on local hard drive
   compiler.outputFileSystem = createFsFromVolume(new Volume()) as unknown as webpack.Compiler['outputFileSystem'];
 
