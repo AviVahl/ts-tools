@@ -21,14 +21,14 @@
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-no-only-tests": "^3.3.0",
-    "memfs": "^4.36.0",
+    "memfs": "^4.36.3",
     "prettier": "^3.6.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "rimraf": "^6.0.1",
     "typescript": "~5.9.2",
-    "typescript-eslint": "^8.39.1",
-    "webpack": "^5.101.2"
+    "typescript-eslint": "^8.40.0",
+    "webpack": "^5.101.3"
   },
   "engines": {
     "node": ">=22",
