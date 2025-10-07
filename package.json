@@ -15,19 +15,19 @@
   },
   "devDependencies": {
     "@types/node": "22",
-    "@types/react": "^19.2.0",
+    "@types/react": "^19.2.1",
     "@types/react-dom": "^19.2.0",
     "@types/source-map-support": "^0.5.10",
     "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-no-only-tests": "^3.3.0",
-    "memfs": "^4.48.1",
+    "memfs": "^4.49.0",
     "prettier": "^3.6.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "rimraf": "^6.0.1",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.45.0",
+    "typescript-eslint": "^8.46.0",
     "webpack": "^5.102.0"
   },
   "engines": {
