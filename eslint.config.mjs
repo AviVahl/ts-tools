@@ -3,11 +3,11 @@
 import pluginJs from '@eslint/js';
 import configPrettier from 'eslint-config-prettier';
 import pluginNoOnlyTests from 'eslint-plugin-no-only-tests';
-import { defineConfig } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import pluginTypescript from 'typescript-eslint';
 
 export default defineConfig([
-  { ignores: ['**/dist/', 'packages/fixtures'] },
+  globalIgnores(['**/dist/', 'packages/fixtures']),
   pluginJs.configs.recommended,
   { plugins: { 'no-only-tests': pluginNoOnlyTests } },
   {
