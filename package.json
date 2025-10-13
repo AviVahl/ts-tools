@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/node": "22",
     "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.1",
+    "@types/react-dom": "^19.2.2",
     "@types/source-map-support": "^0.5.10",
     "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",
@@ -27,7 +27,7 @@
     "react-dom": "^19.2.0",
     "rimraf": "^6.0.1",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.0",
+    "typescript-eslint": "^8.46.1",
     "webpack": "^5.102.1"
   },
   "engines": {
