@@ -27,7 +27,7 @@
     "react-dom": "^19.2.0",
     "rimraf": "^6.1.0",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.2",
+    "typescript-eslint": "^8.46.3",
     "webpack": "^5.102.1"
   },
   "engines": {
