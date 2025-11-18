@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/node": "22",
-    "@types/react": "^19.2.5",
+    "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "@types/source-map-support": "^0.5.10",
     "eslint": "^9.39.1",
@@ -27,7 +27,7 @@
     "react-dom": "^19.2.0",
     "rimraf": "^6.1.0",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.4",
+    "typescript-eslint": "^8.47.0",
     "webpack": "^5.102.1"
   },
   "engines": {
