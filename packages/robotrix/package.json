@@ -19,7 +19,10 @@
     "node": ">=22"
   },
   "sideEffects": false,
-  "author": "Avi Vahl <avi.vahl@wix.com>",
+  "author": {
+    "name": "Avi Vahl",
+    "url": "https://github.com/AviVahl"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",

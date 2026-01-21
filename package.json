@@ -34,7 +34,10 @@
     "node": ">=22",
     "npm": ">=10"
   },
-  "author": "Avi Vahl <avi.vahl@wix.com>",
+  "author": {
+    "name": "Avi Vahl",
+    "url": "https://github.com/AviVahl"
+  },
   "license": "MIT",
   "private": true
 }

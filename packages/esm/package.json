@@ -21,7 +21,10 @@
   "engines": {
     "node": ">=22"
   },
-  "author": "Avi Vahl <avi.vahl@wix.com>",
+  "author": {
+    "name": "Avi Vahl",
+    "url": "https://github.com/AviVahl"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
