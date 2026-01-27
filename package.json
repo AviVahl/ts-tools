@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/node": "22",
-    "@types/react": "^19.2.9",
+    "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "@types/source-map-support": "^0.5.10",
     "eslint": "^9.39.2",
