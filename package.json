@@ -28,7 +28,7 @@
     "rimraf": "^6.1.2",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.54.0",
-    "webpack": "^5.104.1"
+    "webpack": "^5.105.0"
   },
   "engines": {
     "node": ">=22",
