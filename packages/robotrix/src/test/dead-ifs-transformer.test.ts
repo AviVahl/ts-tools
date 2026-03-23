@@ -5,7 +5,7 @@ import { codeEqual } from './code-equal';
 
 describe('DeadIfsTransformer', () => {
   const transformers: ts.CustomTransformers = { before: [deadIfsTransformer] };
-  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
+  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017, alwaysStrict: false };
 
   it('detects if (true) and cancels else branch', async () => {
     const code = `

@@ -19,7 +19,7 @@ export default defineConfig([
     },
   },
   ...pluginTypescript.configs.recommendedTypeChecked.map((config) => ({ ...config, files: ['**/*.{ts,tsx,mts,cts}'] })),
-  { languageOptions: { parserOptions: { projectService: true } } },
+  { languageOptions: { parserOptions: { projectService: true, warnOnUnsupportedTypeScriptVersion: false } } },
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
     rules: {
