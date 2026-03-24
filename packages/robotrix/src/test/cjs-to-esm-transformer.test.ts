@@ -7,7 +7,7 @@ const cjsDef = `let exports = {}, module = { exports }`;
 const cjsEsmExport = `export default module.exports`;
 
 describe('CjsToEsmTransformer', () => {
-  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017, alwaysStrict: false };
+  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
 
   describe('wrapping of exports', () => {
     it('wraps code using module.exports', async () => {

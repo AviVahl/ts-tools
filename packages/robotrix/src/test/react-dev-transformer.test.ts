@@ -5,7 +5,7 @@ import { codeEqual } from './code-equal';
 
 describe('ReactDevTransformer', () => {
   const transformers: ts.CustomTransformers = { before: [reactDevTransformer] };
-  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017, alwaysStrict: false };
+  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
   const fileName = '/path/to/test-file.tsx';
   const jsxFileNameDef = `const __jsxFileName = "${fileName}";`;
 

@@ -4,7 +4,7 @@ import { createRemapImportsTransformer } from '@ts-tools/robotrix';
 import { codeEqual } from './code-equal';
 
 describe('RemapImportsTransformer', () => {
-  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017, alwaysStrict: false };
+  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
 
   const transformer = createRemapImportsTransformer({
     remapTarget: (target) => (target === 'A' ? 'B' : target),
