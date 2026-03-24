@@ -5,7 +5,6 @@ import { codeEqual } from './code-equal';
 
 describe('ReactDevTransformer', () => {
   const transformers: ts.CustomTransformers = { before: [reactDevTransformer] };
-  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
   const fileName = '/path/to/test-file.tsx';
   const jsxFileNameDef = `const __jsxFileName = "${fileName}";`;
 
@@ -16,7 +15,7 @@ describe('ReactDevTransformer', () => {
             </div>)
         `;
 
-    const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
+    const { outputText } = ts.transpileModule(code, { transformers, fileName });
 
     await codeEqual(
       outputText,
@@ -36,7 +35,7 @@ describe('ReactDevTransformer', () => {
             />)
         `;
 
-    const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
+    const { outputText } = ts.transpileModule(code, { transformers, fileName });
 
     await codeEqual(
       outputText,
@@ -53,7 +52,7 @@ describe('ReactDevTransformer', () => {
   it('does not override existing __source attribute set by user', async () => {
     const code = `(<div __source="custom value" />) `;
 
-    const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
+    const { outputText } = ts.transpileModule(code, { transformers, fileName });
 
     await codeEqual(outputText, `(<div __source="custom value" __self={this} />)`);
   });
@@ -61,7 +60,7 @@ describe('ReactDevTransformer', () => {
   it('does not override existing __self attribute set by user', async () => {
     const code = `(<div __self="custom value" />) `;
 
-    const { outputText } = ts.transpileModule(code, { compilerOptions, transformers, fileName });
+    const { outputText } = ts.transpileModule(code, { transformers, fileName });
 
     await codeEqual(
       outputText,

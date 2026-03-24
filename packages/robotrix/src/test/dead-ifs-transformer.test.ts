@@ -5,7 +5,6 @@ import { codeEqual } from './code-equal';
 
 describe('DeadIfsTransformer', () => {
   const transformers: ts.CustomTransformers = { before: [deadIfsTransformer] };
-  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
 
   it('detects if (true) and cancels else branch', async () => {
     const code = `
@@ -16,7 +15,7 @@ describe('DeadIfsTransformer', () => {
         }
     `;
 
-    const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
+    const { outputText } = ts.transpileModule(code, { transformers });
 
     await codeEqual(
       outputText,
@@ -37,7 +36,7 @@ describe('DeadIfsTransformer', () => {
       }
     `;
 
-    const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
+    const { outputText } = ts.transpileModule(code, { transformers });
 
     await codeEqual(
       outputText,
@@ -61,7 +60,7 @@ describe('DeadIfsTransformer', () => {
       }
     `;
 
-    const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
+    const { outputText } = ts.transpileModule(code, { transformers });
 
     await codeEqual(
       outputText,
@@ -84,7 +83,7 @@ describe('DeadIfsTransformer', () => {
         }
       `;
 
-      const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
+      const { outputText } = ts.transpileModule(code, { transformers });
 
       await codeEqual(
         outputText,
@@ -105,7 +104,7 @@ describe('DeadIfsTransformer', () => {
         }
       `;
 
-      const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
+      const { outputText } = ts.transpileModule(code, { transformers });
 
       await codeEqual(
         outputText,
@@ -127,7 +126,7 @@ describe('DeadIfsTransformer', () => {
         }
       `;
 
-      const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
+      const { outputText } = ts.transpileModule(code, { transformers });
 
       await codeEqual(
         outputText,
@@ -149,7 +148,7 @@ describe('DeadIfsTransformer', () => {
         }
       `;
 
-      const { outputText } = ts.transpileModule(code, { compilerOptions, transformers });
+      const { outputText } = ts.transpileModule(code, { transformers });
 
       await codeEqual(
         outputText,

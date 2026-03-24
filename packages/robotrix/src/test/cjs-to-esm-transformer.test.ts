@@ -7,17 +7,12 @@ const cjsDef = `let exports = {}, module = { exports }`;
 const cjsEsmExport = `export default module.exports`;
 
 describe('CjsToEsmTransformer', () => {
-  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
-
   describe('wrapping of exports', () => {
     it('wraps code using module.exports', async () => {
       const transformer = createCjsToEsmTransformer();
       const code = `module.exports = 123`;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(
         outputText,
@@ -33,10 +28,7 @@ describe('CjsToEsmTransformer', () => {
       const transformer = createCjsToEsmTransformer();
       const code = `module['exports'] = 123`;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(
         outputText,
@@ -52,10 +44,7 @@ describe('CjsToEsmTransformer', () => {
       const transformer = createCjsToEsmTransformer();
       const code = `exports.do = 123`;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(
         outputText,
@@ -71,10 +60,7 @@ describe('CjsToEsmTransformer', () => {
       const transformer = createCjsToEsmTransformer();
       const code = `typeof exports`;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(
         outputText,
@@ -92,10 +78,7 @@ describe('CjsToEsmTransformer', () => {
       const transformer = createCjsToEsmTransformer();
       const code = `module.exports = require('some-package')`;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(
         outputText,
@@ -112,10 +95,7 @@ describe('CjsToEsmTransformer', () => {
       const transformer = createCjsToEsmTransformer();
       const code = `require('some-package')`;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(
         outputText,
@@ -132,10 +112,7 @@ describe('CjsToEsmTransformer', () => {
       const transformer = createCjsToEsmTransformer();
       const code = `const myPackage = require('some-package'), b = require('b')`;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(
         outputText,
@@ -162,10 +139,7 @@ describe('CjsToEsmTransformer', () => {
                 }
             `;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(outputText, code);
     });
@@ -178,10 +152,7 @@ describe('CjsToEsmTransformer', () => {
                 } catch(e) {}
             `;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(outputText, code);
     });
@@ -194,10 +165,7 @@ describe('CjsToEsmTransformer', () => {
                 console.log(someSymbol)
             `;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(outputText, code);
     });
@@ -212,10 +180,7 @@ describe('CjsToEsmTransformer', () => {
                 const b = require('b')
             `;
 
-      const { outputText } = ts.transpileModule(code, {
-        transformers: { before: [transformer] },
-        compilerOptions,
-      });
+      const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
       await codeEqual(
         outputText,

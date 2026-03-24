@@ -4,8 +4,6 @@ import { createRemapImportsTransformer } from '@ts-tools/robotrix';
 import { codeEqual } from './code-equal';
 
 describe('RemapImportsTransformer', () => {
-  const compilerOptions: ts.CompilerOptions = { target: ts.ScriptTarget.ES2017 };
-
   const transformer = createRemapImportsTransformer({
     remapTarget: (target) => (target === 'A' ? 'B' : target),
   });
@@ -18,10 +16,7 @@ describe('RemapImportsTransformer', () => {
       console.log(namedSymbol, namespaceSymbol)
     `;
 
-    const { outputText } = ts.transpileModule(code, {
-      transformers: { before: [transformer] },
-      compilerOptions,
-    });
+    const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
     await codeEqual(
       outputText,
@@ -40,10 +35,7 @@ describe('RemapImportsTransformer', () => {
       export * from "A"
     `;
 
-    const { outputText } = ts.transpileModule(code, {
-      transformers: { before: [transformer] },
-      compilerOptions,
-    });
+    const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
     await codeEqual(
       outputText,
@@ -59,10 +51,7 @@ describe('RemapImportsTransformer', () => {
             import("A").then(console.log)
         `;
 
-    const { outputText } = ts.transpileModule(code, {
-      transformers: { before: [transformer] },
-      compilerOptions,
-    });
+    const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
     await codeEqual(
       outputText,
@@ -77,10 +66,7 @@ describe('RemapImportsTransformer', () => {
             require("A")
         `;
 
-    const { outputText } = ts.transpileModule(code, {
-      transformers: { before: [transformer] },
-      compilerOptions,
-    });
+    const { outputText } = ts.transpileModule(code, { transformers: { before: [transformer] } });
 
     await codeEqual(
       outputText,
