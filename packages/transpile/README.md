@@ -1,6 +1,4 @@
-# @ts-tools/transpile
-
-[![npm version](https://img.shields.io/npm/v/@ts-tools/transpile.svg)](https://www.npmjs.com/package/@ts-tools/transpile)
+# @ts-tools/transpile [![npm version](https://img.shields.io/npm/v/@ts-tools/transpile)](https://www.npmjs.com/package/@ts-tools/transpile)
 
 TypeScript transpilation helpers.
 

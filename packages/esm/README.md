@@ -1,6 +1,4 @@
-# @ts-tools/esm
-
-[![npm version](https://img.shields.io/npm/v/@ts-tools/esm.svg)](https://www.npmjs.com/package/@ts-tools/esm)
+# @ts-tools/esm [![npm version](https://img.shields.io/npm/v/@ts-tools/esm)](https://www.npmjs.com/package/@ts-tools/esm)
 
 [TypeScript](https://www.typescriptlang.org/) support for [Node.js](https://nodejs.org/en/).
 

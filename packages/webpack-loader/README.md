@@ -1,6 +1,4 @@
-# @ts-tools/webpack-loader
-
-[![npm version](https://img.shields.io/npm/v/@ts-tools/webpack-loader.svg)](https://www.npmjs.com/package/@ts-tools/webpack-loader)
+# @ts-tools/webpack-loader [![npm version](https://img.shields.io/npm/v/@ts-tools/webpack-loader)](https://www.npmjs.com/package/@ts-tools/webpack-loader)
 
 [TypeScript](https://www.typescriptlang.org/) loader for [webpack](https://webpack.js.org/).
 
