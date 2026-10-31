@@ -22,7 +22,6 @@ export function calcSha1(data: string): string {
   return createHash('sha1').update(data).digest('hex');
 }
 
-// eslint-disable-next-line
 export function createCachedFn<FN extends (...args: any[]) => unknown>(
   fn: FN,
   argsToCacheKey: (...args: Parameters<FN>) => string,
