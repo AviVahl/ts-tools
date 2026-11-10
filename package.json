@@ -14,20 +14,17 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@types/node": "22",
+    "@types/node": "24",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@types/source-map-support": "^0.5.10",
-    "memfs": "^4.80.1",
     "prettier": "^3.10.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "typescript": "~6.0.3",
-    "webpack": "^5.112.2"
+    "typescript": "^7.1.0-beta"
   },
   "engines": {
-    "node": ">=22",
-    "npm": ">=10"
+    "node": ">=24",
+    "npm": ">=11"
   },
   "author": {
     "name": "Avi Vahl",

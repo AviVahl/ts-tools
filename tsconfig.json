@@ -2,10 +2,6 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "./packages/esm/src" },
-    { "path": "./packages/node/src" },
-    { "path": "./packages/robotrix/src" },
-    { "path": "./packages/transpile/src" },
-    { "path": "./packages/webpack-loader/src" }
+    { "path": "./packages/node-hooks/src" },
   ]
 }

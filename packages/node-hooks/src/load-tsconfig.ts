@@ -1,5 +1,4 @@
-import { dirname } from 'node:path';
-import ts from 'typescript';
+import * as ts from 'typescript/sync';
 
 /**
  * loads a tsconfig file
@@ -7,11 +6,8 @@ import ts from 'typescript';
  */
 
 export function loadTsconfig(tsconfigPath: string): ts.CompilerOptions {
-  const { options } = ts.parseJsonSourceFileConfigFileContent(
-    ts.readJsonConfigFile(tsconfigPath, ts.sys.readFile),
-    ts.sys,
-    dirname(tsconfigPath),
-  );
+  const api = new ts.API();
+  const { options } = api.parseConfigFile(tsconfigPath);
 
   if (options.module === undefined || !isESModuleKind(options.module)) {
     options.module = ts.ModuleKind.ESNext;
@@ -23,7 +19,7 @@ export function loadTsconfig(tsconfigPath: string): ts.CompilerOptions {
   options.inlineSourceMap = true;
   options.sourceMap = options.inlineSources = undefined!;
   options.mapRoot = options.sourceRoot = undefined!;
-  options.outDir = options.outFile = undefined!;
+  options.outDir = undefined!;
   options.noEmit = undefined!;
   return options;
 }
